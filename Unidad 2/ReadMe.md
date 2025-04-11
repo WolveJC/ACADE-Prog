@@ -1,4 +1,4 @@
-### Gestor de Inventario y Ordenamientos Jerárquicos
+# Gestor de Inventario y Ordenamientos Jerárquicos
 
 Este programa es una herramienta diseñada para ayudar a gestionar el inventario de un mini restaurante o negocio de comida, priorizando la reposición y el control de productos según diversos criterios. La solución integra múltiples algoritmos de ordenamiento para ofrecer una visión integral y estructurada del estado del inventario, lo que facilita la toma de decisiones para reabastecimiento y promociones.
 
@@ -15,13 +15,14 @@ Este programa es una herramienta diseñada para ayudar a gestionar el inventario
     - **Selection Sort:** Ordena por demanda (de mayor a menor) para priorizar los productos más solicitados por los clientes.
   
   - **Ordenamiento Jerárquico para una sola tabla:**
+  - Nota: El algoritmo Bubble fue omitido por optimización en la generación de una tabla
     - La solución final integra todos estos criterios en una única tabla de forma jerárquica:
       1. **Agotamiento:** Productos con menor cantidad disponible.
       2. **Fecha límite:** Dentro de esos, se priorizan los productos que están por vencer.
       3. **Tiempo de entrega:** A continuación, se resaltan aquellos que tardan más en ser repuestos.
       4. **Demanda del cliente:** Finalmente, se ordenan en función de la demanda, de mayor a menor.
 
-- *Generación de Archivos:*
+- **Generación de Archivos:**
   - Tras la creación de la tabla, el programa guarda una imagen (archivo PNG) de la tabla con un timestamp, lo que permite documentar visualmente el estado del inventario.
   - Asimismo, se genera un archivo CSV que registra los datos ordenados junto con la fecha y hora de la consulta, proporcionando un historial para futuras revisiones.
 
@@ -63,7 +64,6 @@ La solución propuesta aborda estos retos mediante la integración de múltiples
 3. *Archivo de Registro:*
    - Se guardará un archivo PNG con la imagen de la tabla y un archivo CSV que contiene el registro completo del inventario con la fecha de la consulta.
 
-# Nota: El algoritmo Bubble fue omitido por optimización en la generación de una tabla
 
 ## Contribuciones
 

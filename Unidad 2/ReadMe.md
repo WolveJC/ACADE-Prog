@@ -67,4 +67,4 @@ La solución propuesta aborda estos retos mediante la integración de múltiples
 
 ## Contribuciones
 
-Si deseas mejorar el programa o añadir nuevas funcionalidades, no dudes en abrir un _issue_ o enviar un _pull request_. ¡Toda contribución es bienvenida!
+Si deseas mejorar el programa o añadir nuevas funcionalidades, no dudes en abrir un _issue_ o enviar un _pull request_. Toda contribución a mejorar es bienvenida

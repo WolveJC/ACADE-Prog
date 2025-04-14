@@ -63,6 +63,11 @@ La solución propuesta aborda estos retos mediante la integración de múltiples
 
 3. *Archivo de Registro:*
    - Se guardará un archivo PNG con la imagen de la tabla y un archivo CSV que contiene el registro completo del inventario con la fecha de la consulta.
+  
+ ## Control de versiones 
+  - v0.2alpha: Aplicación básica, los datos son introducidos en el entorno para luego ser ordenados y mostrados por consola (07/04/2025)
+  -  v0.5beta: Se han incorporado visualización por tablas, para las puruebas se ha usado únicamente un algoritmo para ordenar los datos. La aplicación e capaz de generar archivos de respaldo de los datos ordenados (10/04/2025)
+  -   v1.0: Se han implementado todas las funciones anteriores, ahora se puede seleccionar si se desea una tabla o varias por cada algoritmo de ordenamiento (10/04/2025)
 
 
 ## Contribuciones

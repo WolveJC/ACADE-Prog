@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Pedido al Proveedor</h1>
+{% if productos_proveedor %}
+<form method="POST" action="{{ url_for('pedir_proveedor') }}">
+    <table>
+        <tr>
+            <th>Código</th>
+            <th>Producto</th>
+            <th>Cantidad en Stock</th>
+            <th>Tiempo Entrega (Días)</th>
+            <th>Cantidad a Pedir</th>
+            <th>Precio Unitario</th>
+        </tr>
+        {% for producto in productos_proveedor %}
+        <tr>
+            <td>{{ producto['Código'] }}</td>
+            <td>{{ producto['Nombre'] }}</td>
+            <td>{{ producto['Cantidad'] }}</td>
+            <td>{{ producto['Tiempo entrega(Días)'] }}</td>
+            <td>
+                <input type="number" name="pedido_proveedor[{{ producto['Código'] }}]" min="0" value="0">
+            </td>
+            <td>
+                <input type="number" name="precio_proveedor[{{ producto['Código'] }}]" step="0.01" placeholder="Ingrese precio">
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <button type="submit">Generar PDF de Pedido al Proveedor</button>
+</form>
+{% else %}
+    <p>No hay productos en el inventario. Por favor, sube el archivo CSV.</p>
+    <p><a href="{{ url_for('upload_csv') }}">Volver a la página de subida</a></p>
+{% endif %}
+<hr>
+<p><a href="{{ url_for('upload_csv') }}">Volver a la página principal / Subir otro archivo</a></p>
+<p><a href="{{ url_for('pedir_stock') }}">Ir a Pedido de Stock Interno</a></p>
+{% endblock %}

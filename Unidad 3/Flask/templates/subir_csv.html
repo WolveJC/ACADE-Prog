@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Bienvenido a Touken Café - Gestión de Pedidos</h1>
+<p>Por favor, sube el archivo CSV de inventario generado previamente.</p>
+<form method="POST" enctype="multipart/form-data">
+    <input type="file" name="file" required>
+    <button type="submit">Subir Inventario CSV</button>
+</form>
+
+{% if session['productos'] %}
+    <h2>Selecciona el tipo de pedido que deseas realizar:</h2>
+    <ul>
+        <li><a href="{{ url_for('pedir_stock') }}">Pedido de Stock Interno</a></li>
+        <li><a href="{{ url_for('pedir_proveedor') }}">Pedido al Proveedor</a></li>
+    </ul>
+{% endif %}
+{% endblock %}

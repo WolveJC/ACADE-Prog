@@ -47,7 +47,6 @@ Touken Café es una aplicación web desarrollada en Python con Flask para la ges
     ```bash
     pip install -r requirements.txt
     ```
-    (Si no tienes un `requirements.txt`, puedes crear uno con `pip freeze > requirements.txt` después de instalar las librerías individualmente con `pip install flask pandas fpdf`)
 
 ## Ejecución de la Aplicación
 
@@ -68,4 +67,15 @@ Touken Café es una aplicación web desarrollada en Python con Flask para la ges
 6.  **Exportar Inventario:** En varias páginas, encontrarás enlaces para exportar el inventario actual a archivos JSON y CSV.
 7.  **Navegación:** Utiliza los enlaces proporcionados en las diferentes páginas para navegar entre las funcionalidades de la aplicación.
 
-## Notas Adicionales * La lógica de recálculo de la demanda en el pedido de stock interno es una aproximación simple y puede ser ajustada según las necesidades específicas del negocio. * La aplicación asume que el archivo CSV de inventario tiene el formato y las columnas esperadas. Cualquier desviación puede causar errores. * La gestión de errores y la validación de datos podrían ser mejoradas en futuras versiones. ## Contribuciones Las contribuciones son bienvenidas. Si deseas mejorar esta aplicación, por favor, sigue los siguientes pasos: 1. Haz un fork del repositorio. 2. Crea una rama para tu contribución (`git checkout -b feature/nueva-funcionalidad`). 3. Realiza tus cambios y commitea (`git commit -am 'Añade nueva funcionalidad'`). 4. Sube tus cambios al repositorio remoto (`git push origin feature/nueva-funcionalidad`). 5. Crea un pull request.   
+## Notas Adicionales 
+* La lógica de recálculo de la demanda en el pedido de stock interno es una aproximación simple y puede ser ajustada según las necesidades específicas del negocio.
+* La aplicación asume que el archivo CSV de inventario tiene el formato y las columnas esperadas. Cualquier desviación puede causar errores.
+* La gestión de errores y la validación de datos podrían ser mejoradas en futuras versiones.
+  
+ ## Contribuciones
+Las contribuciones son bienvenidas. Si deseas mejorar esta aplicación, por favor, sigue los siguientes pasos:
+  1. Haz un fork del repositorio.
+  2. Crea una rama para tu contribución (`git checkout -b feature/nueva-funcionalidad`).
+  3. Realiza tus cambios y commitea (`git commit -am 'Añade nueva funcionalidad'`).
+  4. Sube tus cambios al repositorio remoto (`git push origin feature/nueva-funcionalidad`).
+  5. Crea un pull request.   

@@ -3,11 +3,11 @@
 
 ## Descripción General
 
-Touken Café es una aplicación web desarrollada en Python con Flask para la gestión integral de pedidos e inventario. Permite a los usuarios cargar su inventario desde un archivo CSV, realizar pedidos de stock interno, generar órdenes de compra para proveedores en formato PDF, y exportar la información del inventario en formatos JSON y CSV. La aplicación está diseñada para ser intuitiva y facilitar la gestión de suministros del café Touken en Palo Negro.
+Touken Café es una aplicación web desarrollada en Python con Flask para la gestión integral de pedidos e inventario. Permite a los usuarios cargar su inventario desde un archivo CSV, realizar pedidos de stock interno, generar órdenes de compra para proveedores en formato PDF, y exportar la información del inventario en formatos JSON y CSV. La aplicación está diseñada para ser intuitiva y facilitar la gestión de suministros del café Touken.
 
 ## Funcionalidades Principales
 
-* **Carga de Inventario CSV:** Permite a los usuarios cargar fácilmente su lista de productos, cantidades, demanda, tiempo de entrega y otras especificaciones desde un archivo CSV.
+* **Carga de Inventario CSV:** Permite a los usuarios cargar fácilmente su lista de productos, cantidades, demanda, tiempo de entrega y otras especificaciones desde un archivo CSV. Utilizar el script de la unidad 2 de ser necesario.
 * **Pedido de Stock Interno:** Una interfaz para realizar pedidos entre las diferentes áreas del café, controlando el stock disponible y ajustando la demanda de los productos. La demanda se recalcula dinámicamente en función de las cantidades pedidas internamente, dentro de un rango de 1 a 10.
 * **Pedido a Proveedor:** Permite generar órdenes de compra para proveedores, especificando la cantidad deseada y el precio unitario de cada producto. También muestra la cantidad actual en stock como referencia y el tiempo de entrega estimado desde el proveedor (importado del CSV).
 * **Generación de PDF de Pedido a Proveedor:** Las órdenes de compra para proveedores se generan automáticamente en formato PDF, listas para ser enviadas. Solo se incluyen en el PDF los productos con una cantidad de pedido mayor que cero.

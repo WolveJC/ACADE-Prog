@@ -45,7 +45,7 @@ Touken Café es una aplicación web desarrollada en Python con Flask para la ges
 
 3.  **Instalar las dependencias:**
     ```bash
-    pip install -r requirements.txt
+    pip install -r requisitos.txt
     ```
 
 ## Ejecución de la Aplicación

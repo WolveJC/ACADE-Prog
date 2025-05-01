@@ -59,7 +59,7 @@ ACADE-Prog/Unidad 3/Flask
 │       └── styles.css
 │   └── js/
 │       └── scripts.js
-│   └── img/        #Opcional: para logos (por implementar)
+│   └── img/        #Carpeta para logos (por implementar)
 ├── templates/      #Carpeta para las plantillas HTML (Jinja2)
 │   ├── base.html
 │   ├── subir_csv.html

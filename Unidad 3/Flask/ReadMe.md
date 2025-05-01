@@ -32,8 +32,9 @@ Touken Café es una aplicación web desarrollada en Python con Flask para la ges
 
 1.  **Clonar el repositorio (si aplica):**
     ```bash
-    git clone [https://github.com/sindresorhus/del](https://github.com/sindresorhus/del)
-    cd [nombre del directorio del repositorio]
+    git clone [https://github.com/WolveJC/ACADE-Prog.git](https://github.com/WolveJC/ACADE-Prog.git)
+    cd ACADE-Prog
+    cd Unidad\ 3/Flask
     ```
 
 2.  **Crear un entorno virtual (recomendado):**

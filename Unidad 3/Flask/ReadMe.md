@@ -81,13 +81,14 @@ ACADE-Prog/Unidad 3/Flask
 
 ## Uso
 
-1.  **Subir Archivo CSV:** En la página principal, selecciona y sube tu archivo CSV de inventario. Asegúrate de que el archivo tenga las columnas en el siguiente orden: `Fecha Consulta`, `Código`, `Nombre`, `Demanda`, `Tiempo entrega(Días)`, `Fecha límite`, `Cantidad`.
-2.  **Seleccionar Tipo de Pedido:** Después de subir el archivo, aparecerán opciones para realizar un "Pedido de Stock Interno" o un "Pedido al Proveedor".
-3.  **Pedido de Stock Interno:** En esta página, puedes especificar la cantidad a pedir del stock disponible para cada producto. La demanda se actualizará automáticamente dentro de un rango de 1 a 10. Los resultados del pedido se mostrarán en la misma página.
-4.  **Pedido al Proveedor:** Aquí, verás la cantidad actual en stock de cada producto y podrás ingresar la cantidad que deseas pedir y el precio unitario. El tiempo de entrega desde el proveedor se muestra como referencia.
-5.  **Generar PDF de Pedido a Proveedor:** Al enviar el formulario de pedido al proveedor, se generará un archivo PDF con los detalles del pedido (solo para productos con cantidad mayor a 0), que se guardará en la carpeta `uploads` y se te notificará.
-6.  **Exportar Inventario:** En varias páginas, encontrarás enlaces para exportar el inventario actual a archivos JSON y CSV.
-7.  **Navegación:** Utiliza los enlaces proporcionados en las diferentes páginas para navegar entre las funcionalidades de la aplicación.
+1.  **Crear Archivo CSV:** En ```https://github.com/WolveJC/ACADE-Prog/tree/main/Unidad%202``` se encuentran varios scripts para crear el inventario ncesesario para esta aplicación. Seleccione el script de preferencia y gener un archivo de inventario CSV (Aún así, en la carpeta uploads, de este proyecto, contiene un archivo que se utilizó para la prueba del programa)
+2.  **Subir Archivo CSV:** En la página principal, selecciona y sube tu archivo CSV de inventario. Asegúrate de que el archivo tenga las columnas en el siguiente orden: `Fecha Consulta`, `Código`, `Nombre`, `Demanda`, `Tiempo entrega(Días)`, `Fecha límite`, `Cantidad`.
+3.  **Seleccionar Tipo de Pedido:** Después de subir el archivo, aparecerán opciones para realizar un "Pedido de Stock Interno" o un "Pedido al Proveedor".
+4.  **Pedido de Stock Interno:** En esta página, puedes especificar la cantidad a pedir del stock disponible para cada producto. La demanda se actualizará automáticamente dentro de un rango de 1 a 10. Los resultados del pedido se mostrarán en la misma página.
+5.  **Pedido al Proveedor:** Aquí, verás la cantidad actual en stock de cada producto y podrás ingresar la cantidad que deseas pedir y el precio unitario. El tiempo de entrega desde el proveedor se muestra como referencia.
+6.  **Generar PDF de Pedido a Proveedor:** Al enviar el formulario de pedido al proveedor, se generará un archivo PDF con los detalles del pedido (solo para productos con cantidad mayor a 0), que se guardará en la carpeta `uploads` y se te notificará.
+7.  **Exportar Inventario:** En varias páginas, encontrarás enlaces para exportar el inventario actual a archivos JSON y CSV.
+8.  **Navegación:** Utiliza los enlaces proporcionados en las diferentes páginas para navegar entre las funcionalidades de la aplicación.
 
 ## Notas Adicionales 
 * La lógica de recálculo de la demanda en el pedido de stock interno es una aproximación simple y puede ser ajustada según las necesidades específicas del negocio.

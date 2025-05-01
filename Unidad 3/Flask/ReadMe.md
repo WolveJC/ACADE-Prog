@@ -49,6 +49,25 @@ Touken Café es una aplicación web desarrollada en Python con Flask para la ges
     pip install -r requisitos.txt
     ```
 
+## Estructura de archivos
+
+ACADE-Prog/Unidad 3/Flask
+├── uploads/ ```Carpeta donde se guardará el PDF (incluye un CSV de prueba)```
+├── static/  ```Carpeta para archivos estáticos```
+│   └── css/
+│       └── styles.css
+│   └── js/
+│       └── scripts.js
+│   └── img/        ```Opcional: para logos (por implementar)```
+├── templates/      ```Carpeta para las plantillas HTML (Jinja2)```
+│   ├── base.html
+│   ├── subir_csv.html
+│   ├── pedir_stock.html
+│   └── pedir_proveedor.html
+├── app.py          ```App principal de la aplicación```
+├── requisitos.txt  ```Archivo con las dependencias del proyecto```
+├── README.md       ```Archivo de documentación del proyecto```
+
 ## Ejecución de la Aplicación
 
 1.  Asegúrate de estar dentro del entorno virtual (si lo creaste).

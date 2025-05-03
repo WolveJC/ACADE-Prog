@@ -3,7 +3,6 @@
 <head>
     <title>ToukenCafe</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </head>
 <body>
     {% with messages = get_flashed_messages() %}
@@ -16,5 +15,6 @@
         {% endif %}
     {% endwith %}
     {% block content %}{% endblock %}
+	<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>

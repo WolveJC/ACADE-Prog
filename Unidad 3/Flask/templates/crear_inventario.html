@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Touken Café-Crear Nuevo Inventario</h1>
+<p>Ingrese los datos de sus productos:</p>
+<form method="POST">
+    <div>
+        <label for="codigo">Código:</label>
+        <input type="text" id="Código" name="codigo" placeholder="O se generará automáticamente">
+    </div>
+    <div>
+        <label for="nombre">Nombre del producto:</label>
+        <input type="text" id="Nombre" name="nombre" required>
+    </div>
+    <div>
+        <label for="demanda">Demanda (1-10):</label>
+        <input type="number" id="Demanda" name="demanda" min="1" max="10" required>
+    </div>
+    <div>
+        <label for="tiempo_entrega">Tiempo de entrega (días):</label>
+        <input type="number" id="Tiempo entrega(Días)" name="tiempo_entrega" value="0" required>
+    </div>
+    <div>
+        <label for="fecha_limite">Fecha límite para consumir (YYYY-MM-DD):</label>
+        <input type="text" id="Fecha límite" name="fecha_limite" placeholder="YYYY-MM-DD" required>
+    </div>
+    <div>
+        <label for="cantidad">Cantidad en inventario:</label>
+        <input type="number" id="Cantidad" name="cantidad" value="0" required>
+    </div>
+    <button type="submit" name="agregar_producto">Agregar Producto</button>
+</form>
+
+{% if inventario_creado %}
+<h2>Inventario Creado:</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Demanda</th>
+            <th>Tiempo Entrega</th>
+            <th>Fecha Límite</th>
+            <th>Cantidad</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for producto in inventario_creado %}
+        <tr>
+            <td>{{ producto.codigo }}</td>
+            <td>{{ producto.nombre }}</td>
+            <td>{{ producto.demanda }}</td>
+            <td>{{ producto.tiempo_entrega }}</td>
+            <td>{{ producto.fecha_limite }}</td>
+            <td>{{ producto.cantidad }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<form method="POST">
+    <button type="submit" name="guardar_csv">Guardar Inventario como CSV y Continuar</button>
+</form>
+{% endif %}
+
+<hr>
+<p><a href="{{ url_for('upload_csv') }}">Volver a la página principal</a></p>
+{% endblock %}

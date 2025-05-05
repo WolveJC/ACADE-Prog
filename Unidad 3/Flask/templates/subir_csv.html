@@ -8,6 +8,10 @@
     <button type="submit">Subir Inventario CSV</button>
 </form>
 
+<hr>
+<p>¿No tienes un archivo CSV? ¡Crealo ahora mismo!</p>
+<p><a href="{{ url_for('crear_inventario') }}">Crear inventario manualmente</a></p>
+
 {% if session['productos'] %}
     <h2>Selecciona el tipo de pedido que deseas realizar:</h2>
     <ul>

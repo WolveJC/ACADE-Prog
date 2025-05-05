@@ -1,0 +1,47 @@
+{# Nombre del archivo: templates/subir_csv.html #}
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Subir Archivo de Inventario</h2>
+<p>Arrastra y suelta un archivo CSV o haz clic en la zona para seleccionarlo.</p>
+
+<form id="form-subir-csv" method="POST" enctype="multipart/form-data" novalidate> {# novalidate para priorizar validación JS #}
+
+    {# Zona de Arrastrar y Soltar #}
+    <div id="drop-zone" class="drop-zone">
+        <p class="drop-zone-text">Arrastra y suelta el archivo CSV aquí</p>
+        <p>o</p>
+        <label for="file" class="drop-zone-label-button">Seleccionar archivo</label>
+        {# Input oculto pero funcional #}
+        <input type="file" id="file" name="file" accept=".csv" class="visually-hidden">
+        {# Span para mostrar nombre de archivo #}
+        <span id="drop-zone-filename" class="drop-zone-filename"></span>
+        {# Span para errores específicos del input (aunque oculto, JS lo usa) #}
+        <span class="error-message" data-for="file"></span>
+    </div>
+    {# Fin de la Zona #}
+
+    <button type="submit">Subir Inventario CSV</button>
+</form>
+
+<hr>
+<p>¿No tienes un archivo CSV?</p>
+<p><a href="{{ url_for('crear_inventario') }}">Crear inventario manualmente</a></p>
+
+{% if session.get('productos') %}
+    <hr>
+    <h2>Realizar Pedidos</h2>
+    <p>Selecciona el tipo de pedido que deseas realizar:</p>
+    <ul>
+        <li><a href="{{ url_for('pedir_stock') }}">Pedido de Stock Interno</a></li>
+        <li><a href="{{ url_for('pedir_proveedor') }}">Pedido al Proveedor</a></li>
+    </ul>
+    <hr>
+    <h2>Exportar Inventario Actual</h2>
+    <ul>
+        <li><a href="{{ url_for('export_json') }}" target="_blank">Exportar a JSON</a></li>
+        <li><a href="{{ url_for('export_csv') }}">Exportar a CSV</a></li>
+    </ul>
+{% endif %}
+
+{% endblock %}

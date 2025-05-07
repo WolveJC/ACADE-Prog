@@ -43,7 +43,7 @@ void sozoPhill(Cont *&phill, estudiante stu) {
 
 void hakaiPhill(Cont *&phill, estudiante &stutu) {
 if (phill == NULL) {
-        cout << "La pila está vacía." << endl;
+        cout << "La pila estÃ¡ vacÃ­a." << endl;
         return;
     }
     cout << "Estudiantes en la pila:" << endl;
@@ -78,7 +78,7 @@ void sozoCoil(Cont *&front, Cont *&end, estudiante stu) {
 
 void hakaiCoil(Cont *&front, Cont *&end, estudiante &stutu) {
    if (VoidCoil(front)) {
-        cout << "La cola está vacía." << endl;
+        cout << "La cola estÃ¡ vacÃ­a." << endl;
         return;
     }
     cout << "Estudiantes en la cola:" << endl;
@@ -133,7 +133,7 @@ int main() {
                         cout << "El estudiante reprobo" << endl;
                     }
                     sozoPhill(phill, stu);
-                    cout << "¿Ingresar mas datos? (s/n): " << endl;
+                    cout << "Â¿Ingresar mas datos? (s/n): " << endl;
                     cin >> opc;
                     system ("cls");
                 } while (opc == 's');
@@ -164,7 +164,7 @@ int main() {
                         cout << "El estudiante reprobo" << endl;
                     }
                     sozoCoil(front, end, stu);
-                    cout << "¿Ingresar mas datos? (s/n): " << endl;
+                    cout << "Â¿Ingresar mas datos? (s/n): " << endl;
                     cin >> opc;
                     system ("cls");
                 } while (opc == 's');
@@ -174,10 +174,10 @@ int main() {
                 cout << "Saliendo..." << endl;
                 return 0;
             default:
-                cout << "Opción no válida. Intente de nuevo." << endl;
+                cout << "OpciÃ³n no vÃ¡lida. Intente de nuevo." << endl;
                 break;
         }
-        cout << "¿Desea regresar al menú principal? (s/n): " << endl;
+        cout << "Â¿Desea regresar al menÃº principal? (s/n): " << endl;
         cin >> res;
         system ("cls");
     } while (res == 's');

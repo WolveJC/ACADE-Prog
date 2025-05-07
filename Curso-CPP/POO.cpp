@@ -2,7 +2,7 @@
 #include <string>
 using namespace std;
 
-//Un programa que haga login de acceso, ingrese a menú, que pueda hacer cambio y recuperación de clave y utilece 2 preguntas secretas, multiplique dos numeros y muestre un mensaje n cantidad de veces n=a*b
+//Un programa que haga login de acceso, ingrese a menÃº, que pueda hacer cambio y recuperaciÃ³n de clave y utilece 2 preguntas secretas, multiplique dos numeros y muestre un mensaje n cantidad de veces n=a*b
 
 class loger {
 	protected: 
@@ -32,7 +32,7 @@ string stich(string as1,string as2, string r1, string r2, string contra){
 		r2=as2;
 		do {
 			cout<< "Repuesta correcta!"<<endl;
-			cout << "Ingrese nueva contaseña:"<<endl;
+			cout << "Ingrese nueva contaseÃ±a:"<<endl;
 			cin >> contra;
 		}while (r2==as2);
 	}while (r1==as1);
@@ -65,7 +65,7 @@ int main (){
 	cin >> c_as2;
 	loger("Fullo355", "346464", c_as1,c_as2,c_r1,c_r2);
 	cout<< "-MENU-"<<endl;
-	cout<< "1. Cambiar contraseña"<<endl;
+	cout<< "1. Cambiar contraseÃ±a"<<endl;
 	cout<< "2. Multiplicar mensaje"<<endl;
 	cin>>op;
 	switch(op) {

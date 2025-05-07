@@ -109,7 +109,7 @@ void uni::show_unity(){
 	persona::show_pipol();
 	stu::show_estu();
 	cout << "Carreara: " << carear <<endl;
-	cout << "Grado de formación: " << title <<endl;
+	cout << "Grado de formaciÃ³n: " << title <<endl;
 	
 }
 //Sets
@@ -190,7 +190,7 @@ int main (){
     estudiante->ter_setestu("Adol", "Cristin", 30665344, 18, "Castellano", 16, 13, 14);
 
     uni* estUni = new uni();
-    estUni->ter_setuni(" Juan", "Pérez", 12345678, 20, "Ingeniería", 18, 17, 19, "Ingeniería de Sistemas", "Licenciado");
+    estUni->ter_setuni(" Juan", "PÃ©rez", 12345678, 20, "IngenierÃ­a", 18, 17, 19, "IngenierÃ­a de Sistemas", "Licenciado");
     emp->show_job();
     estudiante->show_estu();
     estUni->show_unity();

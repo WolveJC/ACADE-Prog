@@ -8,9 +8,9 @@ using namespace std;
 const double Lx = 1.0, Ly = 1.0;  // Dimensiones de la placa
 const double T_left = 100, T_right = 50;  // Temperaturas en los bordes izquierdo y derecho
 const double T_top = 75, T_bottom = 25;  // Temperaturas en los bordes superior e inferior
-const double alpha = 0.01;  // Difusividad térmica
-const int nx = 50, ny = 50;  // Número de puntos espaciales
-const int nt = 1000;  // Número de puntos temporales
+const double alpha = 0.01;  // Difusividad tÃ©rmica
+const int nx = 50, ny = 50;  // NÃºmero de puntos espaciales
+const int nt = 1000;  // NÃºmero de puntos temporales
 const double dx = Lx / (nx - 1), dy = Ly / (ny - 1);
 const double dt = 0.01;  // Paso de tiempo
 

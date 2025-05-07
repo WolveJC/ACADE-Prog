@@ -33,7 +33,7 @@ void sozoPhill(Cont *&phill, per per) {
 void hakaiPhill(Cont *&phill, per &per, string filename) {
     char r;
     if (phill == NULL) {
-        cout << "La pila está vacía." << endl;
+        cout << "La pila estÃ¡ vacÃ­a." << endl;
         return;
     }
     fstream arch;
@@ -63,7 +63,7 @@ void hakaiPhill(Cont *&phill, per &per, string filename) {
         phill = phill->foll;
         delete axil;
 
-        cout << "¿Sacar siguiente dato? (s/n)" << endl;
+        cout << "Â¿Sacar siguiente dato? (s/n)" << endl;
         cin >> r;
         if (r == 'n') {
             break;
@@ -72,7 +72,7 @@ void hakaiPhill(Cont *&phill, per &per, string filename) {
     arch.close();
 }
 
-// Función para calcular el factorial
+// FunciÃ³n para calcular el factorial
 int facto(int n) {
     if (n < 0) return -1;
     int fact = 1;
@@ -98,7 +98,7 @@ int main() {
         pipol.numfact = facto(pipol.numper);
 
         sozoPhill(phill, pipol);
-        cout << "Debe ingresar más datos? (s/n)" << endl;
+        cout << "Debe ingresar mÃ¡s datos? (s/n)" << endl;
         cin >> res;
         system("cls");
     } while (res == 's');

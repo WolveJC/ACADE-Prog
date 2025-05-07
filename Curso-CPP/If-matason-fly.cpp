@@ -20,7 +20,7 @@ void recibocode(float vuela){
     if (recibo.fail()) {
         cout << "* ERROR GENERARANDO RECIBO *" << endl;
     }
-    recibo << "El vuelo con mayor pasajeros recorrío: " << vuela << endl;
+    recibo << "El vuelo con mayor pasajeros recorrÃ­o: " << vuela << endl;
     cout << "Archivo Generado" << endl;
     recibo.close();
 }
@@ -37,7 +37,7 @@ void recibokm(int vuela){
     if (recibo.fail()) {
         cout << "* ERROR GENERARANDO RECIBO *" << endl;
     }
-    recibo << "El vuelo con mayor pasajeros recorrío: " << vuela << endl;
+    recibo << "El vuelo con mayor pasajeros recorrÃ­o: " << vuela << endl;
     cout << "Archivo Generado" << endl;
     recibo.close();
 }

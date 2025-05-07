@@ -12,7 +12,7 @@ Cont *phill= NULL;
 Cont *front=NULL;
 Cont *end=NULL;
 
-//Crear pila, puntero y dirección + el dato para rellenar
+//Crear pila, puntero y direcciÃ³n + el dato para rellenar
 void sozoPhill(Cont *&phill , int dato){
 	Cont *novo_dono= new Cont();
 	novo_dono->dat=dato; //Rellenar dato
@@ -20,10 +20,10 @@ void sozoPhill(Cont *&phill , int dato){
 	phill=novo_dono;
 }
 
-//Sacar pila, puntero y dirección + dirección del dato rellenado
+//Sacar pila, puntero y direcciÃ³n + direcciÃ³n del dato rellenado
 void hakaiPhill(Cont *&phill, int &dat){
 	if (phill == NULL) {
-        cout << "La pila está vacía." << endl;
+        cout << "La pila estÃ¡ vacÃ­a." << endl;
         return;
     }
     cout << "Datos:" << endl;
@@ -36,7 +36,7 @@ void hakaiPhill(Cont *&phill, int &dat){
     }
 }
 
-//Cola vacía
+//Cola vacÃ­a
 bool VoidCoil(Cont *front){
 	if (front == NULL){
 		return true;
@@ -46,7 +46,7 @@ bool VoidCoil(Cont *front){
 	}
 }
 
-//Crear cola, puntero con dirección para el comienzo y final de la cola + su dato a rellenar
+//Crear cola, puntero con direcciÃ³n para el comienzo y final de la cola + su dato a rellenar
 void sozoCoil(Cont *&front, Cont *&end, struct stu) {
     Cont *novo_dono = new Cont();
     novo_dono->stu = stu;
@@ -60,10 +60,10 @@ void sozoCoil(Cont *&front, Cont *&end, struct stu) {
 }
 
 
-//Sacar cola, puntero con dirección para el comienzo y final de la cola + dirección del dato rellenado
+//Sacar cola, puntero con direcciÃ³n para el comienzo y final de la cola + direcciÃ³n del dato rellenado
 void hakaiCoil(Cont *&front, Cont *&end, &dat) {
    if (VoidCoil(front)) {
-        cout << "La cola está vacía." << endl;
+        cout << "La cola estÃ¡ vacÃ­a." << endl;
         return;
     }
     cout << "Datos:" << endl;
@@ -79,7 +79,7 @@ void hakaiCoil(Cont *&front, Cont *&end, &dat) {
 	
 }
 
-//Función Archivo
+//FunciÃ³n Archivo
 void save_arch(){
     string filename;
     string ext;
@@ -96,7 +96,7 @@ void save_arch(){
     cout << "Archivo Generado" << endl;
     arch.close();
 }
-//Menú rotativo
+//MenÃº rotativo
 int main (){
 	char opc, res;
     int op;
@@ -111,7 +111,7 @@ int main (){
                 do {
                 	cout << "Ingresar datos" << endl;
                 	sozo
-                    cout << "¿Ingresar mas datos? (s/n): " << endl;
+                    cout << "Â¿Ingresar mas datos? (s/n): " << endl;
                     cin >> opc;
                     system ("cls");
                 } while (opc == 's');
@@ -121,7 +121,7 @@ int main (){
                 do {
                 	cout << "Ingresar datos" << endl;
                 	sozo
-                    cout << "¿Ingresar mas datos? (s/n): " << endl;
+                    cout << "Â¿Ingresar mas datos? (s/n): " << endl;
                     cin >> opc;
                     system ("cls");
                 } while (opc == 's');
@@ -131,10 +131,10 @@ int main (){
                 cout << "Saliendo..." << endl;
                 return 0;
             default:
-                cout << "Opción no válida. Intente de nuevo." << endl;
+                cout << "OpciÃ³n no vÃ¡lida. Intente de nuevo." << endl;
                 break;
         }
-        cout << "¿Desea regresar al menu? (s/n): " << endl;
+        cout << "Â¿Desea regresar al menu? (s/n): " << endl;
         cin >> res;
         system ("cls");
     } while (res == 's');

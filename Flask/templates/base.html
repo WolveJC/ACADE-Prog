@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Touken Café - Gestión</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    </head>
+<body>
+    <div id="toast-container"></div>
+
+    <header>
+        <h1>Gestión de Inventario y Pedidos - Touken Café</h1>
+        </header>
+
+    <main class="container"> {# Contenedor principal para el contenido #}
+        {# EL CONTENEDOR #page-messages Y EL BUCLE get_flashed_messages SE HAN ELIMINADO #}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+<footer>
+    <p>&copy; <span id="current-year"></span> Touken Café</p> {# Span con ID #}
+</footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

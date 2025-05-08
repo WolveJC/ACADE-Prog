@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Crear Nuevo Inventario Manualmente</h2>
+<p>Ingresa los datos de tus productos uno por uno y luego guárdalos.</p>
+
+{# Usamos un div como contenedor, no un form que se envíe por defecto #}
+<div id="form-crear-inventario"> {# Usamos un div con ID para agrupar y seleccionar #}
+    <div class="form-group">
+        <label for="codigo">Código:</label>
+        <input type="text" id="codigo" name="codigo" placeholder="O se generará automáticamente">
+        <span class="error-message" data-for="codigo"></span>
+    </div>
+    <div class="form-group">
+        <label for="nombre">Nombre del producto:</label>
+        <input type="text" id="nombre" name="nombre">
+        <span class="error-message" data-for="nombre"></span>
+    </div>
+    <div class="form-group">
+        <label for="demanda">Demanda (1-10):</label>
+        <input type="number" id="demanda" name="demanda" min="1" max="10">
+        <span class="error-message" data-for="demanda"></span>
+    </div>
+    <div class="form-group">
+        <label for="tiempo_entrega">Tiempo de entrega (días):</label>
+        <input type="number" id="tiempo_entrega" name="tiempo_entrega" value="0" min="0">
+        <span class="error-message" data-for="tiempo_entrega"></span>
+    </div>
+    <div class="form-group">
+        <label for="fecha_limite">Fecha límite (YYYY-MM-DD):</label>
+        <input type="text" id="fecha_limite" name="fecha_limite" placeholder="YYYY-MM-DD">
+        <span class="error-message" data-for="fecha_limite"></span>
+    </div>
+    <div class="form-group">
+        <label for="cantidad">Cantidad en inventario:</label>
+        <input type="number" id="cantidad" name="cantidad" value="0" min="0">
+        <span class="error-message" data-for="cantidad"></span>
+    </div>
+    {# Botón tipo button para que JS maneje la acción #}
+    <button type="button" id="agregar-producto-btn">Agregar Producto a la Lista</button>
+</div>
+
+<hr>
+<h2>Inventario Creado (Temporal)</h2>
+<div class="table-responsive">
+    <table id="tabla-inventario-creado"> {# ID en la tabla opcional #}
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Demanda</th>
+                <th>Tiempo Entrega (días)</th>
+                <th>Fecha Límite</th>
+                <th>Cantidad</th>
+                </tr>
+        </thead>
+        <tbody id="inventario-creado-tbody"> {# ID importante para JS #}
+            {# Las filas se insertarán aquí dinámicamente con JS #}
+            {# Opcional: Renderizar desde sessionStorage si se implementó #}
+        </tbody>
+    </table>
+</div>
+{# Botón tipo button para que JS maneje la acción de guardar #}
+<button type="button" id="guardar-inventario-btn">Guardar Inventario Creado como CSV</button>
+
+<hr>
+<p><a href="{{ url_for('upload_csv') }}">Volver a la página principal</a></p>
+{% endblock %}

@@ -1,6 +1,6 @@
 import React from 'react';
 // Importar la imagen del avatar
-import avatarImg from './assets/avatar.jpg'; 
+import avatarImg from './assets/avatar.png'; 
 
 const Avatar = ({ size = 'large' }) => {
     // Definir las clases de tamaño con Tailwind

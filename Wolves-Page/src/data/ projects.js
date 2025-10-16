@@ -47,18 +47,18 @@ export const projectsData = [
   {
     id: 'B4^s!J7$gR1@',
     title: 'Py JSON Connect',
-    imageName: 'pyjsonconnect.png',
+    imageName: 'Py-JSON-Connect.jpg',
     description: 'Manejo de archivos JSON con Python para simular un stock con operaciones de Compra/Uso.',
-    repoLink: 'https://github.com/tu-usuario/pyjsonconnect-repo', 
+    repoLink: 'https://github.com/WolveJC/ACADE-Prog/tree/main/Unidad%203/Flask', 
   },
   
   // Web Project
   {
     id: 'X7!pR2^mQ9@z',
     title: 'CarFix',
-    imageName: 'carfix.png',
+    imageName: 'Carfix.jpg',
     description: 'Página web para compra/venta de repuestos vehiculares (tecnologías web generales).',
-    repoLink: 'https://github.com/tu-usuario/carfix-repo', 
+    repoLink: 'https://github.com/bufferring/carfix-mono', 
   },
 ];
 

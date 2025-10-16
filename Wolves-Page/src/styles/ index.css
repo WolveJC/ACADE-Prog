@@ -1,1 +1,21 @@
-css
+/* 1. Directivas BASE, COMPONENTS y UTILITIES de Tailwind CSS.
+   Esto inyecta todo el código de Tailwind, (incluyendo colores personalizados definidos en tailwind.config.js.
+*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 2. Regla global opcional para el desplazamiento suave.
+   Esto asegura que el desplazamiento sea suave cuando se usa un enlace de anclaje (aunque el carrusel es automático).
+*/
+html {
+  scroll-behavior: smooth;
+}
+
+/* 3. Ocultar la barra de desplazamiento horizontal, ya que el carrusel la usa internamente,pero se quiere que el usuario no la vea o la use.
+*/
+::-webkit-scrollbar {
+  height: 0px; /* Chrome, Safari, Opera */
+  width: 0px; /* Firefox */
+  background: transparent;
+}

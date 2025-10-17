@@ -12,9 +12,9 @@ export const projectImages = {
   datafly: datafly,
   structbank: structbank,
   taskflow: taskflow,
-  objectusrex: objectusrex,
+  objectus-rex: objectusrex,
   pysorter: pysorter,
   pykitchensort: pykitchensort,
-  pyjsonconnect: pyjsonconnect,
+  py-json-connect: pyjsonconnect,
   carfix: carfix,
 };

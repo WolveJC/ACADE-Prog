@@ -4,13 +4,12 @@ import { projectImages } from "../../assets/projectImages";
 
 const ProjectCard = ({ title, imageName, repoLink, description }) => {
   // Obtener la URL de la imagen (quitando la extensión)
-  const baseName = (imageName || "").split(".")[0];
+  const baseName = imageName.split(".")[0];
   const imageUrl = projectImages[baseName];
 
   if (!imageUrl && baseName) {
     console.error(`¡IMAGEN FALTANTE O MAL IMPORTADA! BaseName: ${baseName}`);
   }
-
   return (
     <a
       href={repoLink}
@@ -27,7 +26,7 @@ const ProjectCard = ({ title, imageName, repoLink, description }) => {
       "
     >
       <div>
-        {/* Encabezado: IMAGEN y Título */}
+        {/* Encabezado: IMAGEN y Título */}q{" "}
         <div className="flex items-start space-x-4 mb-3">
           {/* Renderizamos la IMAGEN de la aplicación */}
           {imageUrl && (
@@ -44,7 +43,6 @@ const ProjectCard = ({ title, imageName, repoLink, description }) => {
             {title}
           </h3>
         </div>
-
         {/* Descripción del Proyecto */}
         <p className="text-gray-400 text-sm mt-4">{description}</p>
       </div>

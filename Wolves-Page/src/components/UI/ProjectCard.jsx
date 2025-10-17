@@ -12,6 +12,10 @@ const ProjectCard = ({ title, imageName, repoLink, description }) => {
   // 2. Busca la URL de la imagen mapeada 
   const imageUrl = projectImages[baseName];
 
+if (!imageUrl && baseName) {
+      console.error(`¡IMAGEN FALTANTE O MAL IMPORTADA! BaseName: ${baseName}`);
+  }
+
   return (
     <a 
       href={repoLink} 

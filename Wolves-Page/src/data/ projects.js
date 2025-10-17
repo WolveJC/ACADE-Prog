@@ -24,7 +24,7 @@ export const projectsData = [
   {
     id: 'R3^nF6#oT8@b',
     title: 'Objectus Rex',
-    imageName: 'objectus-rex.jpg',
+    imageName: 'objectusrex.jpg',
     description: 'Ejercicio de POO en C++ enfocado en el diseño de clases y herencia.',
     repoLink: 'https://github.com/WolveJC/ACADE-Prog/blob/main/Curso-CPP/Jerarqu%C3%ADa_persona.cpp', 
   },
@@ -47,7 +47,7 @@ export const projectsData = [
   {
     id: 'B4^s!J7$gR1@',
     title: 'Py JSON Connect',
-    imageName: 'py-json-connect.jpg',
+    imageName: 'pyjsonconnect.jpg',
     description: 'Manejo de archivos JSON con Python para simular un stock con operaciones de Compra/Uso.',
     repoLink: 'https://github.com/WolveJC/ACADE-Prog/tree/main/Unidad%203/Flask', 
   },

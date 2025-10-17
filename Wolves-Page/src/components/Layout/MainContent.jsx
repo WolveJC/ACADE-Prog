@@ -10,7 +10,7 @@ const MainContent = () => {
   // Configurar el hook del carrusel: velocidad y tiempo de intervalo
   const { carouselRef, handleMouseEnter, handleMouseLeave, isPaused } =
     useCarousel(
-      1.5, // Velocidad (ajusta este valor para ir más rápido o lento)
+      5, // Velocidad (ajusta este valor para ir más rápido o lento)
       40 // Intervalo (milisegundos)
     );
 

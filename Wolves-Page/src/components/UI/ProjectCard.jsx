@@ -3,24 +3,13 @@ import React from "react";
 import { projectImages } from "../../assets/projectImages";
 
 const ProjectCard = ({ title, imageName, repoLink, description }) => {
-<<<<<<< HEAD
-  // 1. Lógica de seguridad para obtener la URL de la imagen:
-  // asegurar que .split() siempre llame una cadena.
-  //    - [0] obtiene el nombre base
-  const baseName = (imageName || "").split(".")[0];
-
-  // 2. Busca la URL de la imagen mapeada
-  const imageUrl = projectImages[baseName];
-
-=======
   // Obtener la URL de la imagen (quitando la extensión)
-  const baseName = imageName.split(".")[0];
+  const baseName = (imageName || "").split(".")[0];
   const imageUrl = projectImages[baseName];
 
   if (!imageUrl && baseName) {
     console.error(`¡IMAGEN FALTANTE O MAL IMPORTADA! BaseName: ${baseName}`);
   }
->>>>>>> f5117d79dbbb2cc9caaf79a2991e1ab393b9e115
   return (
     <a
       href={repoLink}

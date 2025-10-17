@@ -1,10 +1,15 @@
 import React from 'react';
-// Importar el mapa de imágenes
-import { projectImages } from '../../assets/projectImages'; 
+// Asegurar de que este archivo contenga el mapeo de imágenes.
+import { projectImages } from '../../assets/projectImages';  
 
 const ProjectCard = ({ title, imageName, repoLink, description }) => {
-  // Obtener la URL de la imagen (quitando la extensión)
-  const baseName = imageName.split('.')[0];
+  
+  // 1. Lógica de seguridad para obtener la URL de la imagen:
+  // asegurar que .split() siempre llame una cadena.
+  //    - [0] obtiene el nombre base
+  const baseName = (imageName || '').split('.')[0]; 
+  
+  // 2. Busca la URL de la imagen mapeada 
   const imageUrl = projectImages[baseName];
 
   return (
@@ -26,7 +31,7 @@ const ProjectCard = ({ title, imageName, repoLink, description }) => {
         {/* Encabezado: IMAGEN y Título */}
         <div className="flex items-start space-x-4 mb-3">
           
-          {/* Renderizamos la IMAGEN de la aplicación */}
+          {/* Renderizamos la IMAGEN de la aplicación (solo si la URL fue encontrada) */}
           {imageUrl && (
               <div className="flex-shrink-0 w-10 h-10">
                   <img 

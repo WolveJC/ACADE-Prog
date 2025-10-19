@@ -16,7 +16,6 @@
 
 "engines": {
     "node": "18.x" 
-    //* Usar ">=18.0.0" para cualquier versión igual o superior a Node 18*//
   },
   "scripts": {
     "start": "react-scripts start",

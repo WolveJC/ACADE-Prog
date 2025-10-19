@@ -1,1 +1,26 @@
 .vercel
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# build output
+/build 
+# o /dist si usas Vite o una configuración diferente
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS and environment
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# npm lock file
+# Borraste package-lock.json en un paso anterior, pero es mejor ignorarlo en el futuro
+package-lock.json

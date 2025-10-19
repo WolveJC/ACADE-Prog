@@ -19,7 +19,7 @@ const ProjectCard = ({ title, imageUrl, repoLink, description }) => {
         {/* Encabezado: IMAGEN y Título */}{" "}
         <div className="flex items-start space-x-4 mb-3">
           {/* Renderizamos la IMAGEN de la aplicación (solo si la URL fue encontrada) */}
-          {imageUrl && (
+          {
             <div className="flex-shrink-0 w-10 h-10">
               <img
                 src={imageUrl}
@@ -27,7 +27,7 @@ const ProjectCard = ({ title, imageUrl, repoLink, description }) => {
                 className="w-full h-full object-cover rounded-md border border-gray-600 group-hover:scale-105 transition-transform"
               />
             </div>
-          )}
+          }
 
           <h3 className="text-xl font-bold text-white group-hover:text-green-300 transition-colors leading-tight">
             {title}

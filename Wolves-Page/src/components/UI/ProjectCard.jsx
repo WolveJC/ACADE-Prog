@@ -1,13 +1,5 @@
 import React from "react";
-// Asegurar de que este archivo contenga el mapeo de imágenes.
-import { projectImages } from "../../assets/projectImages";
-
-const ProjectCard = ({ title, imageName, repoLink, description }) => {
-  // Obtener la URL de la imagen (quitando la extensión)
-  const baseName = (imageName || "").split(".")[0];
-  const imageUrl = projectImages[baseName];
-
-  console.log(`[${title}] BaseName: ${baseName}, URL Resuelta: ${imageUrl}`);
+const ProjectCard = ({ title, imageUrl, repoLink, description }) => {
   return (
     <a
       href={repoLink}
@@ -24,7 +16,7 @@ const ProjectCard = ({ title, imageName, repoLink, description }) => {
       "
     >
       <div>
-        {/* Encabezado: IMAGEN y Título */}q{" "}
+        {/* Encabezado: IMAGEN y Título */}{" "}
         <div className="flex items-start space-x-4 mb-3">
           {/* Renderizamos la IMAGEN de la aplicación (solo si la URL fue encontrada) */}
           {imageUrl && (

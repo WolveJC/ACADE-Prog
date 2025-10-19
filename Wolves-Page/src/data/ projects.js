@@ -47,7 +47,7 @@ export const projectsData = [
   {
     id: 'B4^s!J7$gR1@',
     title: 'Py JSON Connect',
-    imageName: 'pyjsonconnect.jpg',
+    imageName: 'kitchenjsonconnect.jpg',
     description: 'Manejo de archivos JSON con Python para simular un stock con operaciones de Compra/Uso.',
     repoLink: 'https://github.com/WolveJC/ACADE-Prog/tree/main/Unidad%203/Flask', 
   },

@@ -13,6 +13,11 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
+
+"engines": {
+    "node": "18.x" 
+    // Usar ">=18.0.0" para cualquier versión igual o superior a Node 18
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

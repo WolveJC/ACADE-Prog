@@ -4,7 +4,7 @@ import taskflow from "./taskflow.jpg";
 import objectusrex from "./objectusrex.jpg";
 import pysorter from "./pysorter.jpg";
 import pykitchensort from "./pykitchensort.jpg";
-import pyjsonconnect from "./kitchenjsonconnect.jpg";
+import kitchenjsonconnect from "./kitchenjsonconnect.jpg";
 import carfix from "./carfix.jpg";
 
 // Mapeamos el nombre del proyecto (sin extensión) a la imagen importada
@@ -15,6 +15,6 @@ export const projectImages = {
   objectusrex: objectusrex,
   pysorter: pysorter,
   pykitchensort: pykitchensort,
-  pyjsonconnect: pyjsonconnect,
+  kitchenjsonconnect: kitchenjsonconnect,
   carfix: carfix,
 };

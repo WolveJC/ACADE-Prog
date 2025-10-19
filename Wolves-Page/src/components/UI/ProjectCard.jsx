@@ -7,9 +7,7 @@ const ProjectCard = ({ title, imageName, repoLink, description }) => {
   const baseName = (imageName || "").split(".")[0];
   const imageUrl = projectImages[baseName];
 
-  if (!imageUrl && baseName) {
-    console.error(`¡IMAGEN FALTANTE O MAL IMPORTADA! BaseName: ${baseName}`);
-  }
+  console.log(`[${title}] BaseName: ${baseName}, URL Resuelta: ${imageUrl}`);
   return (
     <a
       href={repoLink}

@@ -1,3 +1,4 @@
+from src.services.inventario_manager import Inventario
 def obtener_datos_producto():
     """Solicita los datos del producto al usuario con validación."""
     try:

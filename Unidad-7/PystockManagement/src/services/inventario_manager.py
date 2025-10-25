@@ -1,3 +1,4 @@
+from ..models.productos import Producto
 class Inventario:
     def __init__(self):
         self.productos = {}  # Diccionario: clave=código (str), valor=objeto Producto

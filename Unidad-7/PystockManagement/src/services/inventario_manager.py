@@ -36,9 +36,9 @@ class Inventario:
         save_data= {}
         for codigo, producto_obj in self.productos.items():
             save_data[codigo]={
-                'codigo': producto_obj.codigo
-                'nombre': producto_obj.nombre
-                'precio': producto_obj.precio
+                'codigo': producto_obj.codigo,
+                'nombre': producto_obj.nombre,
+                'precio': producto_obj.precio,
                 'cantidad': producto_obj.cantidad
             }
         try:

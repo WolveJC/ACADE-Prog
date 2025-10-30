@@ -10,7 +10,7 @@ const ContactPage = () => {
       <Header />
       <main className="pt-20 p-8 min-h-screen bg-gray-900 text-white">
         <h1 className="text-4xl font-bold mb-6">Ponte en Contacto</h1>
-        <p className="text-lg">Aquí irá tu formulario de contacto o información directa.</p>
+        <p className="text-lg"></p>
         
         {/* Aquí se puede poner un formulario, mi correo visible, u otras cosas. */}
         {/* Ejemplo de un simple enlace mailto */}

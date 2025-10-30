@@ -1,7 +1,10 @@
 import React from 'react';
 import Header from '../components/Layout/Header';
+import usePageTitle from '../../hooks/usePageTitle';
 
 const ContactPage = () => {
+  // Llamar el hook para cambiar el titulo de la pagina
+  usePageTitle('WolveJC | ContactMe');
   return (
     <>
       <Header />

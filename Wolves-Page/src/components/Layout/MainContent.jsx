@@ -1,6 +1,6 @@
 import React from "react";
 import useCarousel from "../../hooks/ useCarousel";
-import usePageTitle from "../../hooks/ usePageTitle";
+import usePageTitle from "../../hooks/usePageTitle";
 
 // Importar los componentes de las secciones
 import Welcome from "../Sections/Welcome";
@@ -9,7 +9,7 @@ import AboutMe from "../Sections/AboutMe";
 
 const MainContent = () => {
   // Llamar el hook para cambiar el titulo de la pagina
-  usePageTitle('WolveJC | Portafolio y Proyectos');
+  usePageTitle("WolveJC | Portafolio y Proyectos");
   // Configurar el hook del carrusel: velocidad y tiempo de intervalo
   const { carouselRef, handleMouseEnter, handleMouseLeave, isPaused } =
     useCarousel(

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { skillsData } from '../../data/skills';
-import SkillIcon from './SkillIcon'; 
+import SkillIcon from './Skill-Icon'; 
 
 const Sidebar = () => {
     // 1. Estado para rastrear la posición del mouse en la ventana (para la magnificación)

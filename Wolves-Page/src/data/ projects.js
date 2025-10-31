@@ -1,11 +1,11 @@
-import dataflyImage from '../../assets/datafly.png'; 
-import structbankImage from '../../assets/structbank.png'; 
-import taskflowImage from '../../assets/taskflow.jpg'; 
-import objectusrexImage from '../../assets/objectusrex.jpg';
-import pysorterImage from '../../assets/pysorter.jpg'; 
-import pykitchensortImage from '../../assets/pykitchensort.jpg'; 
-import kitchenjsonconnectImage from '../../assets/kitchenjsonconnect.jpg'; 
-import carfixImage from '../../assets/carfix.jpg'; 
+import dataflyImg from "../assets/datafly.png";
+import structbankImg from "../assets/structbank.png";
+import taskflowImg from "../assets/taskflow.jpg";
+import objectusrexImg from "../assets/objectusrex.jpg";
+import pysorterImg from "../assets/pysorter.jpg";
+import pykitchensortImg from "../assets/pykitchensort.jpg";
+import kitchenjsonconnectImg from "../assets/kitchenjsonconnect.jpg";
+import carfixImg from "../assets/carfix.jpg";
 export const projectsData = [
   // C++ Projects
   {

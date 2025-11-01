@@ -4,7 +4,7 @@ import taskflowImg from "../assets/taskflow.jpg";
 import objectusrexImg from "../assets/objectusrex.jpg";
 import pysorterImg from "../assets/pysorter.jpg";
 import pykitchensortImg from "../assets/pykitchensort.jpg";
-import kitchenjsonconnectImg from "../assets/kitchenjsonconnect.jpg"; // Usamos el nombre de archivo físico
+import kitchenjsonconnectImg from "../assets/kitchenjsonconnect.jpg";
 import carfixImg from "../assets/carfix.jpg";
 export const projectsData = [
   // C++ Projects

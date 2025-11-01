@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 {/* Hook para establecer el título de la pestaña del navegador. */}
- @param {string} title {/* El título que se desea mostrar. */}
+  {/* El título que se desea mostrar. */}
  
 const usePageTitle = (title) => {
     useEffect(() => {

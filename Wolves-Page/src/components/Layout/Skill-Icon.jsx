@@ -1,5 +1,3 @@
-// src/components/Layout/SkillIcon.jsx (RE-CORREGIDO: Incluye Barra de Progreso)
-
 import React, { useRef, useState } from 'react';
 
 // Constantes de Magnificación (lógica de la lupa)

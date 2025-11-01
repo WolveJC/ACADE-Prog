@@ -1,68 +1,78 @@
 import React from 'react';
-import usePageTitle from '../hooks/usePageTitle';
+import { Link } from 'react-router-dom';
+import usePageTitle from '../hooks/usePageTitle'; 
+import ArrowWoodPNG from '../assets/arrow-return.png';
 
 const ContactPage = () => {
-    usePageTitle('WolveJC | ContactMe'); 
-
-    // 1. Reemplaza 'TU_CORREO_AQUI' con tu dirección real de Hotmail.
-    // FormSubmit procesará esto y enviará un correo de confirmación la primera vez.
+    usePageTitle('WolveJC | Contacto'); 
+    
     const FORM_ENDPOINT = "https://formsubmit.co/walkgotrlust@hotmail.com";
 
     return (
         <div className="p-8 max-w-xl mx-auto">
-            <h1 className="text-4xl font-bold mb-6 text-green-400">
-                Contactemos
+            
+            {/* Botón de Retorno con Imagen PNG */}
+            <Link 
+                to="/" 
+                className="flex items-center text-white hover:text-gray-300 mb-6 transition duration-300"
+            >
+                <img 
+                    src={ArrowWoodPNG} 
+                    alt="Volver" 
+                    className="w-8 h-8 mr-2" // Ajustar tamaño aquí (w-8 h-8 es 32x32px)
+                />
+                <span className="font-semibold">Volver al Portafolio</span>
+            </Link>
+
+            {/* Títulos y Párrafos: Texto Blanco/Crema sobre Oscuro */}
+            <h1 className="text-4xl font-bold mb-3 text-white">
+                ¡Hablemos en la Profundidad del Bosque!
             </h1>
-            <p className="text-lg mb-8">
-                Déjame tu mensaje, y te responderé lo antes posible.
+            <p className="text-lg mb-8 text-gray-300">
+                Siempre estoy dispuesto a conversar sobre proyectos, ideas o tecnología. Escríbeme y exploremos nuevas sendas juntos.
             </p>
 
-            {/* 2. Formulario HTML con la acción apuntando a FormSubmit */}
+            {/* Formulario FormSubmit: Base Oscura, Campos Claros */}
             <form 
                 action={FORM_ENDPOINT} 
                 method="POST" 
-                className="space-y-4"
+                // Fondo oscuro (el color forest-start o un gris muy oscuro)
+                className="space-y-4 p-6 bg-forest-start/50 border border-gray-700 rounded-xl shadow-2xl" 
             >
-                {/* Campo para el Nombre */}
+                {/* Campos de Entrada */}
                 <input 
                     type="text" 
-                    name="name" // El atributo name es crucial
+                    name="name" 
                     placeholder="Tu Nombre" 
                     required 
-                    className="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
 
-                {/* Campo para el Correo del Usuario (_replyto para responder) */}
                 <input 
                     type="email" 
-                    name="email" // Usamos 'email' para que FormSubmit lo use como Reply-To por defecto
+                    name="email" 
                     placeholder="Tu Correo Electrónico" 
                     required 
-                    className="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
                 
-                {/* Campo Oculto para Asunto (Opcional) */}
-                <input 
-                    type="hidden" 
-                    name="_subject" 
-                    value="Nuevo Mensaje desde tu Portafolio" 
-                />
+                <input type="hidden" name="_subject" value="Buy Me A Coffee!" />
                 
-                {/* Campo para Mensaje */}
                 <textarea 
-                    name="message" // El atributo name es crucial
-                    placeholder="Tu Mensaje" 
+                    name="message" 
+                    placeholder="Cuéntame sobre tu idea..." 
                     rows="4" 
                     required 
-                    className="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+                    className="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
                 ></textarea>
                 
-                {/* Botón de Envío */}
+                {/* Botón de Envío: Color de botón temático */}
                 <button 
                     type="submit" 
-                    className="w-full py-3 bg-green-600 text-white font-bold rounded hover:bg-green-700 transition duration-300"
+                    // Un color de botón
+                    className="w-full py-3 bg-green-700 text-white font-bold rounded hover:bg-green-600 transition duration-300 shadow-lg"
                 >
-                    Enviar Mensaje
+                    Enviar Mensaje y Conectar
                 </button>
             </form>
         </div>

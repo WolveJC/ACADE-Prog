@@ -1,6 +1,6 @@
 import React from "react";
-import useCarousel from "../../hooks/ useCarousel";
-import usePageTitle from "../../hooks/ usePageTitle";
+import usePageTitle from "../../hooks/usePageTitle";
+import { useCarouselContext } from "../../context/GlobalCarousel";
 
 // Importar los componentes de las secciones
 import Welcome from "../Sections/Welcome";

@@ -7,7 +7,7 @@ import Sidebar from "./components/Layout/Sidebar.jsx";
 import MainContent from "./components/Layout/MainContent.jsx"; 
 import ContactPage from "./pages/ContactPage.jsx";
 
-// ⬅️ Componentes de Interacción
+// Componentes de Interacción
 import CustomCursor from './components/Cursor/CustomCursor.jsx'; 
 import { GlobalCarouselProvider } from "./context/GlobalCarousel.jsx"; 
 

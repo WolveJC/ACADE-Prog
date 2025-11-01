@@ -8,6 +8,9 @@ import Welcome from "../Sections/Welcome";
 import Projects from "../Sections/Projects";
 import AboutMe from "../Sections/AboutMe";
 
+// Clase que debe coincidir con la lógica del CustomCursor para el estado FLOR
+const FLOWER_CLASS = 'flower-trigger'; 
+
 const MainContent = () => {
   // Llamar el hook para cambiar el titulo de la pagina
   usePageTitle("WolveJC | Portafolio y Proyectos");
@@ -27,7 +30,7 @@ const MainContent = () => {
   const SIDEBAR_WIDTH = '64px'; // w-16
   const HEADER_HEIGHT = '64px'; // Aproximadamente p-4
 
-  // Lógica para mostrar feedback de velocidad (si es mayor a la velocidad base de 5)
+  // Lógica para mostrar feedback de velocidad (si es mayor a la velocidad base)
   const isAccelerating = Math.abs(currentSpeed) > 5.5; 
 
   return (
@@ -94,7 +97,8 @@ const ArrowButton = ({ side, width, height, onStart, onStop }) => {
                 absolute top-0 bottom-0 flex items-center justify-center cursor-pointer 
                 opacity-0 hover:opacity-100 transition duration-300 
                 ${side === 'left' ? 'left-0' : 'right-0'} // Posición
-                ${zIndex} // Aseguramos que la flecha izquierda no bloquee la Sidebar
+                ${zIndex} 
+                ${FLOWER_CLASS} // CLASE CRÍTICA: Activa el modo FLOR
             `}
             style={{ 
                 // Aseguramos que el área clicable empiece debajo del Header
@@ -102,7 +106,7 @@ const ArrowButton = ({ side, width, height, onStart, onStop }) => {
                 // El ancho de la columna clicleable es la mitad de la pantalla - el ancho de la Sidebar/Controles
                 width: `calc(50vw - ${width})`, 
             }}
-            onMouseEnter={onStart}
+            onMouseEnter={onStart} // También sirve para activar el FLOWER_CLASS por hover
             onMouseLeave={onStop}
         >
             <span 

@@ -7,7 +7,8 @@ class Producto:
         self.codigo = codigo
 
     def __del__(self):
-        # Método para demostrar la eliminación de la referencia (no garantizado que se ejecute al instante)
+        # Método para demostrar la eliminación de la referencia
+        # (no garantizado que se ejecute al instante)
         print(f"Objeto {self.codigo} - {self.nombre} eliminado")
 
     def __str__(self):
@@ -18,12 +19,12 @@ class Producto:
     def __lt__(self, otro):
         if not isinstance(otro, Producto):
             return NotImplemented
-        return self.precio < otro.precio # Compara por precio
+        return self.precio < otro.precio  # Compara por precio
 
     def __eq__(self, otro):
         if not isinstance(otro, Producto):
             return NotImplemented
-        return self.codigo == otro.codigo # Compara por unicidad del código
+        return self.codigo == otro.codigo  # Compara por unicidad del código
 
     # --- Propiedades (Getters y Setters con validación) ---
     # Usamos __ para los atributos internos para indicar que son privados
@@ -35,7 +36,8 @@ class Producto:
     @nombre.setter
     def nombre(self, nombre):
         if not isinstance(nombre, str) or not nombre.strip():
-            raise ValueError("El nombre del producto debe ser una cadena no vacía.")
+            raise ValueError(
+                "El nombre del producto debe ser una cadena no vacía.")
         self.__nombre = nombre
 
     @property
@@ -45,7 +47,8 @@ class Producto:
     @precio.setter
     def precio(self, precio):
         if not isinstance(precio, (int, float)) or precio <= 0:
-            raise ValueError("El precio debe ser un número positivo mayor que cero.")
+            raise ValueError(
+                "El precio debe ser un número positivo mayor que cero.")
         self.__precio = precio
 
     @property
@@ -55,7 +58,8 @@ class Producto:
     @cantidad.setter
     def cantidad(self, cantidad):
         if not isinstance(cantidad, int) or cantidad < 0:
-            raise ValueError("La cantidad debe ser un número entero no negativo.")
+            raise ValueError(
+                "La cantidad debe ser un número entero no negativo.")
         self.__cantidad = cantidad
 
     @property
@@ -65,5 +69,6 @@ class Producto:
     @codigo.setter
     def codigo(self, codigo):
         if not isinstance(codigo, str) or not codigo.strip():
-            raise ValueError("El código del producto debe ser una cadena no vacía.")
+            raise ValueError(
+                "El código del producto debe ser una cadena no vacía.")
         self.__codigo = codigo

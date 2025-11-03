@@ -1,4 +1,6 @@
 from src.services.inventario_manager import Inventario
+
+
 def obtener_datos_producto():
     """Solicita los datos del producto al usuario con validación."""
     try:
@@ -8,16 +10,21 @@ def obtener_datos_producto():
         cantidad = int(input("Cantidad del producto: "))
         codigo = input("Código del producto: ").strip()
 
-        # Creamos la instancia de Producto. Las validaciones de los setters se ejecutan aquí.
+        # Creamos la instancia de Producto.
+        # Las validaciones de los setters se ejecutan aquí.
         return Producto(nombre, precio, cantidad, codigo)
-        
+
     except ValueError as e:
-        # Captura errores si float() o int() fallan, o si un setter lanza ValueError
-        print(f"Error de entrada de datos: {e}. Asegúrate de ingresar tipos y valores correctos.")
+        # Captura errores si float() o int() fallan
+        # O si un setter lanza ValueError
+        print(
+            f"Error de entrada de datos: {e}")
+        print("Asegúrate de ingresar tipos y valores correctos.")
         return None
     except Exception as e:
         print(f"Ocurrió un error inesperado al obtener los datos: {e}")
         return None
+
 
 def main_menu():
     """Ejecuta el menú interactivo."""
@@ -64,11 +71,13 @@ def main_menu():
                 break
 
             else:
-                print("Opción no válida. Por favor, selecciona un número del 1 al 6.")
+                print("Opción no válida.")
+                print("Por favor, selecciona un número del 1 al 6.")
 
         except Exception as e:
             print(f" Ocurrió un error inesperado en el menú: {e}")
-            
+
+
 # Punto de entrada de la aplicación
 if __name__ == "__main__":
     main_menu()

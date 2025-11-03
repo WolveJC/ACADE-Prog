@@ -4,13 +4,14 @@ import json
 class Inventario:
     def __init__(self, file_name= 'data_stock.json'):
         # Crear referencia de ruta
-        base_dir=os.path.join((__file__), "..","..","data")
-        #Crear archivo en la ruta indicada y nombre declarado
+        current_dir= os.path.dirname(__file__)
+        base_dir=os.path.join(current_dir, "..","..","models")
+        #Crear archio en la ruta indicada y nombre declarado
         self.route_file=os.path.join(base_dir,file_name)
         # Asegurar que exista la ruta
         if not os.path.exists(base_dir):
             os.makedirs(base_dir) # Si la ruta NO existe ENTONCES la crea
-        self.productos = {} or load_stock() # Diccionario: clave=código (str), valor=objeto Producto
+        self.productos = self.load_stoc:() or {} # Diccionario: clave=código (str), valor=objeto Producto
     def load_stock(self):
         """Cargar datos del JSON en data"""
         if os.path.exist(self.route_file):
@@ -18,7 +19,7 @@ class Inventario:
                 with open(self.route_file, 'r') as dicc:
                     data_loaded=json.load(dicc)
                     stock_loaded= {}
-                    for codigo, data in data_loaded.items():
+                    for scodigo, data in data_loaded.items():
                         # Aquí debes asegurarte de que los datos tengan los campos necesarios
                         stock_loaded[codigo] = Producto(
                             data['nombre'],
@@ -42,7 +43,7 @@ class Inventario:
                 'cantidad': producto_obj.cantidad
             }
         try:
-            with open(os.path.route_file,'w') as f:
+            with open(self.route_file,'w') as f:
                 json.dump(save_data,f,indent='4')
             print(f"Exito: Inventario guardado en '{self.route_file}'")
         except Exception as e:

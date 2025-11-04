@@ -39,7 +39,7 @@ const MainContent = () => {
     <div className="relative w-full min-h-screen">
       {/* 1. Indicador de Feedback (Pausa / Velocidad) */}
       {(isPaused || isAccelerating) && (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/60 text-white px-4 py-2 rounded-lg z-40 text-lg font-bold tracking-widest animate-pulse">
+        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-black/60 text-white px-4 py-2 rounded-lg z-40 text-base font-bold tracking-widest animate-pulse">
           {isPaused
             ? "PAUSADO"
             : `VELOCIDAD: ${Math.abs(currentSpeed).toFixed(1)}x`}

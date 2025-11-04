@@ -19,8 +19,7 @@ const MainContent = () => {
   // CONSUMIR EL CONTEXTO: Obtenemos todas las funciones y estados
   const {
     carouselRef,
-    handleMouseEnter,
-    handleCarouselMouseLeave,
+    togglepause,
     startAcceleration,
     stopAcceleration,
     isPaused,
@@ -50,8 +49,7 @@ const MainContent = () => {
       <div
         ref={carouselRef}
         className="flex overflow-x-hidden min-h-screen w-full relative"
-        onMouseEnter={handleMouseEnter} // Pausa con hover
-        onMouseLeave={handleCarouselMouseLeave} // Reanudar al salir
+        onClick={togglePause}
       >
         {/* === COPIA 1 DEL CONTENIDO PRINCIPAL === */}
         <SectionWrapper>

@@ -99,6 +99,7 @@ const MainContent = () => {
 const ArrowButton = ({ side, width, height, onStart, onStop }) => {
   // La barra de skills debe SUPERPONERSE a la flecha izquierda
   const zIndex = side === "left" ? "z-30" : "z-30";
+  const HOVER_ZONE_WIDTH = '80px';
 
   return (
     <div
@@ -114,7 +115,9 @@ const ArrowButton = ({ side, width, height, onStart, onStop }) => {
         // Aseguramos que el área clicable empiece debajo del Header
         marginTop: height,
         // El ancho de la columna clicleable es la mitad de la pantalla - el ancho de la Sidebar/Controles
-        width: `calc(50vw - ${width})`,
+        width: HOVER_ZONE_WIDTH,
+        left: side === 'left' ? width : 'auto',
+        right: side === 'right' ? '0' : 'auto',
       }}
       onMouseEnter={onStart} // También sirve para activar el FLOWER_CLASS por hover
       onMouseLeave={onStop}
@@ -126,8 +129,7 @@ const ArrowButton = ({ side, width, height, onStart, onStop }) => {
                 `}
         // Posiciona el símbolo de flecha justo en el borde de la Sidebar (Izquierda) o en el borde derecho (Derecha)
         style={{
-          transform:
-            side === "left" ? `translateX(${width})` : `translateX(-${width})`,
+          transform: side === 'left' ? 'translateX(10px)' : 'translateX(-10px)',
         }}
       >
         {side === "left" ? "<" : ">"}

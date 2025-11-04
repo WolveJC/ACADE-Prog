@@ -15,7 +15,7 @@ html {
 /* 3. Estilos del cuerpo para ocultar el cursor nativo */
 body {
   /* Ocultar el cursor del sistema */
-  cursor: none; 
+  /* cursor: none; */
 }
 
 /* 4. Ocultar la barra de desplazamiento horizontal, ya que el carrusel la usa internamente,

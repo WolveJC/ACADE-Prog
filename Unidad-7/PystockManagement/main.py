@@ -1,5 +1,5 @@
 from src.services.inventario_manager import Inventario
-
+from src.models.productos import Producto
 
 def obtener_datos_producto():
     """Solicita los datos del producto al usuario con validación."""

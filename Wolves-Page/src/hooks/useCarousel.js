@@ -121,7 +121,6 @@ const useCarousel = (baseScrollSpeed = BASE_SPEED, intervalTime = 40) => {
 
     // --- 5. HANDLERS PARA EL CONSUMIDOR ---
     const togglePause = () => {
-    // Invierte el estado actual de isPaused
     setIsPaused(prev => !prev);
   };
     

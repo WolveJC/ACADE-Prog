@@ -120,8 +120,10 @@ const useCarousel = (baseScrollSpeed = BASE_SPEED, intervalTime = 40) => {
 
 
     // --- 5. HANDLERS PARA EL CONSUMIDOR ---
-    const handleMouseEnter = () => setIsPaused(true);
-    const handleCarouselMouseLeave = () => setIsPaused(false);
+    const togglePause = () => {
+    // Invierte el estado actual de isPaused
+    setIsPaused(prev => !prev);
+  };
     
     // Funciones para las flechas de aceleración
     const startAcceleration = (direction) => setArrowDirection(direction); // 1 o -1
@@ -132,9 +134,8 @@ const useCarousel = (baseScrollSpeed = BASE_SPEED, intervalTime = 40) => {
 
 
     return { 
-        carouselRef, 
-        handleMouseEnter, 
-        handleCarouselMouseLeave, 
+        carouselRef,
+        togglepause,
         startAcceleration,
         stopAcceleration,
         isPaused,

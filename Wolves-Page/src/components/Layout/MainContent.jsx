@@ -1,4 +1,5 @@
 import React from "react";
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import usePageTitle from "../../hooks/usePageTitle";
 import { useCarouselContext } from "../../context/GlobalCarousel";
 
@@ -9,6 +10,7 @@ import AboutMe from "../Sections/AboutMe";
 
 // Clase que debe coincidir con la lógica del CustomCursor para el estado FLOR
 const FLOWER_CLASS = "flower-trigger";
+const HOVER_ZONE_WIDTH = '80px';
 
 const MainContent = () => {
   // Llamar el hook para cambiar el titulo de la pagina
@@ -99,7 +101,7 @@ const MainContent = () => {
 const ArrowButton = ({ side, width, height, onStart, onStop }) => {
   // La barra de skills debe SUPERPONERSE a la flecha izquierda
   const zIndex = side === "left" ? "z-30" : "z-30";
-  const HOVER_ZONE_WIDTH = '80px';
+  const Icon = side === 'left' ? FaChevronLeft : FaChevronRight;
 
   return (
     <div
@@ -107,7 +109,6 @@ const ArrowButton = ({ side, width, height, onStart, onStop }) => {
       className={`
                 absolute top-0 bottom-0 flex items-center justify-center cursor-pointer 
                 opacity-0 hover:opacity-100 transition duration-300 
-                ${side === "left" ? "left-0" : "right-0"} // Posición
                 ${zIndex} 
                 ${FLOWER_CLASS} // CLASE CRÍTICA: Activa el modo FLOR
             `}
@@ -122,9 +123,10 @@ const ArrowButton = ({ side, width, height, onStart, onStop }) => {
       onMouseEnter={onStart} // También sirve para activar el FLOWER_CLASS por hover
       onMouseLeave={onStop}
     >
-      <span
+      <Icon
         className={`
-                    text-white text-9xl font-thin select-none pointer-events-none 
+                    text-white text-6x1 select-none pointer-events-none
+                    opacity -50 hover: opacity-100 transition duration-300
                     text-shadow-lg // Opcional: añade sombra al texto para visibilidad
                 `}
         // Posiciona el símbolo de flecha justo en el borde de la Sidebar (Izquierda) o en el borde derecho (Derecha)
@@ -132,8 +134,7 @@ const ArrowButton = ({ side, width, height, onStart, onStop }) => {
           transform: side === 'left' ? 'translateX(10px)' : 'translateX(-10px)',
         }}
       >
-        {side === "left" ? "<" : ">"}
-      </span>
+      </Icon>
     </div>
   );
 };

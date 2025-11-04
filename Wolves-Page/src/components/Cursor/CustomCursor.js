@@ -94,7 +94,7 @@ const CustomCursor = () => {
             `}
             style={{ 
                 // Aplicamos el movimiento y la transformación/animación en el style
-                transform: `translate(${position.x}px, ${position.y}px) ${transformClass}`, 
+                transform: `translate(${position.x}px, ${position.y}px) translate(-50%, -50%) ${transformClass}`, 
             }}
         />
     );

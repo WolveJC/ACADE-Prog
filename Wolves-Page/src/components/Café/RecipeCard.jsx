@@ -1,46 +1,115 @@
 import React, { useEffect, useState } from 'react';
+import { useNutritionContext } from '../../context/NutritionContext'; // ⬅️ Importamos el contexto
 
 const RecipeCard = () => {
     const [recipe, setRecipe] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Lógica de Carga de Receta Diaria Aleatoria (TheMealDB)
+    // Contexto de Nutrición para guardar el resultado de Edamam
+    const { setIsNutritionLoading, setEdamamData } = useNutritionContext();
+    
+    // Clave de Edamam/RapidAPI (ADVERTENCIA: No es seguro en el frontend)
+    const RAPIDAPI_KEY = 'ea40e1fb71msh1630c71aa1e941dp15b910jsndb8283303c08'; 
+    const RAPIDAPI_HOST = 'edamam-edamam-nutrition-analysis.p.rapidapi.com';
+
+    // Función para formatear ingredientes de MealDB para Edamam
+    const formatIngredientsForEdamam = (recipe) => {
+        let queryParts = [];
+        for (let i = 1; i <= 20; i++) {
+            const ingredient = recipe[`strIngredient${i}`];
+            const measure = recipe[`strMeasure${i}`];
+            
+            if (ingredient && ingredient.trim() !== '') {
+                // Formato de Edamam: [Medida] [Nombre del Ingrediente]
+                const ingredientString = `${measure || ''} ${ingredient}`.trim();
+                
+                // Agregamos 'ingr=' y URL-encodeamos el valor
+                queryParts.push(`ingr=${encodeURIComponent(ingredientString)}`);
+            }
+        }
+        return queryParts.join('&');
+    };
+    
+    // Función para hacer el fetch a Edamam
+    const fetchNutritionData = async (recipe) => {
+        const ingredientQuery = formatIngredientsForEdamam(recipe);
+        if (!ingredientQuery) {
+            setEdamamData(null, "No se encontraron ingredientes para el análisis nutricional.");
+            return;
+        }
+
+        setIsNutritionLoading(true);
+        
+        // Construcción de la URL de Edamam
+        const apiUrl = `https://${RAPIDAPI_HOST}/api/nutrition-data?nutrition-type=cooking&${ingredientQuery}`;
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': RAPIDAPI_KEY,
+                    'x-rapidapi-host': RAPIDAPI_HOST
+                }
+            });
+
+            if (!response.ok) {
+                const errorBody = await response.json();
+                throw new Error(`Error de Edamam: ${response.status}. Mensaje: ${errorBody.error || response.statusText}`);
+            }
+
+            const data = await response.json();
+            setEdamamData(data); // ⬅️ Guardamos el JSON de Edamam en el contexto
+        } catch (err) {
+            console.error("Error fetching nutrition data:", err);
+            setEdamamData(null, err.message);
+        }
+    };
+
+
+    // Lógica principal: Fetch de MealDB y luego Edamam
     useEffect(() => {
         const fetchRandomRecipe = async () => {
             setIsLoading(true);
             setError(null);
+            
             try {
-                // API TheMealDB: Obtener una comida aleatoria
+                // 1. Fetch de TheMealDB
                 const response = await fetch('https://www.themealdb.com/api/json/v1/1/random.php');
-                
                 if (!response.ok) {
-                    throw new Error('No se pudo cargar la receta del día.');
+                    throw new Error('No se pudo cargar la receta del día (MealDB).');
+                }
+                const data = await response.json();
+                const fetchedRecipe = data.meals ? data.meals[0] : null;
+
+                setRecipe(fetchedRecipe);
+                
+                // 2. Fetch de Edamam
+                if (fetchedRecipe) {
+                    await fetchNutritionData(fetchedRecipe);
+                } else {
+                    setEdamamData(null, "Receta no encontrada, no se puede analizar.");
                 }
 
-                const data = await response.json();
-                setRecipe(data.meals ? data.meals[0] : null);
-                
-                // NOTA IMPORTANTE: La lógica de la API de Edamam (análisis nutricional) 
-                // deberá ser implementada aquí o inmediatamente después de esta llamada, 
-                // para que la Sidebar pueda consumir los datos nutricionales.
-                
             } catch (err) {
-                console.error("Error fetching meal:", err);
+                console.error("Error general:", err);
                 setError(err.message);
+                setEdamamData(null, "Error al cargar la receta y los datos nutricionales.");
             } finally {
                 setIsLoading(false);
             }
         };
+
         fetchRandomRecipe();
     }, []);
 
+    // ... (El resto del componente renderContent, sin cambios en el renderizado) ...
     const renderContent = () => {
+        // ... (Tu lógica de rendering con las clases de Tailwind) ...
         if (isLoading) {
-            // Usa el color del texto de la tarjeta (blanco o pan-tostado)
             return (
                 <div className="text-xl font-bold text-pan-tostado animate-pulse p-10">
-                    Preparando el plato del día... 
+                    Preparando el plato del día y analizando nutrición... ☕
                 </div>
             );
         }
@@ -48,12 +117,12 @@ const RecipeCard = () => {
         if (error || !recipe) {
             return (
                 <div className="text-xl text-red-300 p-10">
-                     Lo sentimos, no pudimos cargar la receta.
+                    ❌ Lo sentimos, no pudimos cargar la receta.
                 </div>
             );
         }
         
-        // Extraer ingredientes y medidas (TheMealDB usa un patrón de 20 pares)
+        // Extraer ingredientes y medidas
         const ingredients = [];
         for (let i = 1; i <= 20; i++) {
             const ingredient = recipe[`strIngredient${i}`];
@@ -67,7 +136,7 @@ const RecipeCard = () => {
             <div 
                 className="
                     w-full max-w-4xl bg-moca text-white p-6 md:p-10 rounded-xl shadow-2xl 
-                    border border-pan-tostado //  Color Dorado/Acento
+                    border border-pan-tostado 
                 "
             >
                 <h3 className="text-3xl md:text-4xl font-serif font-bold mb-4 text-pan-tostado">
@@ -109,7 +178,6 @@ const RecipeCard = () => {
         );
     };
 
-    // Renderiza el contenido dentro de un contenedor centrado
     return <div className="flex justify-center">{renderContent()}</div>;
 };
 

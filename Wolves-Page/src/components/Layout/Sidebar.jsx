@@ -1,60 +1,76 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { skillsData } from '../../data/skills';
-import SkillIcon from './Skill-Icon'; 
+import React from 'react';
+import { useNutritionContext } from '../../context/NutritionContext';
+import { FaHeartbeat, FaAppleAlt, FaBreadSlice, FaWeight } from 'react-icons/fa'; // Íconos Nutricionales
 
-// Clase que debe coincidir con la lógica del CustomCursor para el estado FLOR
-const FLOWER_CLASS = 'flower-trigger'; 
+// NOTA: Este componente requiere un componente hijo (NutrientIcon) similar a SkillIcon 
+// para manejar la lógica de la barra desplegable al hacer hover.
 
-const Sidebar = () => {
-    // 1. Estado para rastrear la posición del mouse en la ventana (para la magnificación)
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-    // 2. Estado para saber si el mouse está sobre la barra lateral 
-    const [isSidebarHovering, setIsSidebarHovering] = useState(false);
+const NutritionBar = () => {
+    // Consumimos los datos del contexto de Edamam
+    const { nutritionData, isNutritionLoading, nutritionError } = useNutritionContext();
+
+    // Nutrientes clave a mostrar y sus íconos (Ejemplo)
+    const primaryNutrients = [
+        { key: 'ENERC_KCAL', name: 'Calorías', Icon: FaHeartbeat, unit: 'kcal' },
+        { key: 'PROCNT', name: 'Proteína', Icon: FaAppleAlt, unit: 'g' },
+        { key: 'FAT', name: 'Grasas', Icon: FaWeight, unit: 'g' },
+        { key: 'CHOCDF', name: 'Carbohidratos', Icon: FaBreadSlice, unit: 'g' },
+    ];
     
-    // Referencia para obtener la posición de la Sidebar
-    const sidebarRef = useRef(null); 
+    // Controles visuales (usaremos color 'pan-tostado' para los íconos)
+    const iconClass = "w-6 h-6 text-pan-tostado transition-colors duration-300";
 
-    // Hook para rastrear el movimiento del mouse en toda la ventana
-    useEffect(() => {
-        const handleMouseMove = (e) => {
-            setMousePosition({ x: e.clientX, y: e.clientY });
-        };
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeEventListener('mousemove', handleMouseMove);
-    }, []);
-
-    // El ancho es fijo, no cambia al hacer hover
-    const widthClass = 'w-16'; 
-
-    return (
-        <div 
-            ref={sidebarRef}
-            className={`
-                fixed top-0 left-0 h-screen z-40 p-2 pt-20 
-                bg-forest-start/90 shadow-2xl transition-all duration-300 ease-in-out
-                ${widthClass}
-                ${FLOWER_CLASS} // ⬅️ CLASE CRÍTICA: Activa el cursor FLOR
-            `}
-            // Usamos hover para controlar el despliegue de la Barra de Experiencia en el hijo
-            onMouseEnter={() => setIsSidebarHovering(true)} 
-            onMouseLeave={() => setIsSidebarHovering(false)} 
-        >
-            <div className="flex flex-col space-y-6 mt-4">
-                {skillsData.map((skill) => {
-                    return (
-                        <SkillIcon 
-                            key={skill.name} 
-                            skill={skill} 
-                            mousePosition={mousePosition}
-                            sidebarRef={sidebarRef}
-                            isSidebarHovering={isSidebarHovering}
-                        />
-                    );
-                })}
+    if (isNutritionLoading) {
+        return (
+            <div className="text-sm text-pan-tostado mt-4 text-center animate-pulse">
+                Analizando...
             </div>
+        );
+    }
+    
+    if (nutritionError || !nutritionData || !nutritionData.totalNutrients) {
+        return (
+            <div className="text-xs text-red-300 mt-4 text-center p-1">
+                Análisis no disponible.
+            </div>
+        );
+    }
 
+    // Si tenemos datos, mostramos los principales nutrientes
+    return (
+        <div className="flex flex-col space-y-6 mt-4">
+            <h3 className="text-sm font-bold text-pan-tostado text-center uppercase tracking-widest">
+                Nutrición
+            </h3>
+            
+            {primaryNutrients.map(({ key, name, Icon, unit }) => {
+                // El objeto 'totalNutrients' de Edamam tiene los datos
+                const nutrient = nutritionData.totalNutrients[key];
+                
+                if (!nutrient) return null;
+
+                // NOTA: Aquí deberás usar un componente hijo 'NutrientIcon' 
+                // para replicar la funcionalidad de 'SkillIcon' (barra al pasar el ratón)
+                return (
+                    <div 
+                        key={key} 
+                        // El estilo y la lógica de hover para el despliegue de la barra
+                        // deben ir en este contenedor o en un componente hijo.
+                        className="relative flex justify-center items-center group cursor-default"
+                    >
+                        <Icon className={iconClass} title={`${name}: ${nutrient.quantity.toFixed(1)} ${nutrient.unit}`} />
+
+                        {/* //  Placeholder para la barra desplegable (Similar al SkillIcon)
+                          <div className="absolute left-full ml-4 p-2 bg-moca border border-pan-tostado rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                             {name}: {nutrient.quantity.toFixed(1)}{unit} 
+                          </div> 
+                        */}
+                    </div>
+                );
+            })}
+            
         </div>
     );
 };
 
-export default Sidebar;
+export default NutritionBar;

@@ -23,15 +23,14 @@ export const CarouselProvider = ({
   totalSlides = 6,
   totalUniqueSlides = 3,
 }) => {
-  // ⬅️ Ejecutar el hook de lógica, obteniendo TODOS los estados y handlers
+  // Ejecutar el hook de lógica, obteniendo TODOS los estados y handlers
   const carouselData = useCarousel(5, 40);
-
-  // Retornar todos los datos y funciones para que puedan ser consumidos globalmente
-  const value = {
-    ...carouselData,
-    totalSlides,
-    totalUniqueSlides,
-  };
+  const // Retornar todos los datos y funciones para que puedan ser consumidos globalmente
+    value = {
+      ...carouselData,
+      totalSlides,
+      totalUniqueSlides,
+    };
 
   return (
     <CarouselContext.Provider value={value}>

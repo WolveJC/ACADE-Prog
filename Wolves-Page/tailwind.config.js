@@ -20,6 +20,23 @@ module.exports = {
         
         // Café Muy Oscuro (para la parte inferior de la página)
         'forest-end': '#2C2016',   
+
+        // === PALETA CAFÉ (Nuevos colores) ===
+
+        // Café Oscuro (Fondo de Header / Detalles)
+        'cafe-oscuro': '#4B3621', 
+
+        // Moca (Fondo de Sidebar / Tarjeta de Receta)
+        'moca': '#795548',          
+     
+        // Leche/Crema (Fondo Principal de la página / Texto Claro)
+        'leche-crema': '#F5F5DC', 
+
+        // Pan Tostado (Acento / Dorado / Botones)
+        'pan-tostado': '#EEDCB3', 
+
+        // Bosque Verde (Para el botón 'Volver al Bosque')
+        'bosque-verde': '#385635', 
       },
     },
   },

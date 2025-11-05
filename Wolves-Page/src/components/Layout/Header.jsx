@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 // Íconos
 import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
 import { HiOutlineMail } from "react-icons/hi";
@@ -9,6 +9,23 @@ import { useCarouselContext } from '../../context/GlobalCarousel';
 import useScrollPosition from "../../hooks/useScrollPosition"; 
 
 const Header = () => {
+    const location = useLocation();
+    const isCafePage = location.pathname === '/cafe';
+
+    // 1. Definición de estilos condicionales
+    // Estilos del Header: Cambia el color de fondo según la ruta
+    const headerBgClass = isCafePage 
+        ? 'bg-[#4B3621] border-b border-[#EEDCB3]' // Café Oscuro y Dorado para el Café
+        : 'bg-black/60 backdrop-blur-md border-b border-gray-700/50'; // Bosque (Transparente)
+
+    // Estilos del Botón: Cambia color y destino
+    const buttonText = isCafePage ? 'Volver al Bosque' : 'Ir al Café ';
+    const buttonTo = isCafePage ? '/' : '/cafe';
+    
+    // Color del botón: Dorado para el Bosque -> Café; Verde para el Café -> Bosque
+    const buttonBgClass = isCafePage 
+        ? 'bg-green-600 hover:bg-green-700' // Café -> Bosque
+        : 'bg-[#EEDCB3] text-[#4B3621] hover:bg-white'; // Bosque -> Café (Dorado)
   // Obtener estados globales
   const { currentSlideIndex } = useCarouselContext(); 
   const scrollY = useScrollPosition();

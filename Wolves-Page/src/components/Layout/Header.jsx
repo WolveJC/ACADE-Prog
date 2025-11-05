@@ -89,6 +89,20 @@ const Header = () => {
             WolveJC
           </span>
         </div>
+{/* Contenedor de Navegación del Ambiente (Nuevo Botón) */}
+                <div className="flex items-center space-x-6">
+                    
+                    {/* Botón de Transición */}
+                    <Link 
+                        to={buttonTo} 
+                        className={`
+                            px-4 py-2 rounded-full font-semibold text-sm 
+                            shadow-md transition-all duration-300 ease-in-out 
+                            ${buttonBgClass}
+                        `}
+                    >
+                        {buttonText}
+                    </Link>
 
         {/* 2. SECCIÓN DERECHA: Íconos Sociales y Correo */}
         <div className="flex items-center space-x-6">

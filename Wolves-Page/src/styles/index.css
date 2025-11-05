@@ -12,7 +12,14 @@ html {
   scroll-behavior: smooth;
 }
 
-/* 3. Ocultar la barra de desplazamiento horizontal, ya que el carrusel la usa internamente,pero se quiere que el usuario no la vea o la use.
+/* 3. Estilos del cuerpo para ocultar el cursor nativo */
+body {
+  /* Ocultar el cursor del sistema */
+   cursor: none;
+}
+
+/* 4. Ocultar la barra de desplazamiento horizontal, ya que el carrusel la usa internamente,
+   pero se quiere que el usuario no la vea o la use.
 */
 ::-webkit-scrollbar {
   height: 0px; /* Chrome, Safari, Opera */

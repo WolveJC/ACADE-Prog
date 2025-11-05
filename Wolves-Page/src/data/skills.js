@@ -8,41 +8,36 @@ export const skillsData = [
         Icon: FaPython, 
         percentage: 54, 
         iconColor: 'text-yellow-400', 
-        barColor: 'bg-yellow-500' // Barra color amarillo
     },
     { 
         name: 'C++', 
         Icon: SiCplusplus, 
         percentage: 22, 
         iconColor: 'text-blue-500', 
-        barColor: 'bg-orange-500' // Barra color naranja 
+        barColor: 'bg-orange-500' ,
     },
     { 
         name: 'JavaScript', 
         Icon: FaJsSquare, 
         percentage: 10, 
-        iconColor: 'text-yellow-400', 
-        barColor: 'bg-red-600' // Barra color rojo
+        iconColor: 'text-yellow-400',
     },
     { 
         name: 'Java', 
         Icon: FaJava, 
         percentage: 5, 
-        iconColor: 'text-red-500', 
-        barColor: 'bg-red-600' // Barra color rojo
+        iconColor: 'text-red-500',
     },
     { 
         name: 'HTML5', 
         Icon: FaHtml5, 
         percentage: 5, 
-        iconColor: 'text-orange-500', 
-        barColor: 'bg-red-600' // Barra color rojo
+        iconColor: 'text-orange-500',
     },
     { 
         name: 'CSS3', 
         Icon: FaCss3Alt, 
         percentage: 4, 
-        iconColor: 'text-blue-600', 
-        barColor: 'bg-red-600' // Barra color rojo
+        iconColor: 'text-blue-600',
     },
 ];

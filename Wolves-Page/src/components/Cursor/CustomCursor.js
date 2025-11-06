@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom"; // CRÍTICO: Importar useLocation
 
 // Estados del Cursor
 const STATES = {
@@ -7,16 +8,53 @@ const STATES = {
   FLOWER: "flower",
 };
 
-// Clase que los componentes complejos deben aplicar
-const FLOWER_CLASS = "flower-trigger";
+// Clase que los componentes complejos deben aplicar (ej. Sidebar del Bosque)
+const FLOWER_CLASS = "flower-trigger"; 
+// Clase CSS definida en index.css para ocultar el cursor nativo
+const CURSOR_NONE_CLASS = "cursor-none"; 
+
 
 const CustomCursor = () => {
+  const location = useLocation();
+  // El cursor solo debe estar activo en la página principal (Bosque)
+  const isBosquePage = location.pathname === "/" || location.pathname === "/contact"; // Incluir /contact si también quieres el cursor allí
+
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [cursorState, setCursorState] = useState(STATES.TRUNK);
-  const [isPointer, setIsPointer] = useState(false);
+  
+  // No necesitamos el estado 'isPointer' ya que está implícito en cursorState
 
-  // 1. Efecto para seguir el ratón y detectar interactividad
+  // 1. Efecto para controlar el cursor nativo y adjuntar el listener de mousemove
   useEffect(() => {
+    // ----------------------------------------------------
+    // LÓGICA DE CONTROL DEL CURSOR NATIVO (<body>)
+    // ----------------------------------------------------
+    if (isBosquePage) {
+      // Activar: Ocultar el cursor nativo
+      document.body.classList.add(CURSOR_NONE_CLASS);
+    } else {
+      // Desactivar: Restaurar el cursor nativo
+      document.body.classList.remove(CURSOR_NONE_CLASS);
+      // Salir del useEffect si no estamos en la página del Bosque
+      return; 
+    }
+
+    // Función de limpieza: CRÍTICA. Asegura que el cursor nativo se restaure
+    // si el componente se desmonta o el path cambia (ej. ir a /cafe)
+    return () => {
+      document.body.classList.remove(CURSOR_NONE_CLASS);
+      // El listener de mousemove se limpia en el siguiente useEffect
+    };
+  }, [isBosquePage]);
+
+
+  // 2. Efecto para seguir el ratón y detectar interactividad (SOLO si isBosquePage es true)
+  useEffect(() => {
+    // Si no estamos en la página del Bosque, salimos y no adjuntamos el listener
+    if (!isBosquePage) {
+        return;
+    }
+
     const updatePosition = (e) => {
       setPosition({ x: e.clientX, y: e.clientY });
 
@@ -41,19 +79,20 @@ const CustomCursor = () => {
       }
     };
 
-    // Escuchas de eventos para la interacción
+    // Escucha de eventos (solo si isBosquePage es true)
     window.addEventListener("mousemove", updatePosition);
 
     return () => {
+      // Limpieza del listener de mousemove
       window.removeEventListener("mousemove", updatePosition);
     };
-  }, []);
+  }, [isBosquePage]); // Se re-ejecuta solo si cambiamos de Bosque a Café
 
-  // 2. Definición de Estilos Dinámicos y Animación
+  // 3. Definición de Estilos Dinámicos y Animación (Se mantiene igual)
   let sizeClass = "w-6 h-6";
   let themeClass = "";
-  let transformBase = "translate(-50%, -50%)"; // Centrado del cursor
-  let transformEffect = ""; // Animación de escala/rotación
+  let transformBase = "translate(-50%, -50%)";
+  let transformEffect = "";
 
   switch (cursorState) {
     case STATES.TRUNK:
@@ -65,7 +104,7 @@ const CustomCursor = () => {
     case STATES.LEAF:
       themeClass = "border-green-500 border-2 bg-green-500/20 rounded-full";
       sizeClass = "w-6 h-6";
-      transformEffect = "scale(1.5)"; // Expansión
+      transformEffect = "scale(1.5)"; 
       break;
 
     case STATES.FLOWER:
@@ -79,6 +118,11 @@ const CustomCursor = () => {
       break;
   }
 
+  // 4. Renderizado Condicional: No renderizar el marcado si no es la página del Bosque
+  if (!isBosquePage) {
+    return null;
+  }
+
   return (
     <div
       className={`
@@ -87,7 +131,6 @@ const CustomCursor = () => {
                 ${themeClass}
             `}
       style={{
-        // CRÍTICO: Concatenación del movimiento del ratón, el centrado, y el efecto de animación.
         transform: `
                     translate(${position.x}px, ${position.y}px) 
                     ${transformBase} 

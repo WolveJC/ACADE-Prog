@@ -14,16 +14,17 @@ export const useNutritionContext = () => {
 
 // 3. El Provider
 export const NutritionProvider = ({ children }) => {
-    // nutritionData: Almacenará el JSON de Edamam (ej: { calories: 300, totalNutrients: {...} })
+    // nutritionData: Almacenará el JSON de Edamam
     const [nutritionData, setNutritionData] = useState(null);
     const [isNutritionLoading, setIsNutritionLoading] = useState(false);
-    const [nutritionError, setNutritionError] = useState(null);
+    const [nutritionError, setNutritionError] = useState(null); // Estado para el mensaje de error
 
-    // Función que será llamada por RecipeCard para guardar los resultados
+    // Función que será llamada por CafePage para guardar los resultados finales
+    // El estado de carga (setIsNutritionLoading) se maneja en el componente que ejecuta el fetch (CafePage).
     const setEdamamData = (data, error = null) => {
         setNutritionData(data);
         setNutritionError(error);
-        setIsNutritionLoading(false);
+        // ⬅️ Se elimina: setIsNutritionLoading(false);
     };
 
     const value = {
@@ -31,7 +32,7 @@ export const NutritionProvider = ({ children }) => {
         isNutritionLoading,
         nutritionError,
         setIsNutritionLoading,
-        setEdamamData,
+        setEdamamData, // Se usa para guardar datos y errores
     };
 
     return (

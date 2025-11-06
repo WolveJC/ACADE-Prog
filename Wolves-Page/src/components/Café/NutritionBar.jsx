@@ -5,7 +5,7 @@ const INFLUENCE_RADIUS = 120; // Radio en píxeles donde el ratón afecta al íc
 const MAX_SCALE = 1.6; // Escala máxima: 160%
 
 // Valores de referencia para calcular el 100% de la barra de progreso
-const MAX_VALUE_STANDARD = 100; // Gramos/miligramos de referencia (arbitrario para la visualización)
+const MAX_VALUE_STANDARD = 100; // Gramos/miligramos de referencia (arbitrario para la visualizacin)
 const MAX_VALUE_KCAL = 1500; // Kcal de referencia (arbitrario para la visualización)
 
 // Función para determinar el color de la barra (Replicada y adaptada)

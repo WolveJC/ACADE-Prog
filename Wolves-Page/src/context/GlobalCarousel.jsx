@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext } from "react";
 import useCarousel from "../hooks/useCarousel";
 
 // 1. Creamos el Contexto

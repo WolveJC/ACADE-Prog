@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
-// ⬅️ Ya no necesitamos el contexto de nutrición ni useCallback
-
 // CRÍTICO: Recibe onRecipeLoaded como prop
 const RecipeCard = ({ onRecipeLoaded }) => {
     const [recipe, setRecipe] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // ⬅️ Se han eliminado: useNutritionContext, RAPIDAPI_KEY/HOST, 
+    // Se han eliminado: useNutritionContext, RAPIDAPI_KEY/HOST, 
     // formatIngredientsForEdamam, y fetchNutritionData (useCallback).
 
     // Lógica principal: Fetch de MealDB y notificar al padre
@@ -60,7 +58,7 @@ const RecipeCard = ({ onRecipeLoaded }) => {
         if (error || !recipe) {
             return (
                 <div className="text-xl text-red-300 p-10">
-                    ❌ Lo sentimos, no pudimos cargar la receta de MealDB.
+                     Lo sentimos, no pudimos cargar la receta de MealDB.
                 </div>
             );
         }

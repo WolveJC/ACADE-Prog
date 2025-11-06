@@ -105,6 +105,8 @@ const CafeSidebar = () => {
                                 key={staticNutrient.name}
                                 staticData={staticNutrient}
                                 apiData={dynamicNutrient}
+
+allApiData={totalNutrients}
                                 mousePosition={mousePosition}
                                 sidebarRef={sidebarRef}
                                 isSidebarHovering={isSidebarHovering}

@@ -2,7 +2,6 @@ import {
   FaFireAlt,
   FaDrumstickBite,
   FaBreadSlice,
-  FaCheese,
   FaFish,
   FaLemon,
   FaCarrot,

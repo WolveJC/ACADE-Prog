@@ -14,9 +14,9 @@ const CafePage = () => {
     
     const { setIsNutritionLoading, setEdamamData, nutritionError } = useNutritionContext();
     const [recipeData, setRecipeData] = useState(null);
-    const [hasFetchedNutrition, setHasFetchedNutrition] = useState(false); // CRÍTICO: Evita el ciclo 429
+    const [hasFetchedNutrition, setHasFetchedNutrition] = useState(false); 
 
-    // Función para formatear ingredientes de MealDB para Edamam
+    // ... (formatIngredientsForEdamam, handleRecipeLoaded, fetchNutritionData se mantienen igual) ...
     const formatIngredientsForEdamam = (recipe) => {
         let queryParts = [];
         for (let i = 1; i <= 20; i++) {
@@ -30,12 +30,10 @@ const CafePage = () => {
         return queryParts.join('&');
     };
 
-    // Callback para recibir la receta de RecipeCard
     const handleRecipeLoaded = useCallback((recipe, error) => {
         if (recipe) {
             setRecipeData(recipe);
         } else if (error) {
-            // Si MealDB falla, informamos el error de nutrición de inmediato
             setEdamamData(null, `Error al cargar la receta: ${error}`);
         } else {
             setEdamamData(null, "No se pudo obtener la receta para analizar.");
@@ -43,7 +41,6 @@ const CafePage = () => {
     }, [setEdamamData]);
 
 
-    // Lógica para hacer el fetch a Edamam (Con manejo de errores amigable)
     const fetchNutritionData = useCallback(async () => {
         if (!recipeData || hasFetchedNutrition) return;
         
@@ -72,9 +69,8 @@ const CafePage = () => {
                 const status = response.status;
                 let developerMessage = `Error de API [${status}].`;
 
-                // CRÍTICO: Clasificación de Errores
                 if (status === 429) {
-                    userErrorMessage = "¡Límite de API excedido! 😥 Espera un momento y recarga la página.";
+                    userErrorMessage = "¡Límite de solicitudes excedido! 😥 ";
                 } else if (status >= 500) {
                     userErrorMessage = "El servicio de nutrición falló temporalmente. ¡Prueba recargar en un minuto!";
                 } else if (status === 401 || status === 403 || status === 404) {
@@ -83,7 +79,6 @@ const CafePage = () => {
                     userErrorMessage = `Error ${status}: La solicitud falló.`;
                 }
                 
-                // Registro para el desarrollador
                 try {
                     const errorBody = await response.json();
                     developerMessage += ` Detalle: ${errorBody.error || errorBody.message || response.statusText}`;
@@ -108,15 +103,14 @@ const CafePage = () => {
             }
 
             setEdamamData(null, finalErrorMessage); 
-            console.error("❌ Error de Edamam/Red Capturado:", err);
+            console.error("❌ Error al cargar el JSON (tiempo excedido)", err);
             
         } finally {
             setIsNutritionLoading(false);
-            setHasFetchedNutrition(true); // Bloquea el reintento
+            setHasFetchedNutrition(true); 
         }
     }, [recipeData, hasFetchedNutrition, setEdamamData, setIsNutritionLoading]);
 
-    // Ejecuta el fetch de Edamam una vez que recipeData esté disponible
     useEffect(() => {
         if (recipeData && !hasFetchedNutrition) {
             fetchNutritionData();
@@ -127,16 +121,16 @@ const CafePage = () => {
     return (
         <div 
             className="
-                min-h-screen pt-20 pb-10 
+                min-h-screen pb-10 
                 bg-leche-crema text-cafe-oscuro
                 transition-colors duration-500
             "
         >
-            {/* ⬅️ FRANA DE ERROR CONDICIONAL ⬅️ */}
+            {/* FRANJA DE ERROR: Posicionamiento fijo justo debajo del header */}
             {nutritionError && (
                 <div 
                     className="
-                        bg-red-600 text-white font-medium text-center py-2 mb-6 
+                        fixed top-[4rem] left-0 w-full bg-red-600 text-white font-medium text-center py-2 z-50 
                         transition-all duration-300 shadow-md
                     "
                 >
@@ -148,7 +142,9 @@ const CafePage = () => {
             )}
             {/* ------------------------------------ */}
 
-            <div className="max-w-7xl mx-auto px-4 md:px-6"> 
+            {/* Contenedor principal: Añadimos padding-top para dejar espacio al header y, si existe, a la franja de error */}
+            <div className={`max-w-7xl mx-auto px-4 md:px-6 ${nutritionError ? 'pt-[9rem]' : 'pt-[7rem]'}`}> 
+                {/* NOTA: 'pt-[9rem]' (4rem del header + 2rem del error + 3rem de espacio) o 'pt-[7rem]' (4rem del header + 3rem de espacio) */}
 
                 <h2 className="text-4xl md:text-5xl font-serif font-bold text-center mb-4 text-cafe-oscuro">
                      El Café de las APIs
@@ -157,10 +153,12 @@ const CafePage = () => {
                     Una pausa para explorar la sinergia de los datos. Hoy te servimos una receta al azar.
                 </p>
 
+                {/* CONTENEDOR FLEX PRINCIPAL: Usa 'flex-row' en LG y 'items-start' para alinear arriba */}
                 <div className="flex flex-col lg:flex-row lg:items-start lg:space-x-8">
 
                     {/* 1. COLUMNA IZQUIERDA: Sidebar de Nutrientes */}
-                    <aside className="w-full lg:w-40 flex-shrink-0 mb-6 lg:mb-0">
+                    <aside className="w-full lg:w-40 flex-shrink-0 mb-6 lg:mb-0 lg:sticky lg:top-[7rem]"> 
+                        {/* 'top-[7rem]' para sticky, considerando el header (4rem) y la franja de error (2rem) + espacio */}
                         <CafeSidebar /> 
                     </aside>
 
@@ -168,10 +166,8 @@ const CafePage = () => {
                     <main className="flex-grow">
                         <div className="flex flex-col items-center">
 
-                            {/* a. Tarjeta de Receta: Pasa el callback */}
                             <RecipeCard onRecipeLoaded={handleRecipeLoaded} />
 
-                            {/* b. Trivia Widget */}
                             <div className="w-full max-w-4xl mt-6"> 
                                 <TriviaWidget />
                             </div>

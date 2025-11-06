@@ -1,28 +1,28 @@
-/* 1. Directivas BASE, COMPONENTS y UTILITIES de Tailwind CSS.
-   Esto inyecta todo el código de Tailwind, (incluyendo colores personalizados definidos en tailwind.config.js.
-*/
+/* 1. Directivas BASE, COMPONENTS y UTILITIES de Tailwind CSS. */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* 2. Regla global opcional para el desplazamiento suave.
-   Esto asegura que el desplazamiento sea suave cuando se usa un enlace de anclaje (aunque el carrusel es automático).
-*/
+/* 2. Regla global opcional para el desplazamiento suave. */
 html {
   scroll-behavior: smooth;
 }
 
-/* 3. Estilos del cuerpo para ocultar el cursor nativo */
-body {
-  /* Ocultar el cursor del sistema */
-   cursor: none;
+/* 3. AÑADE LA CLASE CSS ESPECÍFICA AQUÍ */
+/* Esta clase será controlada por el CustomCursor.js */
+.cursor-none {
+  cursor: none;
 }
 
-/* 4. Ocultar la barra de desplazamiento horizontal, ya que el carrusel la usa internamente,
-   pero se quiere que el usuario no la vea o la use.
-*/
+/* 4. Restaurar la regla del body para que no fuerce el 'cursor: none' en todas las páginas */
+body {
+}
+
+
+/* 5. Ocultar la barra de desplazamiento horizontal, etc. */
 ::-webkit-scrollbar {
   height: 0px; /* Chrome, Safari, Opera */
   width: 0px; /* Firefox */
-  background: transparent;
+  
+background: transparent;
 }

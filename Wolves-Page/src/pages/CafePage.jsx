@@ -16,7 +16,6 @@ const CafePage = () => {
     const [recipeData, setRecipeData] = useState(null);
     const [hasFetchedNutrition, setHasFetchedNutrition] = useState(false); 
 
-    // ... (formatIngredientsForEdamam, handleRecipeLoaded, fetchNutritionData se mantienen igual) ...
     const formatIngredientsForEdamam = (recipe) => {
         let queryParts = [];
         for (let i = 1; i <= 20; i++) {
@@ -85,7 +84,7 @@ const CafePage = () => {
                 } catch {
                     developerMessage += ` Detalle: ${response.statusText}`;
                 }
-                console.error("🛠️ Error de Edamam:", developerMessage);
+                console.error("Error de Edamam:", developerMessage);
                 
                 throw new Error(userErrorMessage); 
             }
@@ -103,7 +102,7 @@ const CafePage = () => {
             }
 
             setEdamamData(null, finalErrorMessage); 
-            console.error("❌ Error al cargar el JSON (tiempo excedido)", err);
+            console.error("Error al cargar el JSON (tiempo excedido)", err);
             
         } finally {
             setIsNutritionLoading(false);

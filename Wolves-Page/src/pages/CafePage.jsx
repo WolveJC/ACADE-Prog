@@ -102,7 +102,7 @@ const CafePage = () => {
     const apiUrlBase = `https://${RAPIDAPI_HOST}/api/nutrition-data?nutrition-type=cooking&`;
 
     console.log("=====================================================");
-    console.log("🍽️ DEBUG: INGREDIENTES NORMALIZADOS PARA EDAMAM (Receta):", recipeData.strMeal);
+    console.log(" DEBUG: INGREDIENTES NORMALIZADOS PARA EDAMAM (Receta):", recipeData.strMeal);
     console.log("-----------------------------------------------------");
     console.log("INGREDIENTES LISTA (Normalizados):", ingredientList); 
     console.log("URL de Query FINAL:", `${apiUrlBase}${ingredientQuery}`);
@@ -142,7 +142,7 @@ const CafePage = () => {
         } catch {
           developerMessage += ` Detalle: ${response.statusText}`;
         }
-        console.error("❌ Error de Edamam:", developerMessage);
+        console.error("Error de Edamam:", developerMessage);
 
         throw new Error(userErrorMessage); 
       }
@@ -160,7 +160,7 @@ const CafePage = () => {
       }
 
       setEdamamData(null, finalErrorMessage); 
-      console.error("⚠️ Error final al cargar el JSON/Datos:", err);
+      console.error(" Error final al cargar el JSON/Datos:", err);
 
     } finally {
       setIsNutritionLoading(false);
@@ -197,3 +197,24 @@ const CafePage = () => {
           <aside className="w-full lg:w-40 flex-shrink-0 mb-6 lg:mb-0 lg:sticky lg:top-[7rem]"> 
             <CafeSidebar /> 
           </aside>
+
+          {/* COMIENZO DEL CONTENIDO PRINCIPAL */}
+          <main className="flex-grow">
+            <div className="flex flex-col items-center">
+
+              <RecipeCard onRecipeLoaded={handleRecipeLoaded} />
+
+              <div className="w-full max-w-4xl mt-6"> 
+                <TriviaWidget />
+              </div>
+
+            </div>
+          </main>
+        </div> {/* Cierra el div del contenedor flex principal */}
+
+      </div> {/* Cierra el div max-w-7xl mx-auto */}
+    </div> // Cierra el div min-h-screen
+  );
+};
+
+export default CafePage;

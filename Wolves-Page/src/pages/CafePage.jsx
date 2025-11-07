@@ -11,11 +11,12 @@ const RAPIDAPI_HOST = 'edamam-edamam-nutrition-analysis.p.rapidapi.com';
 
 const CafePage = () => {
     usePageTitle("WolveJC | El Café de las APIs");
-    
+
     const { setIsNutritionLoading, setEdamamData, nutritionError } = useNutritionContext();
     const [recipeData, setRecipeData] = useState(null);
     const [hasFetchedNutrition, setHasFetchedNutrition] = useState(false); 
 
+    // Función para formatear ingredientes de MealDB para Edamam
     const formatIngredientsForEdamam = (recipe) => {
         let queryParts = [];
         for (let i = 1; i <= 20; i++) {
@@ -29,6 +30,7 @@ const CafePage = () => {
         return queryParts.join('&');
     };
 
+    // Callback para recibir la receta de RecipeCard
     const handleRecipeLoaded = useCallback((recipe, error) => {
         if (recipe) {
             setRecipeData(recipe);
@@ -42,7 +44,7 @@ const CafePage = () => {
 
     const fetchNutritionData = useCallback(async () => {
         if (!recipeData || hasFetchedNutrition) return;
-        
+
         const ingredientQuery = formatIngredientsForEdamam(recipeData);
         if (!ingredientQuery) {
             setEdamamData(null, "No se encontraron ingredientes para el análisis nutricional.");
@@ -50,9 +52,31 @@ const CafePage = () => {
             return;
         }
 
-        setIsNutritionLoading(true);
-        const apiUrl = `https://${RAPIDAPI_HOST}/api/nutrition-data?nutrition-type=cooking&${ingredientQuery}`;
+        // =======================================================
+        // 🛠️ PASO DE DEBUG: Mostrar el Payload antes de la llamada
+        // =======================================================
+        const ingredientList = [];
+        for (let i = 1; i <= 20; i++) {
+            const ingredient = recipeData[`strIngredient${i}`];
+            const measure = recipeData[`strMeasure${i}`];
+            if (ingredient && ingredient.trim() !== '') {
+                ingredientList.push(`${measure || ''} ${ingredient}`.trim());
+            }
+        }
         
+        const apiUrlBase = `https://${RAPIDAPI_HOST}/api/nutrition-data?nutrition-type=cooking&`;
+
+        console.log("=====================================================");
+        console.log("🍽️ DEBUG: INGREDIENTES LISTOS PARA EDAMAM (Receta):", recipeData.strMeal);
+        console.log("-----------------------------------------------------");
+        console.log("INGREDIENTES LISTA (Para Debug Manual):", ingredientList); 
+        console.log("URL de Query FINAL (Copia y pega para probar):", `${apiUrlBase}${ingredientQuery}`);
+        console.log("=====================================================");
+        // =======================================================
+        
+        setIsNutritionLoading(true);
+        const apiUrl = `${apiUrlBase}${ingredientQuery}`; // Usamos la URL base definida arriba
+
         let userErrorMessage = "Error desconocido. Vuelve a intentarlo más tarde.";
 
         try {
@@ -77,15 +101,15 @@ const CafePage = () => {
                 } else {
                     userErrorMessage = `Error ${status}: La solicitud falló.`;
                 }
-                
+
                 try {
                     const errorBody = await response.json();
                     developerMessage += ` Detalle: ${errorBody.error || errorBody.message || response.statusText}`;
                 } catch {
                     developerMessage += ` Detalle: ${response.statusText}`;
                 }
-                console.error("Error de Edamam:", developerMessage);
-                
+                console.error("❌ Error de Edamam:", developerMessage);
+
                 throw new Error(userErrorMessage); 
             }
 
@@ -102,8 +126,8 @@ const CafePage = () => {
             }
 
             setEdamamData(null, finalErrorMessage); 
-            console.error("Error al cargar el JSON (tiempo excedido)", err);
-            
+            console.error("⚠️ Error final al cargar el JSON/Datos:", err);
+
         } finally {
             setIsNutritionLoading(false);
             setHasFetchedNutrition(true); 
@@ -141,9 +165,8 @@ const CafePage = () => {
             )}
             {/* ------------------------------------ */}
 
-            {/* Contenedor principal: Añadimos padding-top para dejar espacio al header y, si existe, a la franja de error */}
+            {/* Contenedor principal: Padding adaptativo */}
             <div className={`max-w-7xl mx-auto px-4 md:px-6 ${nutritionError ? 'pt-[9rem]' : 'pt-[7rem]'}`}> 
-                {/* NOTA: 'pt-[9rem]' (4rem del header + 2rem del error + 3rem de espacio) o 'pt-[7rem]' (4rem del header + 3rem de espacio) */}
 
                 <h2 className="text-4xl md:text-5xl font-serif font-bold text-center mb-4 text-cafe-oscuro">
                      El Café de las APIs
@@ -152,12 +175,11 @@ const CafePage = () => {
                     Una pausa para explorar la sinergia de los datos. Hoy te servimos una receta al azar.
                 </p>
 
-                {/* CONTENEDOR FLEX PRINCIPAL: Usa 'flex-row' en LG y 'items-start' para alinear arriba */}
+                {/* CONTENEDOR FLEX PRINCIPAL: Layout de 2 columnas */}
                 <div className="flex flex-col lg:flex-row lg:items-start lg:space-x-8">
 
-                    {/* 1. COLUMNA IZQUIERDA: Sidebar de Nutrientes */}
+                    {/* 1. COLUMNA IZQUIERDA: Sidebar de Nutrientes (Sticky) */}
                     <aside className="w-full lg:w-40 flex-shrink-0 mb-6 lg:mb-0 lg:sticky lg:top-[7rem]"> 
-                        {/* 'top-[7rem]' para sticky, considerando el header (4rem) y la franja de error (2rem) + espacio */}
                         <CafeSidebar /> 
                     </aside>
 
@@ -175,7 +197,7 @@ const CafePage = () => {
                     </main>
 
                 </div>
-                
+
             </div>
         </div>
     );

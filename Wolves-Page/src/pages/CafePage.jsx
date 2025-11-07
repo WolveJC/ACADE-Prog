@@ -197,5 +197,3 @@ const CafePage = () => {
           <aside className="w-full lg:w-40 flex-shrink-0 mb-6 lg:mb-0 lg:sticky lg:top-[7rem]"> 
             <CafeSidebar /> 
           </aside>
-
-          <>

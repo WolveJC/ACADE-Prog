@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 // Íconos
 import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
 import { HiOutlineMail } from "react-icons/hi";
@@ -9,101 +9,133 @@ import { useCarouselContext } from '../../context/GlobalCarousel';
 import useScrollPosition from "../../hooks/useScrollPosition"; 
 
 const Header = () => {
-  // Obtener estados globales
-  const { currentSlideIndex } = useCarouselContext(); 
-  const scrollY = useScrollPosition();
+    const location = useLocation();
+    const isCafePage = location.pathname === '/cafe';
 
-  // Datos de Configuración (Contactos)
-  const socialLinks = [
-    {
-      Icon: FaLinkedin,
-      href: "https://ve.linkedin.com/in/wolvejc-467456172",
-      name: "LinkedIn",
-    },
-    { Icon: FaGithub, href: "https://github.com/WolveJC", name: "GitHub" },
-    {
-      Icon: FaInstagram,
-      href: "https://www.instagram.com/wolvejc05?igsh=bTFqem5scnU1cGh4",
-      name: "Instagram",
-    },
-  ];
+    // Obtener estados globales
+    const { currentSlideIndex } = useCarouselContext(); 
+    const scrollY = useScrollPosition();
 
-  // 1. Definición de Clases de Color Sincronizadas
-  const COLOR_MAP = {
-    // 0: Welcome
-    0: 'bg-forest-start', 
-    // 1: Projects
-    1: 'bg-forest-mid',   
-    // 2: AboutMe
-    2: 'bg-forest-end',   
-  };
+    // Datos de Configuración (Contactos)
+    const socialLinks = [
+        {
+            Icon: FaLinkedin,
+            href: "https://ve.linkedin.com/in/wolvejc-467456172",
+            name: "LinkedIn",
+        },
+        { Icon: FaGithub, href: "https://github.com/WolveJC", name: "GitHub" },
+        {
+            Icon: FaInstagram,
+            href: "https://www.instagram.com/wolvejc05?igsh=bTFqem5scnU1cGh4",
+            name: "Instagram",
+        },
+    ];
 
-  // 2. Determinar el color base según la sección del carrusel
-  const baseColorClass = COLOR_MAP[currentSlideIndex] || 'bg-forest-start';
+    // 1. Definición de Clases de Color Sincronizadas del BOSQUE
+    const COLOR_MAP = {
+        0: 'bg-forest-start', // Welcome
+        1: 'bg-forest-mid',   // Projects (Nota: 'forest-mid' y 'cafe-oscuro' comparten el mismo hex: #4B3621)
+        2: 'bg-forest-end',   // AboutMe
+    };
 
-  // 3. Control de Solidez al Scroll Vertical
-  const opacityClass = 
-    scrollY > 50 
-    ? "opacity-100" // Fondo Sólido
-    : "opacity-90 backdrop-blur-sm"; // Fondo Semitransparente con Blur
+    // 2. Control de Solidez al Scroll Vertical (Solo aplica en el Bosque)
+    const opacityClass = 
+        scrollY > 50 
+        ? "opacity-100" // Fondo Sólido
+        : "opacity-90 backdrop-blur-sm"; // Fondo Semitransparente con Blur
 
-  // Estilo de Íconos (Unificado)
-  const iconClass = "w-6 h-6 text-green-300 hover:text-white transition duration-300";
+    // 3. LÓGICA DE FONDO FINAL UNIFICADA
+    let finalBgClass, finalBorderClass;
 
+    if (isCafePage) {
+        // Estilos FIJOS para la página del Café
+        finalBgClass = 'bg-cafe-oscuro'; // Clase de Tailwind
+        finalBorderClass = 'border-b border-pan-tostado'; // Clase de Tailwind
+    } else {
+        // Estilos DINÁMICOS para la página del Bosque
+        finalBgClass = COLOR_MAP[currentSlideIndex] || 'bg-forest-start';
+        finalBorderClass = 'border-b border-gray-700/50';
+    }
 
-  return (
-    // Aplicamos el color base, la opacidad/blur, y la transición
-    <header 
-      className={`
-        fixed top-0 w-full z-50 p-4 shadow-xl
-        ${baseColorClass} 
-        ${opacityClass}
-        transition-all duration-1000 ease-in-out // Transición de 1s para el cambio de color
-      `}
-    >
-      <nav className="flex items-center justify-between max-w-7xl mx-auto">
-        {/* 1. SECCIÓN IZQUIERDA: Avatar y Nombre */}
-        <div className="flex items-center space-x-4">
-          <Link to="/" aria-label="Volver a la página principal">
-            {/* Asumiendo que Avatar recibe 'small' para el tamaño */}
-            <Avatar size="small" />
-          </Link>
-          <span className="text-xl font-bold text-white hidden sm:block">
-            WolveJC
-          </span>
-        </div>
+    // 4. LÓGICA DEL BOTÓN DE TRANSICIÓN
+    const buttonText = isCafePage ? 'Volver al Bosque' : 'Ir al Café ☕';
+    const buttonTo = isCafePage ? '/' : '/cafe';
+    
+    // Usamos las nuevas clases de Tailwind: 'bosque-verde' y 'pan-tostado'
+    const buttonBgClass = isCafePage 
+        ? 'bg-bosque-verde hover:bg-green-700 text-white' // Café -> Bosque (Verde)
+        : 'bg-pan-tostado text-cafe-oscuro hover:bg-white'; // Bosque -> Café (Dorado/Pan Tostado)
+    
+    // Estilo de Íconos (Unificado) - Adaptamos el color para que se vea bien sobre ambos fondos
+    const iconClass = isCafePage 
+        ? "w-6 h-6 text-pan-tostado hover:text-white transition duration-300" // Dorado sobre Café Oscuro
+        : "w-6 h-6 text-green-300 hover:text-white transition duration-300"; // Verde sobre Bosque
 
-        {/* 2. SECCIÓN DERECHA: Íconos Sociales y Correo */}
-        <div className="flex items-center space-x-6">
-          {/* Íconos de Redes Sociales */}
-          <div className="flex space-x-4">
-            {socialLinks.map(({ Icon, href, name }) => (
-              <a
-                key={name}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Enlace a mi perfil de ${name}`}
-                //Usar la clase de estilo unificada
-                className={iconClass} 
-              >
-                <Icon className="w-6 h-6" />
-              </a>
-            ))}
-          </div>
+    return (
+        // Aplicamos el color de fondo final, la opacidad (solo si no es la página café), y la transición
+        <header 
+            className={`
+                fixed top-0 w-full z-50 p-4 shadow-xl
+                ${finalBgClass} 
+                ${isCafePage ? finalBorderClass : `border-transparent ${opacityClass}`}
+                transition-all duration-1000 ease-in-out // Transición de 1s para el cambio de color
+                ${isCafePage ? 'backdrop-blur-none' : 'backdrop-blur-sm'} // Control de Blur
+            `}
+        >
+            <nav className="flex items-center justify-between max-w-7xl mx-auto">
+                {/* 1. SECCIÓN IZQUIERDA: Avatar y Nombre */}
+                <div className="flex items-center space-x-4">
+                    <Link to="/" aria-label="Volver a la página principal">
+                        <Avatar size="small" />
+                    </Link>
+                    <span className="text-xl font-bold text-white hidden sm:block">
+                        WolveJC
+                    </span>
+                </div>
 
-          {/* Ícono de Correo Electrónico (Ruta Interna) */}
-          <Link
-            to="/contact"
-            aria-label="Ir a la página de contacto"
-            className={iconClass} // Usar la clase de estilo unificada
-          >
-            <HiOutlineMail className="w-7 h-7" />
-          </Link>
-        </div>
-      </nav>
-    </header>
-  );
+                {/* 2. SECCIÓN DERECHA: Botón de Transición + Íconos Sociales */}
+                <div className="flex items-center space-x-6">
+                    
+                    {/* Botón de Transición de Ambiente */}
+                    <Link 
+                        to={buttonTo} 
+                        className={`
+                            px-4 py-2 rounded-full font-semibold text-sm 
+                            shadow-md transition-all duration-300 ease-in-out 
+                            ${buttonBgClass}
+                        `}
+                    >
+                        {buttonText}
+                    </Link>
+
+                    {/* Íconos de Redes Sociales */}
+                    <div className="hidden md:flex space-x-4">
+                        {socialLinks.map(({ Icon, href, name }) => (
+                            <a
+                                key={name}
+                                href={href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={`Enlace a mi perfil de ${name}`}
+                                className={iconClass} 
+                            >
+                                <Icon className="w-6 h-6" />
+                            </a>
+                        ))}
+                    </div>
+
+                    {/* Ícono de Correo Electrónico (Ruta Interna) */}
+                    <Link
+                        to="/contact"
+                        aria-label="Ir a la página de contacto"
+                        className={iconClass} // Usar la clase de estilo unificada
+                    >
+                        <HiOutlineMail className="w-7 h-7" />
+                    </Link>
+                </div>
+            </nav>
+        </header>
+    );
 };
 
 export default Header;

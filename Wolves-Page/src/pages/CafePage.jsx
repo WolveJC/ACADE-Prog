@@ -198,4 +198,4 @@ const CafePage = () => {
             <CafeSidebar /> 
           </aside>
 
-          <
+          <>

@@ -24,7 +24,7 @@ export const NutritionProvider = ({ children }) => {
     const setEdamamData = (data, error = null) => {
         setNutritionData(data);
         setNutritionError(error);
-        // ⬅️ Se elimina: setIsNutritionLoading(false);
+        // Se eliminó setIsNutritionLoading(false);
     };
 
     const value = {

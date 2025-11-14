@@ -5,11 +5,11 @@ import TriviaWidget from '../components/Cafe/TriviaWidget';
 import CafeSidebar from '../components/Cafe/CafeSidebar';
 import { useNutritionContext } from '../context/NutritionContext';
 
-// Constantes de la API de Edamam (Ahora en el componente padre)
+// Constantes de la API de Edamam
 const RAPIDAPI_KEY = 'ea40e1fb71msh1630c71aa1e941dp15b910jsndb8283303c08'; 
 const RAPIDAPI_HOST = 'edamam-edamam-nutrition-analysis.p.rapidapi.com';
 
-// 🛠️ Función para normalizar medida + ingrediente
+// Función para normalizar medida + ingrediente
 const normalizeIngredient = (measure, ingredient) => {
   let m = (measure || "").trim().toLowerCase();
   let ing = (ingredient || "").trim().toLowerCase();
@@ -80,16 +80,21 @@ const CafePage = () => {
   }, [setEdamamData]);
 
   const fetchNutritionData = useCallback(async () => {
-    if (!recipeData || hasFetchedNutrition) return;
+    // 1. Validaciones iniciales
+    if (!recipeData || hasFetchedNutrition) return; 
 
     const ingredientQuery = formatIngredientsForEdamam(recipeData);
     if (!ingredientQuery) {
       setEdamamData(null, "No se encontraron ingredientes para el análisis nutricional.");
-      setHasFetchedNutrition(true);
+      setHasFetchedNutrition(true); // Si no hay query, marcamos como fetch terminada
       return;
     }
 
-    // Debug: mostrar ingredientes normalizados
+    // 2. Marcar el estado como true.
+    // Esto asegura que la segunda pasada del Strict Mode se detenga en la validación inicial.
+    setHasFetchedNutrition(true); 
+
+    // Debug: mostrar ingredientes normalizados (Solo se ejecutará una vez)
     const ingredientList = [];
     for (let i = 1; i <= 20; i++) {
       const ingredient = recipeData[`strIngredient${i}`];
@@ -102,7 +107,7 @@ const CafePage = () => {
     const apiUrlBase = `https://${RAPIDAPI_HOST}/api/nutrition-data?nutrition-type=cooking&`;
 
     console.log("=====================================================");
-    console.log(" DEBUG: INGREDIENTES NORMALIZADOS PARA EDAMAM (Receta):", recipeData.strMeal);
+    console.log("🍽️ DEBUG: INGREDIENTES NORMALIZADOS PARA EDAMAM (Receta):", recipeData.strMeal);
     console.log("-----------------------------------------------------");
     console.log("INGREDIENTES LISTA (Normalizados):", ingredientList); 
     console.log("URL de Query FINAL:", `${apiUrlBase}${ingredientQuery}`);
@@ -130,8 +135,6 @@ const CafePage = () => {
           userErrorMessage = "¡Límite de solicitudes excedido! 😥 ";
         } else if (status >= 500) {
           userErrorMessage = "El servicio de nutrición falló temporalmente. ¡Prueba recargar en un minuto!";
-        } else if (status === 401 || status === 403 || status === 404) {
-          // Errores técnicos: Mantenemos el mensaje genérico
         } else {
           userErrorMessage = `Error ${status}: La solicitud falló.`;
         }
@@ -142,8 +145,9 @@ const CafePage = () => {
         } catch {
           developerMessage += ` Detalle: ${response.statusText}`;
         }
-        console.error("Error de Edamam:", developerMessage);
+        console.error("❌ Error de Edamam:", developerMessage);
 
+        // Si hay error, queremos que el usuario pueda reintentar, por lo que NO restablecemos hasFetchedNutrition.
         throw new Error(userErrorMessage); 
       }
 
@@ -160,15 +164,16 @@ const CafePage = () => {
       }
 
       setEdamamData(null, finalErrorMessage); 
-      console.error(" Error final al cargar el JSON/Datos:", err);
+      console.error("⚠️ Error final al cargar el JSON/Datos:", err);
 
     } finally {
       setIsNutritionLoading(false);
-      setHasFetchedNutrition(true); 
     }
   }, [recipeData, hasFetchedNutrition, setEdamamData, setIsNutritionLoading]);
 
   useEffect(() => {
+    // Este useEffect ahora solo se ejecutará cuando recipeData cambie, y la lógica interna de fetchNutritionData
+    // se encargará de limitar la ejecución a una sola vez.
     if (recipeData && !hasFetchedNutrition) {
       fetchNutritionData();
     }

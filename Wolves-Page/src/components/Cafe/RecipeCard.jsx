@@ -1,18 +1,17 @@
-import React, { useEffect, useState, useRef } from 'react'; // 1. Importar useRef
-
+import React, { useEffect, useState, useRef } from 'react'; 
+// CRÍTICO: Recibe onRecipeLoaded como prop
 const RecipeCard = ({ onRecipeLoaded }) => {
     const [recipe, setRecipe] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     
-    // 2. Crear el Ref para controlar la ejecución única
+    // 1. Usamos useRef para prevenir el doble fetch en React Strict Mode (Desarrollo).
     const hasFetchedRef = useRef(false); 
 
     // Lógica principal: Fetch de MealDB y notificar al padre
     useEffect(() => {
-        // 3. Verificar si ya se ha ejecutado el fetch. Si sí, detener la re-ejecución.
+        // 2. Si la referencia ya está marcada como true, salimos.
         if (hasFetchedRef.current) {
-            // console.log("MealDB Fetch Evitado por Strict Mode."); // Opcional: para debug
             return;
         }
 
@@ -33,9 +32,9 @@ const RecipeCard = ({ onRecipeLoaded }) => {
 
                 // 2. Notificar al componente padre (CafePage)
                 if (fetchedRecipe) {
-                    //  4. Marcar el ref como true solo después de un fetch exitoso
+                    // 3. Marcamos la referencia como true solo si el fetch fue exitoso.
                     hasFetchedRef.current = true; 
-                    onRecipeLoaded(fetchedRecipe); 
+                    onRecipeLoaded(fetchedRecipe); // Enviamos la receta completa
                 } else {
                     onRecipeLoaded(null);
                 }
@@ -43,25 +42,25 @@ const RecipeCard = ({ onRecipeLoaded }) => {
             } catch (err) {
                 console.error("Error al cargar la receta:", err);
                 setError(err.message);
-                onRecipeLoaded(null, err.message); 
+                onRecipeLoaded(null, err.message); // Notificar error de MealDB al padre
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchRandomRecipe();
-    }, [onRecipeLoaded]);
+    }, [onRecipeLoaded]); // Depende del callback proporcionado por el padre
 
 
-    // El resto del renderizado (renderContent) se mantiene sin cambios.
+    // Renderizado de Contenido Completo 
     const renderContent = () => {
         if (isLoading) {
             return (
                 <div className="text-xl font-bold text-pan-tostado animate-pulse p-10">
-data.meals                    Preparando el plato del día... ☕
+                    Preparando el plato del día... ☕
                 </div>
-           );
-      }
+            );
+        }
 
         if (error || !recipe) {
             return (
@@ -88,7 +87,6 @@ data.meals                    Preparando el plato del día... ☕
                     border border-pan-tostado 
                 "
             >
-                {/* ... (Marcado de receta, imagen, ingredientes e instrucciones) ... */}
                 <h3 className="text-3xl md:text-4xl font-serif font-bold mb-4 text-pan-tostado">
                     {recipe.strMeal}
                 </h3>

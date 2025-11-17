@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 
 // Constantes de Magnificación (lógica de la lupa)
 const INFLUENCE_RADIUS = 120; // Radio en píxeles donde el ratón afecta al ícono
-const MAX_SCALE = 1.6; // Escala máxima: 160%
+const MAX_SCALE = 1.5; // Escala máxima: 150%
 
 // Función para determinar el color de la barra según el porcentaje
 const getBarColor = (percentage) => {
@@ -84,7 +84,7 @@ const SkillIcon = ({ skill, mousePosition, sidebarRef, isSidebarHovering }) => {
             {/* Contenedor del Ícono (Aplica la escala de la Lupa) */}
             <div ref={iconRef} className="flex justify-center items-center">
                 <Icon 
-                    className={`w-7 h-7 ${iconColor} transition-all duration-100 ease-out`}
+                    className={`w-8 h-8 ${iconColor} transition-all duration-100 ease-out`}
                     style={{ transform: `scale(${scale})` }} 
                 />
             </div>

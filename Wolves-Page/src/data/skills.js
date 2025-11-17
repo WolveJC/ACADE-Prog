@@ -1,11 +1,13 @@
-import { FaPython, FaJava, FaJsSquare, FaHtml5, FaCss3Alt } from 'react-icons/fa';
+import { FaJsSquare, FaHtml5, FaCss3Alt } from 'react-icons/fa';
 import { SiCplusplus } from 'react-icons/si';
+import FlatPython from "./python.png" 
+import FlatJava from "./java.png" 
 
 // Definimos la información completa de la habilidad
 export const skillsData = [
     { 
         name: 'Python', 
-        Icon: FaPython, 
+        Icon: FlatPython, 
         percentage: 54, 
         iconColor: 'text-yellow-400', 
     },
@@ -24,7 +26,7 @@ export const skillsData = [
     },
     { 
         name: 'Java', 
-        Icon: FaJava, 
+        Icon: FlatJava, 
         percentage: 5, 
         iconColor: 'text-red-500',
     },

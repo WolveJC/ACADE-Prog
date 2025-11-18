@@ -177,7 +177,6 @@ const CustomCursor = () => {
 
     default:
       currentIconSrc = TrunkImage;
-      themeClass = "";
       break;
   }
 
@@ -204,9 +203,7 @@ const CustomCursor = () => {
         <div
             className={`
                 absolute top-0 left-0 transition-all z-[9999]
-                ${sizeClass}
-                ${themeClass}
-            `}
+                ${sizeClass}`}
             style={{
                 // Traslación para centrar el ícono + Efecto (escala/giro)
                 transform: `

@@ -9,11 +9,13 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
     "framer-motion": "^12.23.24",
+    "glob": "^11.0.3",
+    "nth-check": "^2.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.9.5",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
   "engines": {
@@ -44,8 +46,21 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "@babel/preset-react": "^7.28.5",
     "autoprefixer": "^10.4.21",
+    "babel-loader": "^10.0.0",
+    "css-loader": "^7.1.2",
+    "css-select": "^6.0.0",
+    "html-webpack-plugin": "^5.6.4",
     "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.18"
+    "postcss-loader": "^8.2.0",
+    "style-loader": "^4.0.0",
+    "sucrase": "^3.35.0",
+    "tailwindcss": "^3.4.18",
+    "webpack": "^5.102.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.2.2"
   }
 }

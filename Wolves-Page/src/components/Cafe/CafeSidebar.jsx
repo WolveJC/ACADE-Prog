@@ -69,9 +69,9 @@ const CafeSidebar = () => {
               className="flex items-center space-x-2 text-white/90"
             >
               <IconComponent
-                className={`${item.iconColor} text-lg md:text-xl flex-shrink-0`}
+                className={`${item.iconColor} text-lg md:text-xl shrink-0`}
               />
-              <span className="font-semibold text-sm flex-grow">
+              <span className="font-semibold text-sm grow">
                 {item.name}
               </span>
               <span className="text-xs font-normal text-white/70">
@@ -89,7 +89,7 @@ const CafeSidebar = () => {
       ref={sidebarRef}
       className="
                 bg-moca p-4 rounded-lg shadow-xl border border-pan-tostado
-                lg:h-[calc(100vh-8rem)] lg:overflow-y-auto lg:sticky lg:top-[7rem] 
+                lg:h-[calc(100vh-8rem)] lg:overflow-y-auto lg:sticky lg:top-28 
                 transition-all duration-300 ease-in-out
                 flex flex-col
             "

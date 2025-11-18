@@ -42,7 +42,7 @@ const Header = () => {
     const opacityClass = 
         scrollY > 50 
         ? "opacity-100" // Fondo Sólido
-        : "opacity-90 backdrop-blur-sm"; // Fondo Semitransparente con Blur
+        : "opacity-90 backdrop-blur-xs"; // Fondo Semitransparente con Blur
 
     // 3. LÓGICA DE FONDO FINAL UNIFICADA
     let finalBgClass, finalBorderClass;
@@ -79,7 +79,7 @@ const Header = () => {
                 ${finalBgClass} 
                 ${isCafePage ? finalBorderClass : `border-transparent ${opacityClass}`}
                 transition-all duration-1000 ease-in-out // Transición de 1s para el cambio de color
-                ${isCafePage ? 'backdrop-blur-none' : 'backdrop-blur-sm'} // Control de Blur
+                ${isCafePage ? 'backdrop-blur-none' : 'backdrop-blur-xs'} // Control de Blur
             `}
         >
             <nav className="flex items-center justify-between max-w-7xl mx-auto">

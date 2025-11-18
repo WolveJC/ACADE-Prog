@@ -140,16 +140,16 @@ const ArrowButton = ({ side, width, height, onStart, onStop }) => {
 const SectionWrapper = ({ children }) => (
   <div
     // Clases Cruciales para el Carrusel:
-    // flex-shrink-0: Evita que se encojan
+    // shrink-0: Evita que se encojan
     // w-screen: Ocupa el 100% del ancho del viewport
     // min-h-screen: Ocupa el 100% de la altura (menos el Header)
     // Estilos de Transparencia:
     className={`
-            flex-shrink-0 w-screen min-h-screen 
+            shrink-0 w-screen min-h-screen 
             flex items-center justify-center p-4 sm:p-8 
             
             // Fondo semi-transparente
-            bg-black/30 backdrop-blur-sm 
+            bg-black/30 backdrop-blur-xs 
             shadow-2xl border-x border-
 gray-700/50
         `}

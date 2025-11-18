@@ -20,7 +20,7 @@ const ProjectCard = ({ title, imageUrl, repoLink, description }) => {
         <div className="flex items-start space-x-4 mb-3">
           {/* Renderizamos la IMAGEN de la aplicación (solo si la URL fue encontrada) */}
           {
-            <div className="flex-shrink-0 w-10 h-10">
+            <div className="shrink-0 w-10 h-10">
               <img
                 src={imageUrl}
                 alt={`Logo de ${title}`}

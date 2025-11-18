@@ -199,7 +199,7 @@ const CustomCursor = () => {
   return (
     <div
       className={`
-          fixed top-0 left-0 pointer-events-none z-[9999]
+          fixed top-0 left-0 pointer-events-none z-9999
       `}
       style={{
         // 1. Posicionamiento del contenedor principal (sigue al ratón)
@@ -210,7 +210,7 @@ const CustomCursor = () => {
         {/* 2. Contenedor del Ícono: Aplica el tamaño y efecto de transformación/giro */}
         <div
             className={`
-                absolute top-0 left-0 transition-all z-[9999]
+                absolute top-0 left-0 transition-all z-9999
                 ${sizeClass}
                 ${themeClass}
             `}

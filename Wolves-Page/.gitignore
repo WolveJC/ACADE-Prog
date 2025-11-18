@@ -3,9 +3,11 @@
 /node_modules
 /.pnp
 .pnp.js
+/.npmrc
 
 # build output
 /build 
+/dist
 # o /dist si usas Vite o una configuración diferente
 
 # logs

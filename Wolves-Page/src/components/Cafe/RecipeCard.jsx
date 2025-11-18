@@ -93,7 +93,7 @@ const RecipeCard = ({ onRecipeLoaded }) => {
 
                 <div className="md:flex md:space-x-8">
                     {/* Sección Izquierda: Imagen */}
-                    <div className="md:w-1/3 mb-6 md:mb-0 flex-shrink-0">
+                    <div className="md:w-1/3 mb-6 md:mb-0 shrink-0">
                         <img 
                             src={recipe.strMealThumb} 
                             alt={`Imagen de ${recipe.strMeal}`} 

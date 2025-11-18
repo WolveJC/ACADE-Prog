@@ -182,7 +182,7 @@ const CafePage = () => {
   return (
     <div className="min-h-screen pb-10 bg-leche-crema text-cafe-oscuro transition-colors duration-500">
       {nutritionError && (
-        <div className="fixed top-[4rem] left-0 w-full bg-red-600 text-white font-medium text-center py-2 z-50 transition-all duration-300 shadow-md">
+        <div className="fixed top-16 left-0 w-full bg-red-600 text-white font-medium text-center py-2 z-50 transition-all duration-300 shadow-md">
           <p className="max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-center space-x-2">
             <span>⚠️</span>
             <span className="text-sm md:text-base">{nutritionError}</span>
@@ -190,7 +190,7 @@ const CafePage = () => {
         </div>
       )}
 
-      <div className={`max-w-7xl mx-auto px-4 md:px-6 ${nutritionError ? 'pt-[9rem]' : 'pt-[7rem]'}`}> 
+      <div className={`max-w-7xl mx-auto px-4 md:px-6 ${nutritionError ? 'pt-36' : 'pt-28'}`}> 
         <h2 className="text-4xl md:text-5xl font-serif font-bold text-center mb-4 text-cafe-oscuro">
           El Café de las APIs
         </h2>
@@ -199,12 +199,12 @@ const CafePage = () => {
         </p>
 
         <div className="flex flex-col lg:flex-row lg:items-start lg:space-x-8">
-          <aside className="w-full lg:w-40 flex-shrink-0 mb-6 lg:mb-0 lg:sticky lg:top-[7rem]"> 
+          <aside className="w-full lg:w-40 shrink-0 mb-6 lg:mb-0 lg:sticky lg:top-28"> 
             <CafeSidebar /> 
           </aside>
 
           {/* COMIENZO DEL CONTENIDO PRINCIPAL */}
-          <main className="flex-grow">
+          <main className="grow">
             <div className="flex flex-col items-center">
 
               <RecipeCard onRecipeLoaded={handleRecipeLoaded} />

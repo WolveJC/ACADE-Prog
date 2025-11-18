@@ -31,7 +31,7 @@ const LayoutWrapper = () => {
   // El fondo debe ser dinámico: degradado en Bosque, color fijo en Café
   const bgClasses = isCafePage
     ? "bg-leche-crema text-cafe-oscuro" // Color fijo y texto oscuro para Café
-    : "bg-gradient-to-b from-forest-start via-forest-mid to-forest-end text-white"; // Degradado y texto blanco para Bosque
+    : "bg-linear-to-b from-forest-start via-forest-mid to-forest-end text-white"; // Degradado y texto blanco para Bosque
 
   return (
     <div

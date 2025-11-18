@@ -11,7 +11,7 @@ const AboutMe = () => {
 
       <div className="md:flex md:space-x-12 items-center text-left bg-black/40 p-6 rounded-xl shadow-2xl">
         {/* Foto personal */}
-        <div className="flex-shrink-0 mb-8 md:mb-0">
+        <div className="shrink-0 mb-8 md:mb-0">
           <img
             src={profilePic}
             alt="Tu Foto Personal"

@@ -45,7 +45,7 @@ const ContactPage = () => {
                     name="name" 
                     placeholder="Tu Nombre" 
                     required 
-                    className="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full p-3 rounded-sm bg-gray-800 border border-gray-700 text-white focus:outline-hidden focus:ring-2 focus:ring-green-500"
                 />
 
                 <input 
@@ -53,7 +53,7 @@ const ContactPage = () => {
                     name="email" 
                     placeholder="Tu Correo Electrónico" 
                     required 
-                    className="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full p-3 rounded-sm bg-gray-800 border border-gray-700 text-white focus:outline-hidden focus:ring-2 focus:ring-green-500"
                 />
                 
                 <input type="hidden" name="_subject" value="Buy Me A Coffee!" />
@@ -63,14 +63,14 @@ const ContactPage = () => {
                     placeholder="Cuéntame sobre tu idea..." 
                     rows="4" 
                     required 
-                    className="w-full p-3 rounded bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+                    className="w-full p-3 rounded-sm bg-gray-800 border border-gray-700 text-white focus:outline-hidden focus:ring-2 focus:ring-green-500 resize-none"
                 ></textarea>
                 
                 {/* Botón de Envío: Color de botón temático */}
                 <button 
                     type="submit" 
                     // Un color de botón
-                    className="w-full py-3 bg-green-700 text-white font-bold rounded hover:bg-green-600 transition duration-300 shadow-lg"
+                    className="w-full py-3 bg-green-700 text-white font-bold rounded-sm hover:bg-green-600 transition duration-300 shadow-lg"
                 >
                     Enviar Mensaje y Conectar
                 </button>

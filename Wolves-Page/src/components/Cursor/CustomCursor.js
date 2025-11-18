@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom"; 
 
-// 1. IMPORTACIÓN DE ÍCONOS (USANDO URLS)
+// 1. IMPORTACIÓN DE ÍCONOS (USANDO PNG/URLS)
+
 import TrunkImage from "./wood_32x32.png"; 
 import LeafImage from "./leaf_32x32.png"; 
 import FlowerImage from "./flower_32x32.png"; 
 import CoffeeImage from "./coffee_32x32.png"; 
-import BreadImage from "./bread_32x32.png"; 
+import BreadImage from "./bread_32x32.png";  
 
 
 // Constantes de Página y Comportamiento
@@ -66,6 +67,7 @@ const CustomCursor = () => {
       setPosition({ x: e.clientX, y: e.clientY });
 
       if (isCafePage) {
+          // Si estamos en Café, solo movemos el cursor, no cambiamos el estado.
           return;
       }
       
@@ -98,17 +100,21 @@ const CustomCursor = () => {
   // 3. EFECTO DE CICLO Y GIRO DEL CAFÉ
   // ----------------------------------------------------
   useEffect(() => {
+    // Si no es la página del Café
     if (!isCafePage) {
-        if (isBosquePage) {
-            setCursorState(STATES.TRUNK);
+        // Lógica de limpieza: Si salimos de Café e ingresamos a Bosque, resetear a TRUNK.
+        if (isBosquePage) { 
+            setCursorState(STATES.TRUNK); 
         }
         return;
     }
     
+    // Si entramos en la página del café, forzamos el estado inicial de Café si es necesario
     if (cursorState !== STATES.COFFEE && cursorState !== STATES.BREAD) {
         setCursorState(STATES.COFFEE);
     }
 
+    // Intervalo que dispara el cambio de ícono
     const intervalId = setInterval(() => {
         setIsSpinning(true); 
         
@@ -123,54 +129,56 @@ const CustomCursor = () => {
         
     }, ICON_CYCLE_INTERVAL); 
 
+    // Limpieza al desmontar o cambiar de página
     return () => {
         clearInterval(intervalId);
         setIsSpinning(false); 
     };
-  }, [isCafePage]); 
+  }, [isCafePage, isBosquePage, cursorState]); // Dependencias añadidas para corregir el warning
 
 
   // ----------------------------------------------------
-  // 4. LÓGICA DE RENDERIZADO Y ESTILOS (AJUSTADO)
+  // 4. LÓGICA DE RENDERIZADO Y ESTILOS
   // ----------------------------------------------------
-  let currentIconSrc = null;
-  let sizeClass = "w-8 h-8";
+  let currentIconSrc = null; 
+  let themeClass = ""; // No se usa para PNG, pero se mantiene para claridad
+  let sizeClass = "w-6 h-6";
   let transformEffect = "scale(1)";
   let altText = "Cursor Icon";
 
   // Definición de ícono (URL) y estilo según el estado
   switch (cursorState) {
     case STATES.TRUNK:
-      currentIconSrc = TrunkImage;
-      sizeClass = "w-8 h-8";
+      currentIconSrc = TrunkImage; 
+      sizeClass = "w-4 h-4";
       transformEffect = "scale(1)";
       altText = "Tronco";
       break;
 
     case STATES.LEAF:
-      currentIconSrc = LeafImage;
-      sizeClass = "w-8 h-8";
+      currentIconSrc = LeafImage; 
+      sizeClass = "w-6 h-6";
       transformEffect = "scale(1.5)"; 
       altText = "Hoja";
       break;
 
     case STATES.FLOWER:
-      currentIconSrc = FlowerImage;
+      currentIconSrc = FlowerImage; 
       sizeClass = "w-8 h-8";
-      transformEffect = "scale(1) opacity(0.7)"; // Si quieres que la imagen se desvanezca
+      transformEffect = "scale(1) opacity(0.7)"; 
       altText = "Flor";
       break;
       
     case STATES.COFFEE:
-      currentIconSrc = CoffeeImage;
-      sizeClass = "w-8 h-8";
+      currentIconSrc = CoffeeImage; 
+      sizeClass = "w-6 h-6";
       transformEffect = "scale(1)";
       altText = "Café";
       break;
       
     case STATES.BREAD:
-      currentIconSrc = BreadImage;
-      sizeClass = "w-8 h-8";
+      currentIconSrc = BreadImage; 
+      sizeClass = "w-6 h-6";
       transformEffect = "scale(1.2)"; 
       altText = "Pan";
       break;
@@ -180,7 +188,7 @@ const CustomCursor = () => {
       break;
   }
 
-  // Si está girando, la animación de giro tiene prioridad sobre otros efectos.
+  // Si está girando, la animación de giro (rotate(360deg)) tiene prioridad.
   const rotation = isSpinning ? `rotate(360deg)` : 'rotate(0deg)';
   let finalTransformEffect = `${transformEffect} ${rotation}`;
   
@@ -199,11 +207,13 @@ const CustomCursor = () => {
         transition: `transform 0.1s ease-out`, 
       }}
     >
-        {/* 2. Contenedor del Ícono: Aplica el tamaño, y efecto de transformación/giro */}
+        {/* 2. Contenedor del Ícono: Aplica el tamaño y efecto de transformación/giro */}
         <div
             className={`
                 absolute top-0 left-0 transition-all z-[9999]
-                ${sizeClass}`}
+                ${sizeClass}
+                ${themeClass}
+            `}
             style={{
                 // Traslación para centrar el ícono + Efecto (escala/giro)
                 transform: `
@@ -214,7 +224,7 @@ const CustomCursor = () => {
                 transition: `transform ${SPIN_DURATION / 1000}s ease-in-out, width 0.3s, height 0.3s, opacity 0.3s`,
             }}
         >
-            {/* 3. Renderizado de la IMAGEN */}
+            {/* 3. Renderizado de la IMAGEN PNG */}
             <img 
                 src={currentIconSrc} 
                 alt={altText} 

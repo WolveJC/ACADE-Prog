@@ -13,12 +13,7 @@
 }
 
 /*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
+  The default border color has changed...
 */
 @layer base {
   *,
@@ -35,14 +30,30 @@ html {
   scroll-behavior: smooth;
 }
 
-/* 3. AÑADE LA CLASE CSS ESPECÍFICA AQUÍ */
-/* Esta clase será controlada por el CustomCursor.js */
+/* 3. CONFIGURACIÓN DEL CURSOR PERSONALIZADO */
+/* ------------------------------------------------------------------- */
+
+/* Clase controlada por CustomCursor.js para ocultar el cursor nativo en el BODY */
 .cursor-none {
-  cursor: none;
+  cursor: none !important; /* Usamos !important para asegurar la anulación */
 }
+
+/* Oculta el cursor nativo y previene el cursor de "manita" o "dedo" */
+/* sobre elementos interactivos específicos, forzando la visibilidad del CustomCursor. */
+.leaf-trigger,
+.flower-trigger,
+a, 
+button {
+  cursor: none !important;
+}
+
+/* ------------------------------------------------------------------- */
+
 
 /* 4. Restaurar la regla del body para que no fuerce el 'cursor: none' en todas las páginas */
 body {
+  /* Si CustomCursor.js añade .cursor-none al body, esta regla no lo impide. */
+  /* Si CustomCursor.js no añade nada, el body usa el cursor predeterminado. (Correcto) */
 }
 
 
@@ -50,6 +61,5 @@ body {
 ::-webkit-scrollbar {
   height: 0px; /* Chrome, Safari, Opera */
   width: 0px; /* Firefox */
-  
-background: transparent;
+  background: transparent;
 }

@@ -13,10 +13,13 @@ const ProjectCard = ({ title, imageUrl, repoLink, description }) => {
         transition-all duration-300 
         shadow-lg hover:shadow-xl group
         h-full flex flex-col justify-between
+        
+        //AQUÍ SE AGREGA LA CLASE CLAVE
+        leaf-trigger 
       "
     >
       <div>
-        {/* Encabezado: IMAGEN y Título */}{" "}
+        {/* Encabezado: IMAGEN y Título */}
         <div className="flex items-start space-x-4 mb-3">
           {/* Renderizamos la IMAGEN de la aplicación (solo si la URL fue encontrada) */}
           {

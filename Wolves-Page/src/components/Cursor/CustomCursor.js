@@ -41,7 +41,7 @@ const CustomCursor = () => {
   const [isSpinning, setIsSpinning] = useState(false); 
 
   // ----------------------------------------------------
-  // 1. EFECTO DE CONTROL DEL CURSOR NATIVO (Problema 2 resuelto)
+  // 1. EFECTO DE CONTROL DEL CURSOR NATIVO
   // ----------------------------------------------------
   useEffect(() => {
     // Aplicamos la clase principal de ocultación al BODY
@@ -59,7 +59,7 @@ const CustomCursor = () => {
   }, [isCursorActive]);
 
   // ----------------------------------------------------
-  // 2. EFECTO DE MOVIMIENTO Y LÓGICA DEL BOSQUE (Problema 1 resuelto)
+  // 2. EFECTO DE MOVIMIENTO Y LÓGICA DEL BOSQUE
   // ----------------------------------------------------
   useEffect(() => {
     if (!isCursorActive) {

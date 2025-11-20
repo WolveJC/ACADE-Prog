@@ -12,7 +12,7 @@ import BreadImage from "./bread_32x32.png";
 // Constantes de Página y Comportamiento
 const CAFE_PATH = "/cafe";
 const FLOWER_CLASS = "flower-trigger"; 
-// 🚨 NUEVA CONSTANTE PARA DETECCIÓN DE ELEMENTOS CLICKEABLES
+// NUEVA CONSTANTE PARA DETECCIÓN DE ELEMENTOS CLICKEABLES
 const LEAF_CLASS = "leaf-trigger"; 
 const CURSOR_NONE_CLASS = "cursor-none"; 
 
@@ -46,7 +46,7 @@ const CustomCursor = () => {
   useEffect(() => {
     // Aplicamos la clase principal de ocultación al BODY
     if (isCursorActive) {
-      // 🚨 La clase 'cursor-none' debe estar definida en tu CSS global para el body
+      // La clase 'cursor-none' debe estar definida en tu CSS global para el body
       document.body.classList.add(CURSOR_NONE_CLASS);
     } else {
       document.body.classList.remove(CURSOR_NONE_CLASS);
@@ -74,7 +74,7 @@ const CustomCursor = () => {
           return;
       }
 
-      // 🚨 Lógica de Detección del Bosque (Prioridad por FLOWER > LEAF > TRUNK)
+      // Lógica de Detección del Bosque (Prioridad por FLOWER > LEAF > TRUNK)
       const target = e.target;
       
       // 1. Prioridad FLOWER (Flechas, Iconos de Habilidad de la Sidebar)

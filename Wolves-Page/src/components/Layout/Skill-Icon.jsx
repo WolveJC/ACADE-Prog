@@ -74,6 +74,33 @@ const SkillIcon = ({ skill, mousePosition, sidebarRef, isSidebarHovering }) => {
     // El color actual de la barra se determina dinámicamente
     const currentBarColor = getBarColor(animatedPercentage); 
 
+    // DETERMINAR SI EL ÍCONO ES UN COMPONENTE O UNA RUTA DE IMAGEN
+    const isImage = typeof Icon === 'string';
+    const IconComponent = isImage ? 'img' : Icon; // Si es string, renderiza <img>
+
+    // LÓGICA DE RENDERIZADO DEL ÍCONO
+    const renderIcon = () => {
+        if (isImage) {
+            // Caso 1: Imagen (PNG) - Aplicamos la escala directamente al <img>
+            return (
+                <img 
+                    src={Icon} // Usamos 'Icon' como la ruta de la imagen
+                    alt={name}
+                    className={`w-8 h-8 object-contain ${iconColor} transition-all duration-100 ease-out`}
+                    style={{ transform: `scale(${scale})` }} 
+                />
+            );
+        } else {
+            // Caso 2: Componente React (SVG) - Aplicamos la escala al componente
+            return (
+                <Icon 
+                    className={`w-8 h-8 ${iconColor} transition-all duration-100 ease-out`}
+                    style={{ transform: `scale(${scale})` }} 
+                />
+            );
+        }
+    }
+
     return (
         <div 
             key={name} 
@@ -81,12 +108,9 @@ const SkillIcon = ({ skill, mousePosition, sidebarRef, isSidebarHovering }) => {
             onMouseEnter={() => setIsFocused(true)}
             onMouseLeave={() => setIsFocused(false)}
         >
-            {/* Contenedor del Ícono (Aplica la escala de la Lupa) */}
+            {/* Contenedor del Ícono (Referencia para el cálculo de posición de la lupa) */}
             <div ref={iconRef} className="flex justify-center items-center">
-                <Icon 
-                    className={`w-8 h-8 ${iconColor} transition-all duration-100 ease-out`}
-                    style={{ transform: `scale(${scale})` }} 
-                />
+                {renderIcon()} 
             </div>
             
             {/* BARRA DE EXPERIENCIA FLOTANTE (Animada y Sincronizada) */}

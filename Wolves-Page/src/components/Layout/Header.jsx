@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"; // Importamos useCallback para el handler de navegación
+import React, { useCallback } from "react"; 
 import { Link, useLocation } from "react-router-dom";
 // Íconos
 import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
@@ -73,7 +73,7 @@ const Header = () => {
     const iconClass = isCafePage 
         ? "w-6 h-6 text-pan-tostado hover:text-white transition duration-300" 
         : "w-6 h-6 text-green-300 hover:text-white transition duration-300"; 
-    
+
     // FUNCIÓN GENERAL PARA MANEJAR LA NAVEGACIÓN CON TRANSICIÓN
     const handleInternalNavClick = useCallback((e, path) => {
         e.preventDefault(); // Previene la navegación inmediata
@@ -99,7 +99,8 @@ const Header = () => {
                         href="/"
                         onClick={(e) => handleInternalNavClick(e, '/')}
                         aria-label="Volver a la página principal"
-                        className="cursor-pointer"
+                        // Aplicación de leaf-trigger
+                        className="cursor-pointer leaf-trigger" 
                     >
                         <Avatar size="small" />
                     </a>
@@ -119,6 +120,8 @@ const Header = () => {
                             px-4 py-2 rounded-full font-semibold text-sm 
                             shadow-md transition-all duration-300 ease-in-out 
                             ${buttonBgClass} cursor-pointer
+                            // Aplicación de leaf-trigger
+                            leaf-trigger 
                         `}
                     >
                         {buttonText}
@@ -133,7 +136,8 @@ const Header = () => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label={`Enlace a mi perfil de ${name}`}
-                                className={iconClass} 
+                                // Aplicación de leaf-trigger
+                                className={`${iconClass} leaf-trigger`} 
                             >
                                 <Icon className="w-6 h-6" />
                             </a>
@@ -145,7 +149,8 @@ const Header = () => {
                         href="/contact"
                         onClick={(e) => handleInternalNavClick(e, '/contact')} // Usa el handler general
                         aria-label="Ir a la página de contacto"
-                        className={`cursor-pointer ${iconClass}`}
+                        // Aplicación de leaf-trigger
+                        className={`cursor-pointer ${iconClass} leaf-trigger`}
                     >
                         <HiOutlineMail className="w-7 h-7" />
                     </a>

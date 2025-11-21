@@ -67,7 +67,7 @@ g++ estudiantes.cpp -o estudiantes
 
 ---
 
-🧪 Ejemplo de uso
+## 🧪 Ejemplo de uso
 
 **Entrada (usuario)**
 `

@@ -20,6 +20,7 @@ Genera archivos `.txt` con los resultados.
 ```bash
 g++ vuelos.cpp -o vuelos
 ./vuelos
+```
 
 ---
 

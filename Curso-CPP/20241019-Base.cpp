@@ -1,56 +1,46 @@
-#include  <iostream>
+#include <iostream>
 #include <fstream>
-#include <stdlib.h>
+#include <string>
 using namespace std;
 
-struct Cont{
-int dat;
-Cont *foll;
+struct Cont {
+    int dat;
+    Cont* foll;
 };
 
-Cont *phill= NULL;
-Cont *front=NULL;
-Cont *end=NULL;
+// Punteros globales para pila y cola
+Cont* phill = nullptr;   // pila
+Cont* front = nullptr;   // cola inicio
+Cont* end = nullptr;     // cola fin
 
-//Crear pila, puntero y dirección + el dato para rellenar
-void sozoPhill(Cont *&phill , int dato){
-	Cont *novo_dono= new Cont();
-	novo_dono->dat=dato; //Rellenar dato
-	novo_dono->foll=phill;
-	phill=novo_dono;
+// Crear pila
+void sozoPhill(Cont*& phill, int dato) {
+    Cont* novo_dono = new Cont();
+    novo_dono->dat = dato;
+    novo_dono->foll = phill;
+    phill = novo_dono;
 }
 
-//Sacar pila, puntero y dirección + dirección del dato rellenado
-void hakaiPhill(Cont *&phill, int &dat){
-	if (phill == NULL) {
-        cout << "La pila está vacía." << endl;
-        return;
-    }
-    cout << "Datos:" << endl;
-    while (phill != NULL) {
-        cout << "" << phill->dat << endl;
-        Cont *axil = phill;
-        stutu= axil->stu;
+// Sacar pila
+void hakaiPhill(Cont*& phill) {
+    while (phill != nullptr) {
+        cout << "Dato pila: " << phill->dat << endl;
+        Cont* axil = phill;
         phill = phill->foll;
         delete axil;
     }
 }
 
-//Cola vacía
-bool VoidCoil(Cont *front){
-	if (front == NULL){
-		return true;
-	}
-	else{
-		return false;
-	}
+// Cola vacía
+bool VoidCoil(Cont* front) {
+    return (front == nullptr);
 }
 
-//Crear cola, puntero con dirección para el comienzo y final de la cola + su dato a rellenar
-void sozoCoil(Cont *&front, Cont *&end, struct stu) {
-    Cont *novo_dono = new Cont();
-    novo_dono->stu = stu;
-    novo_dono->foll = NULL;
+// Crear cola
+void sozoCoil(Cont*& front, Cont*& end, int dato) {
+    Cont* novo_dono = new Cont();
+    novo_dono->dat = dato;
+    novo_dono->foll = nullptr;
     if (VoidCoil(front)) {
         front = novo_dono;
     } else {
@@ -59,84 +49,67 @@ void sozoCoil(Cont *&front, Cont *&end, struct stu) {
     end = novo_dono;
 }
 
-
-//Sacar cola, puntero con dirección para el comienzo y final de la cola + dirección del dato rellenado
-void hakaiCoil(Cont *&front, Cont *&end, &dat) {
-   if (VoidCoil(front)) {
-        cout << "La cola está vacía." << endl;
-        return;
-    }
-    cout << "Datos:" << endl;
+// Sacar cola
+void hakaiCoil(Cont*& front, Cont*& end) {
     while (!VoidCoil(front)) {
-        cout << "" << front->dat<< endl;
-        stutu= axil->stu;
+        cout << "Dato cola: " << front->dat << endl;
+        Cont* axil = front;
         front = front->foll;
-        if (front == NULL) {
-            end = NULL;
-        }
+        if (front == nullptr) end = nullptr;
         delete axil;
     }
-	
 }
 
-//Función Archivo
-void save_arch(){
+// Guardar archivo (esqueleto)
+void save_arch() {
     string filename;
-    string ext;
     fstream arch;
-    ext=".txt";
-    cout << "Ingrese el nombre con el que desea guardar el archivo: " << endl;
+    cout << "Ingrese nombre de archivo: ";
     cin >> filename;
-    filename+=ext;
-    arch.open(filename.c_str(),ios::out);
-    if (arch.fail()) {
-        cout << "* ERROR GENERARANDO RECIBO *" << endl;
+    filename += ".txt";
+    arch.open(filename.c_str(), ios::out);
+    if (!arch) {
+        cout << "Error generando archivo\n";
+    } else {
+        arch << "Ejemplo de escritura\n";
+        cout << "Archivo generado\n";
     }
-    arch << "/n " << endl;
-    cout << "Archivo Generado" << endl;
     arch.close();
 }
-//Menú rotativo
-int main (){
-	char opc, res;
+
+// Menú rotativo
+int main() {
     int op;
-        do {
-        cout << "MENU" << endl;
-        cout << "1. Ingresar y Sacar pila" << endl;
-        cout << "2. Ingresar y Sacar cola" << endl;
-        cout << "3. Salir" << endl;
+    char res;
+    do {
+        cout << "\n--- MENU ---\n";
+        cout << "1. Ingresar y sacar pila\n";
+        cout << "2. Ingresar y sacar cola\n";
+        cout << "3. Guardar archivo\n";
+        cout << "4. Salir\n";
         cin >> op;
         switch (op) {
             case 1:
-                do {
-                	cout << "Ingresar datos" << endl;
-                	sozo
-                    cout << "¿Ingresar mas datos? (s/n): " << endl;
-                    cin >> opc;
-                    system ("cls");
-                } while (opc == 's');
-                hakai
+                sozoPhill(phill, 10);
+                sozoPhill(phill, 20);
+                hakaiPhill(phill);
                 break;
             case 2:
-                do {
-                	cout << "Ingresar datos" << endl;
-                	sozo
-                    cout << "¿Ingresar mas datos? (s/n): " << endl;
-                    cin >> opc;
-                    system ("cls");
-                } while (opc == 's');
-                hakai
+                sozoCoil(front, end, 30);
+                sozoCoil(front, end, 40);
+                hakaiCoil(front, end);
                 break;
             case 3:
-                cout << "Saliendo..." << endl;
+                save_arch();
+                break;
+            case 4:
+                cout << "Saliendo...\n";
                 return 0;
             default:
-                cout << "Opción no válida. Intente de nuevo." << endl;
-                break;
+                cout << "Opción no válida.\n";
         }
-        cout << "¿Desea regresar al menu? (s/n): " << endl;
+        cout << "¿Desea regresar al menú? (s/n): ";
         cin >> res;
-        system ("cls");
     } while (res == 's');
-	return 0;
+    return 0;
 }

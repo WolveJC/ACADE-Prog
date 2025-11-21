@@ -1,59 +1,96 @@
-#include<iostream>
-#include<fstream>
-#include<cstdio>
+#include <iostream>
+#include <fstream>
+#include <string>
 using namespace std;
-int sem, dai, hours, h2, h3, dai2, dai3, seg, temp;
-string nomapp;
-int op;
+
 struct Registro {
-    char nombre [45];
-    char cur [45];
+    string nombre;
+    string curso;
     int ci;
 };
-int resolver( int sem, int hours, int dai);
-int main()
-{
-    Registro log;
-    cout << "Bienvenido usuario" << endl;
-    cout << "Por favor ingresa tu nombre" << endl;
-    cin >> log.nombre;
-    cout << "Hola " << log.nombre<< ", ingresa tu número de cédula"<< endl;
-    cin >> log.ci;
-    cout << log.nombre<< ", ¿Que curso estás cursando?" << endl;
-    cin >> log.cur;
-    cout << "¿Cuántas semanas dura el curso?" << endl;
-    cin >> sem;
-    cout << "¿Cuántos días extra tiene además de las semanas?" << endl;
-    cin >> dai;
-    cout << "¿Cuántas horas extra tiene además de los días extra?" << endl;
-    cin >> hours;
-    cout << "Nombre para el archivo: " << endl;
-    cin >> nomapp;
-    cout << "Seleccione una extensión para el archivo" << endl;
-    cout << "1. Texto (.txt)" << endl;
-    cout << "2. Registro (.log)" << endl;
-    cout << "3. Documento (.doc)" << endl;
-    cin >> op;
-    ofstream file;
-    file.open (nomapp.c_str());
-    if (!file){
-    cout<< "Error abriendo el archivo\n";
-    }
-    file << log.nombre<<"\n";
-    file << log.ci<<"\n";
-    file << log.cur<<"\n";
-    file.close();
-    
-    resolver (sem, hours, dai);
-    return 0;
-}
-int resolver( int sem, int hours, int dai) {
-    dai2=sem*7;
-    dai3=dai+dai2;
-    h2=dai2*24;
-    h3=h2+hours;
-    seg=h3*3600;
-    cin >> temp;
-    return temp;
+
+// Función que calcula duración total del curso
+void resolver(int semanas, int diasExtra, int horasExtra) {
+    int diasTotales = semanas * 7 + diasExtra;
+    int horasTotales = diasTotales * 24 + horasExtra;
+    long long segundosTotales = static_cast<long long>(horasTotales) * 3600;
+
+    cout << "\n--- Duración del curso ---\n";
+    cout << "Días totales: " << diasTotales << endl;
+    cout << "Horas totales: " << horasTotales << endl;
+    cout << "Segundos totales: " << segundosTotales << endl;
 }
 
+int main() {
+    Registro log;
+    int semanas, diasExtra, horasExtra;
+    string nombreArchivo;
+    int opcionExt;
+
+    cout << "Bienvenido usuario\n";
+    cout << "Por favor ingresa tu nombre: ";
+    getline(cin, log.nombre);
+
+    cout << "Hola " << log.nombre << ", ingresa tu número de cédula: ";
+    cin >> log.ci;
+    cin.ignore();
+
+    cout << log.nombre << ", ¿Qué curso estás cursando?: ";
+    getline(cin, log.curso);
+
+    cout << "¿Cuántas semanas dura el curso?: ";
+    cin >> semanas;
+    while (semanas < 0) {
+        cout << "Valor inválido. Ingrese semanas >= 0: ";
+        cin >> semanas;
+    }
+
+    cout << "¿Cuántos días extra tiene además de las semanas?: ";
+    cin >> diasExtra;
+    while (diasExtra < 0) {
+        cout << "Valor inválido. Ingrese días >= 0: ";
+        cin >> diasExtra;
+    }
+
+    cout << "¿Cuántas horas extra tiene además de los días extra?: ";
+    cin >> horasExtra;
+    while (horasExtra < 0) {
+        cout << "Valor inválido. Ingrese horas >= 0: ";
+        cin >> horasExtra;
+    }
+
+    cout << "Nombre para el archivo: ";
+    cin >> nombreArchivo;
+
+    cout << "Seleccione una extensión para el archivo:\n";
+    cout << "1. Texto (.txt)\n";
+    cout << "2. Registro (.log)\n";
+    cout << "3. Documento (.doc)\n";
+    cin >> opcionExt;
+
+    string extension;
+    switch (opcionExt) {
+        case 1: extension = ".txt"; break;
+        case 2: extension = ".log"; break;
+        case 3: extension = ".doc"; break;
+        default: extension = ".txt"; cout << "Opción inválida, se usará .txt\n"; break;
+    }
+
+    string archivoFinal = nombreArchivo + extension;
+    ofstream file(archivoFinal);
+    if (!file) {
+        cerr << "Error abriendo el archivo\n";
+        return 1;
+    }
+
+    file << "Nombre: " << log.nombre << "\n";
+    file << "Cédula: " << log.ci << "\n";
+    file << "Curso: " << log.curso << "\n";
+    file.close();
+
+    cout << "Datos guardados en " << archivoFinal << endl;
+
+    resolver(semanas, diasExtra, horasExtra);
+
+    return 0;
+}

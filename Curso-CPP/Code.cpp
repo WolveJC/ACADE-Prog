@@ -1,84 +1,91 @@
-//Crea un programa que maneje una lista de estudiantes utilizando una pila. Cada estudiante debe tener un "struct" que contenga su nombre, edad y nota. 
 #include <iostream>
 #include <fstream>
-#include <stdlib.h>
+#include <string>
 using namespace std;
 
-struct estudiante{
-	string nom;
-	int edad, ci, nota;
+struct Estudiante {
+    string nombre;
+    int edad;
+    int ci;
+    int nota;
 };
 
-struct nodo{
-	estudiante estu;
-	nodo *siguiente;
+struct Nodo {
+    Estudiante estu;
+    Nodo* siguiente;
 };
 
-void ingresarpila(nodo *&, estudiante estu);
-void sacarpila(nodo *&, estudiante &estupila);
-
-int main (){
-	nodo *pila=NULL;
-	estudiante estu;
-	string rep;
-	
-	do{
-	cout << "Ingrese el nombre del alumno:"<< endl;
-	cin>> estu.nom;
-	cout << "Ingrese la edad del alumno:" << endl;
-	cin>> estu.edad;
-	cout << "Ingrese la cedula del alumno:" << endl;
-	cin >> estu.ci;
-	cout << "Ingrese la calificacion del alumno:" << endl;
-	cin >> estu.nota;
-	ingresarpila(pila,estu);
-	cout << "�Desea agregar mas alumnos al sistema? (s/n)" << endl;
-	cin>> rep;
-	system("cls");
-	}
-	while (rep=="s");
-	while (pila != NULL){
-		sacarpila (pila,estu);
-		if (pila != NULL){
-			cout << "Nombre: " << estu.nom << endl;
-			cout << "Edad: " << estu.edad << endl;
-			cout << "Cedula: " << estu.ci << endl;
-			cout << "Calificacion: " << estu.nota << endl;
-			cout << "-----------" << endl;
-		}
-		else {
-			cout << "." << endl;
-		}
-	}
-
-	return 0;
+void ingresarPila(Nodo*& pila, const Estudiante& estu) {
+    Nodo* nuevo = new Nodo();
+    nuevo->estu = estu;
+    nuevo->siguiente = pila;
+    pila = nuevo;
+    cout << "Estudiante agregado a la pila.\n";
 }
-void ingresarpila(nodo *&pila,estudiante estupila){
-	nodo *nuevo_nodo = new nodo();
-	nuevo_nodo->estu = estupila;
-	nuevo_nodo->siguiente = pila;
-	pila = nuevo_nodo;
-	cout << "Ingresando datos del estudiante a la pila..."<< endl;
+
+bool sacarPila(Nodo*& pila, Estudiante& estu) {
+    if (pila == nullptr) return false;
+    Nodo* aux = pila;
+    estu = aux->estu;
+    pila = aux->siguiente;
+    delete aux;
+    return true;
 }
-void sacarpila(nodo *&pila, estudiante &estupila){
-	nodo *aux=pila;
-	estupila = aux->estu;
-	pila = aux->siguiente;
-	delete aux;
-	string o;
-	fstream sacarpila;
-	cout << "Ingrese un nombre para guardar el archivo y su extension" << endl;
-	cin>> o;
-	sacarpila.open(o.c_str(),ios::app);
-		if (sacarpila.fail()){
-			cout<< "Error" << endl;
-		}
-		else {
-			sacarpila << "Nombre: " << estupila.nom << endl;
-			sacarpila << "Edad: " << estupila.edad << endl;
-			sacarpila << "Cedula: " << estupila.ci << endl;
-			sacarpila << "Calificacion: " << estupila.nota << endl;
-			sacarpila << "-----------" << endl;
-		}
-		sacarpila.close();
+
+int main() {
+    Nodo* pila = nullptr;
+    Estudiante estu;
+    string rep;
+    string nombreArchivo;
+
+    cout << "Ingrese nombre del archivo de salida (con extensión, ej. estudiantes.txt): ";
+    cin >> nombreArchivo;
+    ofstream archivo(nombreArchivo, ios::app);
+    if (!archivo) {
+        cerr << "Error al abrir archivo.\n";
+        return 1;
+    }
+
+    do {
+        cout << "Ingrese el nombre del alumno: ";
+        cin >> estu.nombre;
+        cout << "Ingrese la edad del alumno: ";
+        cin >> estu.edad;
+        while (estu.edad <= 0) {
+            cout << "Edad inválida. Ingrese nuevamente: ";
+            cin >> estu.edad;
+        }
+        cout << "Ingrese la cédula del alumno: ";
+        cin >> estu.ci;
+        cout << "Ingrese la calificación del alumno (0-20): ";
+        cin >> estu.nota;
+        while (estu.nota < 0 || estu.nota > 20) {
+            cout << "Nota inválida. Ingrese nuevamente (0-20): ";
+            cin >> estu.nota;
+        }
+
+        ingresarPila(pila, estu);
+
+        cout << "¿Desea agregar más alumnos al sistema? (s/n): ";
+        cin >> rep;
+    } while (rep == "s");
+
+    cout << "\n--- Extrayendo estudiantes de la pila ---\n";
+    while (sacarPila(pila, estu)) {
+        cout << "Nombre: " << estu.nombre << endl;
+        cout << "Edad: " << estu.edad << endl;
+        cout << "Cédula: " << estu.ci << endl;
+        cout << "Calificación: " << estu.nota << endl;
+        cout << "-----------\n";
+
+        archivo << "Nombre: " << estu.nombre << endl;
+        archivo << "Edad: " << estu.edad << endl;
+        archivo << "Cédula: " << estu.ci << endl;
+        archivo << "Calificación: " << estu.nota << endl;
+        archivo << "-----------\n";
+    }
+
+    archivo.close();
+    cout << "Datos guardados en " << nombreArchivo << endl;
+    return 0;
 }

@@ -3,6 +3,7 @@
 #include <string>
 using namespace std;
 
+
 struct Estudiante {
     string nombre;
     int edad;

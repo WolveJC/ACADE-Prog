@@ -44,3 +44,30 @@ Estructura que almacena los datos de cada vuelo:
 - Determina el vuelo con mayor recorrido en kilómetros.
 - Determina el vuelo con mayor número de pasajeros.
 - Llama a las funciones para generar los archivos de recibo.
+
+## 🧪 Ejemplo de uso
+
+**Entrada:**
+`
+Ingrese código del vuelo 1: 101
+Ingrese número de pasajeros del vuelo 1: 120
+Ingrese kilómetros del vuelo 1: 500
+...
+`
+
+**Salida en consola:**
+`
+Archivo generado: mayorRecorrido.txt
+Archivo generado: masPasajeros.txt
+`
+
+**Archivos creados:**
+- mayorRecorrido.txt → contiene el código del vuelo con mayor recorrido.  
+- masPasajeros.txt → contiene los kilómetros recorridos por el vuelo con más pasajeros.  
+
+---
+
+## 📌 Notas
+- El programa actualmente procesa 5 vuelos. Puede ampliarse modificando la constante N.  
+- Los archivos generados se guardan en el mismo directorio donde se ejecuta el programa.  
+- Se recomienda validar entradas para evitar errores (ej. pasajeros negativos).  

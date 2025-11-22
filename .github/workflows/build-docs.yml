@@ -36,6 +36,8 @@ jobs:
       # 6. Convertir GLOBAL.md a PDF
       - name: Install Pandoc
         run: sudo apt-get update && sudo apt-get install -y pandoc
+      - name: Install LaTeX engine
+        run: sudo apt-get install -y texlive texlive-xetex texlive-fonts-recommended
       - name: Convert to PDF
         run: pandoc GLOBAL.md -o GLOBAL.pdf
 

@@ -1,3 +1,13 @@
+# Standard library
+import csv
+import datetime
+import io  # Necesario para send_file con CSV generado en memoria
+import os
+import random
+import string
+import time
+
+# Third-party libraries
 from flask import (
     Flask,
     render_template,
@@ -9,15 +19,8 @@ from flask import (
     jsonify,
     send_file,
 )
-import os
-import pandas as pd
 from fpdf import FPDF
-import datetime
-import time
-import random
-import string
-import csv
-import io  # Necesario para send_file con CSV generado en memoria
+import pandas as pd
 
 # Configuración básica de Flask
 app = Flask(__name__)

@@ -50,7 +50,7 @@ g++ cuenta.cpp -o cuenta
 ## 🧪 Ejemplo de uso
 
 **Salida esperada**
-`
+```
 Información inicial de la cuenta:
 Titular de la cuenta: Juan Pérez
 Número de cuenta: 123456789
@@ -69,7 +69,7 @@ Información final de la cuenta:
 Titular de la cuenta: Juan Pérez
 Número de cuenta: 123456789
 Saldo: $1200
-`
+```
 
 ---
 

@@ -60,22 +60,22 @@ g++ tareas.cpp -o tareas
 ## 🧪 Ejemplo de uso
 
 **Entrada (usuario)**
-`
+```
 1. Agregar tarea
 Descripción de la tarea: Comprar pan
 ¿Es urgente? (1: Sí, 0: No): 0
-`
+```
 
 **Salida en consola**
-`
+```
 Tareas Normales:
 - Comprar pan
-`
+```
 
 Archivo generado (tareas.txt)
-`
+```
 0 Comprar pan
-`
+```
 
 ---
 

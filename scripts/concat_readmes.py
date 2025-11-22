@@ -9,7 +9,7 @@ output_file = "GLOBAL.md"
 with open(output_file, "w", encoding="utf-8") as global_file:
     for root, dirs, files in os.walk(repo_path):
         # Ignorar carpetas ocultas y la carpeta .git
-        if any(part.startswith('.') for part in root.split(os.sep)):
+        if any(part.startswith(".") for part in root.split(os.sep)):
             continue
 
         # Si existe un README.md en la carpeta, lo añadimos

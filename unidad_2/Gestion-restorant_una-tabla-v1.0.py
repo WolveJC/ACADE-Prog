@@ -6,11 +6,40 @@ import csv
 # ---------------------------------------
 # Ejemplo del inventario
 inventario = [
-    {"codigo": 1, "nombre": "Manzana", "demanda": 8, "tiempo_entrega": 3, "fecha_limite": "2025-04-28", "cantidad": 15},
-    {"codigo": 2, "nombre": "Banana", "demanda": 7, "tiempo_entrega": 5, "fecha_limite": "2025-04-25", "cantidad": 2},
-    {"codigo": 3, "nombre": "Lechuga", "demanda": 6, "tiempo_entrega": 2, "fecha_limite": "2025-04-22", "cantidad": 7},
-    {"codigo": 4, "nombre": "Tomate", "demanda": 9, "tiempo_entrega": 4, "fecha_limite": "2025-05-01", "cantidad": 3},
+    {
+        "codigo": 1,
+        "nombre": "Manzana",
+        "demanda": 8,
+        "tiempo_entrega": 3,
+        "fecha_limite": "2025-04-28",
+        "cantidad": 15,
+    },
+    {
+        "codigo": 2,
+        "nombre": "Banana",
+        "demanda": 7,
+        "tiempo_entrega": 5,
+        "fecha_limite": "2025-04-25",
+        "cantidad": 2,
+    },
+    {
+        "codigo": 3,
+        "nombre": "Lechuga",
+        "demanda": 6,
+        "tiempo_entrega": 2,
+        "fecha_limite": "2025-04-22",
+        "cantidad": 7,
+    },
+    {
+        "codigo": 4,
+        "nombre": "Tomate",
+        "demanda": 9,
+        "tiempo_entrega": 4,
+        "fecha_limite": "2025-05-01",
+        "cantidad": 3,
+    },
 ]
+
 
 # ---------------------------------------
 # Algoritmos de ordenamiento
@@ -30,16 +59,18 @@ def insertion_sort(lista, key, descending=False):
         lista[j + 1] = actual
     return lista
 
+
 # 2. Quick Sort (modificado para ordenar por fecha límite de forma recursiva y asumiendo orden ascendente)
 def quick_sort(lista, key):
     if len(lista) <= 1:
         return lista
     else:
         pivot = lista[0]
-        menos  = [x for x in lista[1:] if key(x) < key(pivot)]
+        menos = [x for x in lista[1:] if key(x) < key(pivot)]
         iguales = [x for x in lista if key(x) == key(pivot)]
-        mayor  = [x for x in lista[1:] if key(x) >= key(pivot)]
+        mayor = [x for x in lista[1:] if key(x) >= key(pivot)]
         return quick_sort(menos, key) + iguales + quick_sort(mayor, key)
+
 
 # 3. Selection Sort (implementado de forma estable para listas pequeñas)
 def selection_sort(lista, key, reverse=False):
@@ -58,6 +89,7 @@ def selection_sort(lista, key, reverse=False):
         temp.remove(candidato)
     return nueva_lista
 
+
 # ---------------------------------------
 # Ordenamiento jerárquico
 
@@ -72,20 +104,31 @@ ordenados = insertion_sort(ordenados, key=lambda x: x["tiempo_entrega"], descend
 ordenados = insertion_sort(ordenados, key=lambda x: x["cantidad"], descending=False)
 
 # 1º (más importante): Fecha límite (con Quick Sort en orden ascendente)
-ordenados = quick_sort(ordenados, key=lambda x: datetime.datetime.strptime(x["fecha_limite"], "%Y-%m-%d"))
+ordenados = quick_sort(
+    ordenados, key=lambda x: datetime.datetime.strptime(x["fecha_limite"], "%Y-%m-%d")
+)
 
 # ---------------------------------------
 # Preparar datos en cabeceras para la visualizar
-headers = ["Código", "Nombre", "Demanda", "Tiempo entrega(Días)", "Fecha límite", "Cantidad"]
+headers = [
+    "Código",
+    "Nombre",
+    "Demanda",
+    "Tiempo entrega(Días)",
+    "Fecha límite",
+    "Cantidad",
+]
 
 data_matrix = []
 for item in ordenados:
-    row = [item["codigo"], 
-           item["nombre"], 
-           item["demanda"], 
-           item["tiempo_entrega"], 
-           item["fecha_limite"], 
-           item["cantidad"]]
+    row = [
+        item["codigo"],
+        item["nombre"],
+        item["demanda"],
+        item["tiempo_entrega"],
+        item["fecha_limite"],
+        item["cantidad"],
+    ]
     data_matrix.append(row)
 
 # Fecha y hora de la consulta
@@ -93,13 +136,10 @@ fecha_consulta = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 # ---------------------------------------
 # Visualización con Matplotlib
-fig, ax = plt.subplots(figsize=(10, len(ordenados)*0.6 + 2))
-ax.axis('off')
+fig, ax = plt.subplots(figsize=(10, len(ordenados) * 0.6 + 2))
+ax.axis("off")
 
-tabla = ax.table(cellText=data_matrix,
-                 colLabels=headers,
-                 loc='center',
-                 cellLoc='center')
+tabla = ax.table(cellText=data_matrix, colLabels=headers, loc="center", cellLoc="center")
 tabla.auto_set_font_size(False)
 tabla.set_fontsize(10)
 tabla.scale(1.2, 1.2)
@@ -116,7 +156,7 @@ plt.show()
 # ---------------------------------------
 # Generar un archivo CSV con el registro de la consulta
 nombre_csv = f"registro_inventario_jerarquico_{timestamp}.csv"
-with open(nombre_csv, mode='w', newline='', encoding='utf-8') as file:
+with open(nombre_csv, mode="w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file)
     # Escribir encabezado con la fecha de consulta
     writer.writerow(["Fecha Consulta"] + headers)

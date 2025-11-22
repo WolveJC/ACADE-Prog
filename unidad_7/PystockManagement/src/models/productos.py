@@ -36,8 +36,7 @@ class Producto:
     @nombre.setter
     def nombre(self, nombre):
         if not isinstance(nombre, str) or not nombre.strip():
-            raise ValueError(
-                "El nombre del producto debe ser una cadena no vacía.")
+            raise ValueError("El nombre del producto debe ser una cadena no vacía.")
         self.__nombre = nombre
 
     @property
@@ -47,8 +46,7 @@ class Producto:
     @precio.setter
     def precio(self, precio):
         if not isinstance(precio, (int, float)) or precio <= 0:
-            raise ValueError(
-                "El precio debe ser un número positivo mayor que cero.")
+            raise ValueError("El precio debe ser un número positivo mayor que cero.")
         self.__precio = precio
 
     @property
@@ -58,8 +56,7 @@ class Producto:
     @cantidad.setter
     def cantidad(self, cantidad):
         if not isinstance(cantidad, int) or cantidad < 0:
-            raise ValueError(
-                "La cantidad debe ser un número entero no negativo.")
+            raise ValueError("La cantidad debe ser un número entero no negativo.")
         self.__cantidad = cantidad
 
     @property
@@ -69,6 +66,5 @@ class Producto:
     @codigo.setter
     def codigo(self, codigo):
         if not isinstance(codigo, str) or not codigo.strip():
-            raise ValueError(
-                "El código del producto debe ser una cadena no vacía.")
+            raise ValueError("El código del producto debe ser una cadena no vacía.")
         self.__codigo = codigo

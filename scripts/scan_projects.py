@@ -8,7 +8,7 @@ projects = []
 
 for root, dirs, files in os.walk(repo_path):
     # Ignorar carpetas ocultas y la carpeta .git
-    if any(part.startswith('.') for part in root.split(os.sep)):
+    if any(part.startswith(".") for part in root.split(os.sep)):
         continue
 
     # Detectar proyectos: carpeta que contiene un README.md
@@ -29,7 +29,7 @@ for root, dirs, files in os.walk(repo_path):
             "title": project_name,
             "readme": os.path.join(root, "README.md"),
             "icon": icon_file,
-            "url": f"https://github.com/USUARIO/REPO/tree/main/{project_name}"
+            "url": f"https://github.com/USUARIO/REPO/tree/main/{project_name}",
         }
 
         projects.append(project)

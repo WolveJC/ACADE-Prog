@@ -1,6 +1,7 @@
 from src.services.inventario_manager import Inventario
 from src.models.productos import Producto
 
+
 def obtener_datos_producto():
     """Solicita los datos del producto al usuario con validación."""
     try:
@@ -17,8 +18,7 @@ def obtener_datos_producto():
     except ValueError as e:
         # Captura errores si float() o int() fallan
         # O si un setter lanza ValueError
-        print(
-            f"Error de entrada de datos: {e}")
+        print(f"Error de entrada de datos: {e}")
         print("Asegúrate de ingresar tipos y valores correctos.")
         return None
     except Exception as e:
@@ -43,29 +43,29 @@ def main_menu():
         try:
             opcion = input("Selecciona una opción (1-6): ").strip()
 
-            if opcion == '1':
+            if opcion == "1":
                 print("\n>>> Agregar Producto <<<")
                 nuevo_producto = obtener_datos_producto()
                 if nuevo_producto:
                     mi_inventario.agg_prod(nuevo_producto)
 
-            elif opcion == '2':
+            elif opcion == "2":
                 print("\n>>> Buscar Producto <<<")
                 mi_inventario.buscar_producto()
 
-            elif opcion == '3':
+            elif opcion == "3":
                 print("\n>>> Actualizar Cantidad <<<")
                 mi_inventario.actualizar_cantidad()
 
-            elif opcion == '4':
+            elif opcion == "4":
                 print("\n>>> Eliminar Producto <<<")
                 mi_inventario.eliminar_producto()
 
-            elif opcion == '5':
+            elif opcion == "5":
                 print("\n>>> Listar Productos <<<")
                 mi_inventario.imprimir()
 
-            elif opcion == '6':
+            elif opcion == "6":
                 mi_inventario.save_stock()
                 print("\nSaliendo del sistema de inventario. ¡Hasta pronto!")
                 break

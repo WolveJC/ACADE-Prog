@@ -1,17 +1,16 @@
 import os
-from google.colab import drive
 import time
 
 # Montar Google Drive
-drive.mount('/content/drive')
+# drive.mount('/content/drive')  # Solo necesario en Colab
 
 # Definir el directorio 
-DIRUTH= '/content/drive/My Drive/' 
+DIRUTH = '/content/drive/My Drive/' 
 
 def list_arch(directory):
     try:
         files = os.listdir(directory)
-        files_dates = []
+        file_dates = []  # Aquí definimos correctamente la variable
 
         for file in files:
             file_path = os.path.join(directory, file)

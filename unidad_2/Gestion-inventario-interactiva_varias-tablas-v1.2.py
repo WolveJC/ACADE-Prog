@@ -1,10 +1,12 @@
-import matplotlib.pyplot as plt
-from matplotlib import table
-import datetime
+# Standard library
 import csv
+import datetime
 import random
 import string
 
+# Third-party libraries
+import matplotlib.pyplot as plt
+from matplotlib import table
 
 # ------------------------------------------
 # Función para generar código alfanumérico aleatorio

@@ -11,7 +11,7 @@ DIRUTH= '/content/drive/My Drive/'
 def list_arch(directory):
     try:
         files = os.listdir(directory)
-        files_with_dates = []
+        files_dates = []
 
         for file in files:
             file_path = os.path.join(directory, file)

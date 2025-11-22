@@ -1,7 +1,11 @@
+# Standard library
+import csv
+import datetime
+
+# Third-party libraries
 import matplotlib.pyplot as plt
 from matplotlib import table
-import datetime
-import csv
+
 
 # ---------------------------------------
 # Ejemplo del inventario

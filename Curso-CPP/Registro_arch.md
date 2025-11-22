@@ -1,22 +1,64 @@
-# Proyecto: Registro de Curso 📚
+# 🗂️ Sistema de Registro y Calculadora Temporal en C++
 
-## 📌 Descripción
-Este programa en C++ permite:
-- Registrar datos de un usuario (nombre, cédula, curso).
-- Ingresar duración del curso en semanas, días extra y horas extra.
-- Guardar los datos en un archivo con extensión seleccionada (.txt, .log, .doc).
-- Calcular la duración total del curso en días, horas y segundos.
+![C++ Badge](https://img.shields.io/badge/Language-C++-blue.svg)
+![IO](https://img.shields.io/badge/Feature-File_Handling-orange.svg)
 
----
+Herramienta de consola para registrar estudiantes en cursos, generar archivos de respaldo y calcular la duración total del aprendizaje en segundos exactos.
 
-## ⚙️ Requisitos
-- Lenguaje: C++ (versión 11 o superior recomendada)
-- Librerías estándar: `<iostream>`, `<fstream>`, `<string>`
+## ✨ Características
 
----
+* **Persistencia de Datos:** Genera archivos automáticamente con extensiones personalizables (`.txt`, `.log`, `.doc`).
+* **Validación de Entrada:** Protege contra valores de tiempo negativos.
+* **Precisión Matemática:** Conversión precisa de semanas a segundos utilizando tipos de datos extendidos (`long long`).
+* **Estructuras:** Uso de `struct` para modelado de datos.
 
-## 🚀 Compilación y ejecución
+## 🚀 Instrucciones
+
+### Compilación
 ```bash
-g++ registro.cpp -o registro
-./registro
+g++ main.cpp -o registro_curso
+````
+
+### Ejecución
+
+```bash
+./registro_curso
+```
+
+## 🛠️ Funcionamiento Interno
+
+### Flujo de Guardado de Archivos
+
+El sistema construye el nombre del archivo dinámicamente:
+
+```mermaid
+graph LR
+    A[Input: Nombre Archivo] --> B{Selector Extensión};
+    B -- 1 --> C[.txt];
+    B -- 2 --> D[.log];
+    B -- 3 --> E[.doc];
+    C --> F[Crear Archivo];
+    D --> F;
+    E --> F;
+    F --> G[Escribir Datos del Struct];
+```
+
+### Lógica de Conversión
+
+La función `resolver()` transforma el tiempo humano (Semanas/Días) a tiempo de máquina (Segundos):
+
+| Input | Proceso | Output |
+| :--- | :--- | :--- |
+| Semanas | `* 7 + dias` | Días Totales |
+| Días Totales | `* 24 + horas` | Horas Totales |
+| Horas Totales | `* 3600` | **Segundos Totales** |
+
+## 📄 Ejemplo de Salida (Archivo Generado)
+
+Si el usuario elige la opción 1, se crea `archivo.txt` con este contenido:
+
+```text
+Nombre: Juan Perez
+Cédula: 12345678
+Curso: Programación Avanzada
 ```

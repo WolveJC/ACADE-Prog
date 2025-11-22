@@ -49,22 +49,22 @@ Estructura que almacena los datos de cada vuelo:
 ## 🧪 Ejemplo de uso
 
 **Entrada:**
-`
+```
 Ingrese código del vuelo 1: 101
 Ingrese número de pasajeros del vuelo 1: 120
 Ingrese kilómetros del vuelo 1: 500
 ...
-`
+```
 
 **Salida en consola:**
-`
+```
 Archivo generado: mayorRecorrido.txt
 Archivo generado: masPasajeros.txt
-`
+```
 
 **Archivos creados:**
-- mayorRecorrido.txt → contiene el código del vuelo con mayor recorrido.  
-- masPasajeros.txt → contiene los kilómetros recorridos por el vuelo con más pasajeros.  
+- `mayorRecorrido.txt` → contiene el código del vuelo con mayor recorrido.  
+- `masPasajeros.txt` → contiene los kilómetros recorridos por el vuelo con más pasajeros.  
 
 ---
 

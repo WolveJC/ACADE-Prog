@@ -67,7 +67,7 @@ g++ personas.cpp -o personas
 ## 🧪 Ejemplo de uso
 
 **Entrada (en código)**
-`cpp
+```cpp
 trabajador* emp = new trabajador();
 emp->ter_setjob("Mario", "Garcia", 4567233, 34, "Obrero", 130);
 
@@ -76,10 +76,10 @@ estudiante->ter_setestu("Adol", "Cristin", 30665344, 18, "Castellano", 16, 13, 1
 
 uni* estUni = new uni();
 estUni->ter_setuni("Juan", "Pérez", 12345678, 20, "Ingeniería", 18, 17, 19, "Ingeniería de Sistemas", "Licenciado");
-`
+```
 
 **Salida esperada**
-`
+```
 -Empleado-
 Nombre: Mario
 Apellido: Garcia
@@ -107,7 +107,7 @@ Notas: 18/17/19
 Promedio: 18
 Carreara: Ingeniería de Sistemas
 Grado de formación: Licenciado
-`
+```
 
 ---
 

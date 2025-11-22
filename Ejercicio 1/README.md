@@ -23,7 +23,7 @@ Puedes abrir y ejecutar el código directamente en Colab desde este enlace:
 
 ---
 
-##🧪 Ejemplo de salida
+## 🧪 Ejemplo de salida
 
 ```
 Contenido del directorio ordenado (carpetas primero):

@@ -1,20 +1,21 @@
-# Ignorar la carpeta de configuración de VS Code
-.vscode/
-
-# Ignorar archivos de sistema
+# Archivos de sistema
 .DS_Store
 Thumbs.db
 
-# Ignorar dependencias (ejemplo para Node.js)
+# Dependencias
 node_modules/
 
-# Ignorar archivos de compilación
+# Archivos de compilación
 dist/
 build/
 
-# Ignorar logs
+# Logs
 *.log
 
-# Ignorar archivos temporales
+# Temporales
 *.tmp
 *.swp
+
+# Python: ignorar todos los pycache y archivos compilados
+**/__pycache__/
+*.pyc

@@ -71,7 +71,8 @@ g++ estudiantes.cpp -o estudiantes
 
 **Entrada (usuario)**
 
-```MENU
+```
+MENU
 1. Ingresar y Sacar pila
 2. Ingresar y Sacar cola
 3. Salir
@@ -94,26 +95,29 @@ Ingrese nota 3:
 15
 El estudiante aprobo
 ¿Ingresar más datos? (s/n):
-n`
+n
+```
 
 **Salida en consola**
 
-```Estudiantes en la pila:
+```
+Estudiantes en la pila:
 Nombre y Apellido: Juan Pérez
 Edad: 20
 Nacionalidad: Venezolana
 Curso: Matemáticas
-Promedio: 13.9 - Aprobado```
+Promedio: 13.9 - Aprobado
+```
 
 ---
 
 ## 📌 Notas
-- Usar std::stack y std::queue en lugar de punteros manuales.  
+- Usar `std::stack` y `std::queue` en lugar de punteros manuales.  
 - Validar entradas (notas entre 0–20, edad positiva).  
 - Evitar system("cls") por ser dependiente de Windows.  
-- Modularizar en clases (GestorEstudiantes).  
+- Modularizar en clases `(GestorEstudiantes)`.  
 - Estandarizar nombres de funciones y variables.  
 - Este programa es un buen ejemplo de estructuras dinámicas (pila y cola) implementadas manualmente.  
 - Demuestra el uso de punteros y memoria dinámica en C++.  
 - Puede servir como base para sistemas más grandes de gestión académica.  
-- En aplicaciones reales se recomienda usar estructuras estándar `(std::stack, std::queue)` y manejo de excepciones.  
+- En aplicaciones reales se recomienda usar estructuras estándar `(std::stack, std::queue)` y manejo de excepciones.

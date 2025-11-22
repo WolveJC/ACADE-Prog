@@ -71,7 +71,7 @@ g++ estudiantes.cpp -o estudiantes
 
 **Entrada (usuario)**
 
-`MENU
+```MENU
 1. Ingresar y Sacar pila
 2. Ingresar y Sacar cola
 3. Salir
@@ -98,12 +98,12 @@ n`
 
 **Salida en consola**
 
-`Estudiantes en la pila:
+```Estudiantes en la pila:
 Nombre y Apellido: Juan Pérez
 Edad: 20
 Nacionalidad: Venezolana
 Curso: Matemáticas
-Promedio: 13.9 - Aprobado`
+Promedio: 13.9 - Aprobado```
 
 ---
 

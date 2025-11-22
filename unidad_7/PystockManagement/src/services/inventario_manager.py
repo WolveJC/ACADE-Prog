@@ -1,7 +1,7 @@
-from ..models.productos import Producto
 import os
 import json
 
+from ..models.productos import Producto
 
 class Inventario:
     def __init__(self, file_name="data_stock.json"):

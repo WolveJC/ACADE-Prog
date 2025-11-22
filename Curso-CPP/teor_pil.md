@@ -63,7 +63,7 @@ g++ personas.cpp -o personas
 ## 🧪 Ejemplo de uso
 
 **Entrada (usuario)**
-`
+```
 Ingrese nombre de la persona:
 Juan
 Ingrese apellido de la persona:
@@ -78,10 +78,10 @@ Debe ingresar más datos? (s/n):
 n
 Ingrese el nombre con el que desea guardar el archivo:
 personas
-`
+```
 
 **Salida en consola**
-`
+```
 Nombre: Juan Pérez
 Apellido: Pérez
 Edad: 25
@@ -89,17 +89,17 @@ Altura: 1.75
 Numero asignado: 5
 Numero factorial: 120
 ¿Sacar siguiente dato? (s/n)
-`
+```
 
 **Archivo generado (personas.txt)**
-`
+```
 Nombre: Juan
 Apellido: Pérez
 Edad: 25
 Altura: 1.75m
 Numero asignado: 5
 Numero factorial: 120
-`
+```
 
 ---
 

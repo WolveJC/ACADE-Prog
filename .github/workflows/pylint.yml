@@ -44,7 +44,7 @@ jobs:
     - name: Ejecutar formateador Black
       run: |
         echo "Verificando formato de código con Black..."
-        black --line-length 100 .
+        black --line-length 90 .
 
     - name: Analizando el código con Pylint
       run: |

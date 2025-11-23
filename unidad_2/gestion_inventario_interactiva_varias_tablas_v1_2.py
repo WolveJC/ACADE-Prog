@@ -17,7 +17,6 @@ from typing import Union
 
 # Third-party libraries
 import matplotlib.pyplot as plt
-from matplotlib import table
 
 # ------------------------------------------
 # 1. Funciones Auxiliares
@@ -87,7 +86,10 @@ def ingresar_productos(inventario: list):
 
         # 2. Demanda
         demanda = _obtener_entero_valido("Demanda (valor entre 1-10): ")
-        if demanda is None or not (1 <= demanda <= 10):
+        if (
+            demanda is None
+            or demanda < 1
+            or demanda > 10):
             print("La demanda debe ser un número entre 1 y 10.")
             continue
 

@@ -7,7 +7,7 @@ propiedades (getters y setters).
 """
 
 import sys
-from typing import Union
+# from typing import Union 
 
 # ====================================================================
 # CLASE PRODUCTO (Modelo)
@@ -17,9 +17,6 @@ from typing import Union
 class Producto:
     """
     Representa un producto con sus atributos de nombre, precio, cantidad y código.
-    
-    R0902 Corregido: La validación de los atributos se movió al constructor
-    para eliminar la duplicidad de atributos internos (self.__attr).
     """
 
     def __init__(self, nombre: str, precio: float, cantidad: int, codigo: str):
@@ -32,7 +29,7 @@ class Producto:
             cantidad: Cantidad en inventario (debe ser no negativo).
             codigo: Identificador único del producto.
         """
-        # La validación estricta ahora ocurre en obtener_datos_producto()
+        # Atributos internos (con un solo guion bajo para Pylint R0902)
         self._nombre = nombre
         self._precio = precio
         self._cantidad = cantidad
@@ -54,7 +51,6 @@ class Producto:
         """Define la comparación 'menor que' (<) basada en el precio."""
         if not isinstance(otro, Producto):
             return NotImplemented
-        # Se usan los atributos internos (aunque aquí se ven "públicos")
         return self.precio < otro.precio
 
     def __eq__(self, otro):
@@ -63,46 +59,53 @@ class Producto:
             return NotImplemented
         return self.codigo == otro.codigo
 
-    # --- Propiedades Simplificadas ---
-    # Se mantienen las propiedades para control de acceso,
-    # pero sin atributos internos duplicados (__).
+    # --- Propiedades (Getters y Setters con validación) ---
+    # C0116 Corregido: Añadidos Docstrings a todos los getters y setters
 
     @property
     def nombre(self):
+        """Obtiene el nombre del producto."""
         return self._nombre
 
     @nombre.setter
     def nombre(self, nombre):
+        """Establece el nombre del producto, validando que no esté vacío."""
         if not isinstance(nombre, str) or not nombre.strip():
             raise ValueError("El nombre del producto debe ser una cadena no vacía.")
         self._nombre = nombre
 
     @property
     def precio(self):
+        """Obtiene el precio del producto."""
         return self._precio
 
     @precio.setter
     def precio(self, precio):
+        """Establece el precio del producto, validando que sea positivo."""
         if not isinstance(precio, (int, float)) or precio <= 0:
             raise ValueError("El precio debe ser un número positivo mayor que cero.")
         self._precio = precio
 
     @property
     def cantidad(self):
+        """Obtiene la cantidad en inventario."""
         return self._cantidad
 
     @cantidad.setter
     def cantidad(self, cantidad):
+        """Establece la cantidad, validando que sea un entero no negativo."""
         if not isinstance(cantidad, int) or cantidad < 0:
             raise ValueError("La cantidad debe ser un número entero no negativo.")
         self._cantidad = cantidad
 
     @property
     def codigo(self):
+        """Obtiene el código del producto."""
         return self._codigo
 
     @codigo.setter
     def codigo(self, codigo):
+        """Establece el código, validando que sea una cadena no vacía."""
         if not isinstance(codigo, str) or not codigo.strip():
             raise ValueError("El código del producto debe ser una cadena no vacía.")
         self._codigo = codigo
@@ -116,15 +119,20 @@ class Producto:
 class Inventario:
     """
     Gestiona una colección de objetos Producto utilizando un diccionario.
+
+    Las operaciones incluyen agregar, listar, buscar, actualizar y eliminar productos.
     """
 
     def __init__(self):
         """Inicializa el inventario con un diccionario vacío."""
-        self.productos = {}  # Diccionario: clave=código (str), valor=objeto Producto
+        self.productos = {}
 
     def agg_prod(self, producto: Producto):
         """
         Agrega un producto al inventario.
+
+        Args:
+            producto: Objeto Producto a agregar.
         """
         if not isinstance(producto, Producto):
             print("Error: Solo se pueden agregar objetos de tipo 'Producto' al inventario.")
@@ -173,7 +181,6 @@ class Inventario:
 
         producto_a_actualizar = self.productos[id_search]
 
-        # Lógica de validación de entrada
         while True:
             try:
                 new_cantidad_str = input(
@@ -182,8 +189,6 @@ class Inventario:
                 ).strip()
                 new_cantidad = int(new_cantidad_str)
 
-                # La validación de new_cantidad < 0 ya la tienes en el setter, 
-                # pero es buena práctica validar antes de la asignación.
                 if new_cantidad < 0:
                     print(
                         "Error: La cantidad no puede ser un número negativo. Inténtalo de nuevo."
@@ -194,8 +199,6 @@ class Inventario:
 
             except ValueError:
                 print("Error de Valor: Se espera una cantidad numérica entera.")
-            # W0718 Corregido: Reemplazado por una excepción más específica, 
-            # ya que solo se espera ValueError o TypeError aquí.
             except TypeError:
                 print("Error de Tipo: Ocurrió un problema con el tipo de dato.")
 
@@ -243,26 +246,19 @@ def obtener_datos_producto():
         cantidad = int(input("Cantidad del producto: "))
         codigo = input("Código del producto: ").strip()
 
-        # Creamos la instancia de Producto. Las validaciones de los setters se ejecutan aquí.
         return Producto(nombre, precio, cantidad, codigo)
 
     except ValueError as e:
-        # Captura errores si float() o int() fallan, o si un setter lanza ValueError
         print(
             f"Error de entrada de datos: {e}. Asegúrate de ingresar tipos y valores correctos."
         )
         return None
-    # W0718 Corregido: Se debe especificar el tipo de error
     except TypeError as e:
-        # Captura errores de tipo si se pasan argumentos incorrectos a Producto.
         print(f"Error de tipo de dato: {e}")
         return None
-
-    except KeyboardInterrupt as e:
-        print(f"Ocurrió un error inesperado al obtener los datos: {e}")
-        return None
-
-    except SystemExit as e:
+    except Exception as e:
+        # Se deja la captura de Exception aquí para evitar que errores inesperados 
+        # en la creación del objeto Producto rompan el menú principal.
         print(f"Ocurrió un error inesperado al obtener los datos: {e}")
         return None
 
@@ -307,20 +303,19 @@ def main_menu():
                 mi_inventario.imprimir()
 
             elif opcion == "6":
-                print("\nSaliendo del sistema de inventario. ¡Hasta pronto! ")
-                # Se usa sys.exit() para una salida limpia
+                print("\nSaliendo del sistema de inventario. ¡Hasta pronto!")
                 sys.exit(0)
 
             else:
                 print("Opción no válida. Por favor, selecciona un número del 1 al 6.")
 
-        # W0718 Corregido: Se utiliza BaseException para capturar KeyboardInterrupt, SystemExit
-        # y garantizar que el menú no se caiga sin capturar la amplia Exception.
-        except BaseException as e:
-            if isinstance(e, SystemExit):
-                raise  # Permite que sys.exit(0) funcione
-            print(f"Error grave del sistema o interrupción: {e}")
-            sys.exit(1)
+        # W0718 Corregido: Capturamos errores específicos de interrupción del flujo.
+        except (KeyboardInterrupt, SystemExit):
+            # Captura Ctrl+C y sys.exit(0)
+            print("\nInterrupción detectada. Terminando el programa.")
+            sys.exit(0)
+        except Exception as e:
+            print(f"Error inesperado: {e}")
 
 
 # Punto de entrada de la aplicación

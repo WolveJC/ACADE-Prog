@@ -12,8 +12,8 @@ import csv
 import datetime
 import random
 import string
-import sys  # Añadido para salida limpia
-from typing import Union
+# import sys  # Eliminado W0611: sys no se usa.
+from typing import Union, List, Tuple # Añadido List/Tuple para compatibilidad si Python < 3.9
 
 # Third-party libraries
 import matplotlib.pyplot as plt
@@ -58,7 +58,7 @@ def _obtener_fecha_valida(prompt: str, formato: str = "%Y-%m-%d") -> Union[str, 
 
 
 # ------------------------------------------
-# Ingreso interactivo de productos
+# Ingreso interactivo de productos (W0621 Corregido)
 # ------------------------------------------
 def ingresar_productos(lista_inventario: list):
     """Permite al usuario ingresar productos de manera interactiva."""
@@ -69,13 +69,15 @@ def ingresar_productos(lista_inventario: list):
         codigo_input = input("Código (dejar vacío para auto-generar): ").strip()
         if not codigo_input:
             codigo = generar_codigo_aleatorio()
-            existentes = {p["codigo"] for p in inventario}
+            # W0621 corregido: usar lista_inventario en lugar de inventario
+            existentes = {p["codigo"] for p in lista_inventario}
             while codigo in existentes:
                 codigo = generar_codigo_aleatorio()
             print(f"Se generó el código automático: {codigo}")
         else:
             codigo = codigo_input
-            if codigo in {p["codigo"] for p in inventario}:
+            # W0621 corregido: usar lista_inventario en lugar de inventario
+            if codigo in {p["codigo"] for p in lista_inventario}:
                 print(f"Error: El código '{codigo}' ya existe.")
                 continue
 
@@ -133,14 +135,7 @@ def ingresar_productos(lista_inventario: list):
 def insertion_sort(lista: list, key: callable, descending: bool = False) -> list:
     """
     Implementa el Insertion Sort, adaptable para orden ascendente o descendente.
-
-    Args:
-        lista: La lista de diccionarios a ordenar.
-        key: Función para obtener el valor de ordenamiento.
-        descending: True para ordenar de mayor a menor.
-
-    Returns:
-        La lista ordenada.
+    ...
     """
     for i in range(1, len(lista)):
         actual = lista[i]
@@ -164,14 +159,7 @@ def insertion_sort(lista: list, key: callable, descending: bool = False) -> list
 def bubble_sort(lista: list, key: callable, descending: bool = False) -> list:
     """
     Implementa el algoritmo Bubble Sort.
-
-    Args:
-        lista: La lista de diccionarios a ordenar.
-        key: Función para obtener el valor de ordenamiento.
-        descending: Si es True, ordena de mayor a menor.
-
-    Returns:
-        La lista ordenada.
+    ...
     """
     n = len(lista)
     swapped = True
@@ -194,13 +182,7 @@ def bubble_sort(lista: list, key: callable, descending: bool = False) -> list:
 def quick_sort(lista: list, key: callable) -> list:
     """
     Implementa el Quick Sort recursivo (orden ascendente).
-
-    Args:
-        lista: La lista de diccionarios a ordenar.
-        key: Función para obtener el valor de ordenamiento.
-
-    Returns:
-        La lista ordenada.
+    ...
     """
     if len(lista) <= 1:
         return lista
@@ -216,14 +198,7 @@ def quick_sort(lista: list, key: callable) -> list:
 def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
     """
     Implementa el Selection Sort (utilizado aquí de forma estable con lista temporal).
-
-    Args:
-        lista: La lista de diccionarios a ordenar.
-        key: Función para obtener el valor de ordenamiento.
-        reverse: Si es True, ordena de mayor a menor.
-
-    Returns:
-        La lista ordenada.
+    ...
     """
     # Esta implementación es la versión 'estable' del selection sort
     nueva_lista = []
@@ -244,7 +219,7 @@ def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
 
 
 # ------------------------------------------
-# 3. Generar listas ordenadas utilizando distintos algoritmos
+# 3. Generar listas ordenadas utilizando distintos algoritmos (W0621 Corregido)
 # ------------------------------------------
 
 
@@ -270,12 +245,12 @@ def generar_inventarios_ordenados(datos_originales: list) -> dict:
 
 
 # ------------------------------------------
-# 4. Función para visualizar y guardar cada tabla
+# 4. Función para visualizar y guardar cada tabla (E/W Corregidos)
 # ------------------------------------------
 
 
 def generate_table_and_csv(
-    sorted_data: list, title: str, csv_headers: list,
+    sorted_data: list, title: str, headers_visual: list, csv_headers: list, # <-- Firma Corregida
     query_date: str, algorithm_key: str
 ):
     """
@@ -284,7 +259,8 @@ def generate_table_and_csv(
     Args:
         sorted_data: La lista de diccionarios de inventario ya ordenada.
         title: Título del gráfico.
-        headers: Encabezados de la tabla.
+        headers_visual: Encabezados de la tabla para Matplotlib.
+        csv_headers: Encabezados para el archivo CSV.
         query_date: Fecha y hora de la consulta (timestamp).
         algorithm_key: Clave del algoritmo (usada para nombrar archivos).
     """
@@ -304,7 +280,8 @@ def generate_table_and_csv(
     # Crear figura para la tabla
     fig, ax = plt.subplots(figsize=(10, len(sorted_data) * 0.6 + 2))
     ax.axis("off")
-    tbl = ax.table(cellText=data_matrix, colLabels=headers, loc="center", cellLoc="center")
+    # E0606 Corregido: Usar el parámetro 'headers_visual' para la tabla
+    tbl = ax.table(cellText=data_matrix, colLabels=headers_visual, loc="center", cellLoc="center")
     tbl.auto_set_font_size(False)
     tbl.set_fontsize(10)
     tbl.scale(1.2, 1.2)
@@ -329,7 +306,8 @@ def generate_table_and_csv(
     try:
         with open(csv_filename, mode="w", newline="", encoding="utf-8") as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(["Fecha Consulta"] + headers)
+            # W0613 Corregido: Usar el parámetro 'csv_headers' para el CSV
+            writer.writerow(["Fecha Consulta"] + csv_headers)
             for row in data_matrix:
                 writer.writerow([query_date] + row)
     except IOError as e:
@@ -351,11 +329,15 @@ if __name__ == "__main__":
 
     if not inventario:
         print("\n No se ingresaron productos. El programa se cerrará.")
-        sys.exit()
+        # Usamos quit() o exit() en lugar de sys.exit() ya que sys fue eliminado
+        quit()
 
     inventarios_ordenados = generar_inventarios_ordenados(inventario)
 
-    headers = ["Código", "Nombre", "Demanda", "Tiempo entrega", "Fecha límite", "Cantidad"]
+    # Definición de variables locales para los encabezados
+    headers_visual = ["Código", "Nombre", "Demanda", "Tiempo entrega", "Fecha límite", "Cantidad"]
+    headers_csv = headers_visual.copy()
+    
     fecha_consulta = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     ordenamientos_config = [
@@ -385,7 +367,9 @@ if __name__ == "__main__":
         generate_table_and_csv(
             sorted_data=orden["data"],
             title=orden["title"],
-            headers=headers,
+            # E1123/E1120 Corregidos: Usar los nombres de argumentos esperados
+            headers_visual=headers_visual, 
+            csv_headers=headers_csv,
             query_date=fecha_consulta,
             algorithm_key=orden["algorithm_key"],
         )

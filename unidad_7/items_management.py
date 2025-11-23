@@ -1,15 +1,36 @@
-import sys
+"""
+Módulo de Gestión de Inventario (Monolítico - v1.0).
 
-# sys se importa solo como ejemplo para manejo de errores generales,
-# aunque no es estrictamente necesario para la lógica central del programa.
+Implementa las clases Producto (Modelo) e Inventario (Servicio/Manager)
+para la gestión básica de productos con validación de datos mediante
+propiedades (getters y setters).
+"""
+# Standard library
+import datetime # Se mantiene porque se usa en el dunder __del__ como ejemplo.
+
+# Third-party libraries
+# (No hay librerías de terceros en este ejemplo)
 
 # ====================================================================
 # CLASE PRODUCTO (Modelos)
 # ====================================================================
 
-
 class Producto:
-    def __init__(self, nombre, precio, cantidad, codigo):
+    """
+    Representa un producto con sus atributos de nombre, precio, cantidad y código.
+    
+    Utiliza propiedades (getters/setters) para encapsular y validar los datos.
+    """
+    def __init__(self, nombre: str, precio: float, cantidad: int, codigo: str):
+        """
+        Inicializa una nueva instancia de Producto.
+        
+        Args:
+            nombre: Nombre del producto.
+            precio: Precio del producto (debe ser positivo).
+            cantidad: Cantidad en inventario (debe ser no negativo).
+            codigo: Identificador único del producto.
+        """
         # Al asignar a self.atributo, se llama automáticamente al setter
         self.nombre = nombre
         self.precio = precio
@@ -17,20 +38,25 @@ class Producto:
         self.codigo = codigo
 
     def __del__(self):
+        """Método de finalización que se llama cuando el objeto es destruido."""
         # Método para demostrar la eliminación de la referencia (no garantizado que se ejecute al instante)
         print(f"Objeto {self.codigo} - {self.nombre} eliminado")
 
     def __str__(self):
+        """Representación legible del objeto para impresión."""
         # Representación legible del objeto
-        return f"Código: {self.codigo}\n  Producto: {self.nombre}\n  Precio: ${self.precio:.2f}\n  Cantidad: {self.cantidad}"
+        return (f"Código: {self.codigo}\n  Producto: {self.nombre}\n  "
+                f"Precio: ${self.precio:.2f}\n  Cantidad: {self.cantidad}")
 
     # Métodos dunder de comparación
     def __lt__(self, otro):
+        """Define la comparación 'menor que' (<) basada en el precio."""
         if not isinstance(otro, Producto):
             return NotImplemented
         return self.precio < otro.precio  # Compara por precio
 
     def __eq__(self, otro):
+        """Define la comparación 'igual a' (==) basada en el código."""
         if not isinstance(otro, Producto):
             return NotImplemented
         return self.codigo == otro.codigo  # Compara por unicidad del código
@@ -40,55 +66,75 @@ class Producto:
 
     @property
     def nombre(self):
+        """Obtiene el nombre del producto."""
         return self.__nombre
 
     @nombre.setter
     def nombre(self, nombre):
+        """Establece el nombre del producto, validando que no esté vacío."""
         if not isinstance(nombre, str) or not nombre.strip():
             raise ValueError("El nombre del producto debe ser una cadena no vacía.")
         self.__nombre = nombre
 
     @property
     def precio(self):
+        """Obtiene el precio del producto."""
         return self.__precio
 
     @precio.setter
     def precio(self, precio):
+        """Establece el precio del producto, validando que sea positivo."""
         if not isinstance(precio, (int, float)) or precio <= 0:
             raise ValueError("El precio debe ser un número positivo mayor que cero.")
         self.__precio = precio
 
     @property
     def cantidad(self):
+        """Obtiene la cantidad en inventario."""
         return self.__cantidad
 
     @cantidad.setter
     def cantidad(self, cantidad):
+        """Establece la cantidad, validando que sea un entero no negativo."""
         if not isinstance(cantidad, int) or cantidad < 0:
             raise ValueError("La cantidad debe ser un número entero no negativo.")
         self.__cantidad = cantidad
 
     @property
     def codigo(self):
+        """Obtiene el código del producto."""
         return self.__codigo
 
     @codigo.setter
     def codigo(self, codigo):
+        """Establece el código, validando que sea una cadena no vacía."""
         if not isinstance(codigo, str) or not codigo.strip():
             raise ValueError("El código del producto debe ser una cadena no vacía.")
         self.__codigo = codigo
 
 
-# ====================================================================
+# --------------------------------------------------------------------
 # CLASE INVENTARIO (Servicios/Manager)
-# ====================================================================
+# --------------------------------------------------------------------
 
 
 class Inventario:
+    """
+    Gestiona una colección de objetos Producto utilizando un diccionario.
+    
+    Las operaciones incluyen agregar, listar, buscar, actualizar y eliminar productos.
+    """
     def __init__(self):
+        """Inicializa el inventario con un diccionario vacío."""
         self.productos = {}  # Diccionario: clave=código (str), valor=objeto Producto
 
-    def agg_prod(self, producto):
+    def agg_prod(self, producto: Producto):
+        """
+        Agrega un producto al inventario.
+
+        Args:
+            producto: Objeto Producto a agregar.
+        """
         if not isinstance(producto, Producto):
             print("Error: Solo se pueden agregar objetos de tipo 'Producto' al inventario.")
             return
@@ -101,6 +147,7 @@ class Inventario:
         print(f"✅ Éxito: Producto '{producto.nombre}' (Código: {producto.codigo}) agregado.")
 
     def imprimir(self):
+        """Muestra una lista detallada de todos los productos en el inventario."""
         if not self.productos:
             print("El inventario está vacío. No hay productos para mostrar.")
             return
@@ -113,6 +160,7 @@ class Inventario:
         print("--- Fin del Listado ---")
 
     def buscar_producto(self):
+        """Solicita un código y muestra la información del producto si existe."""
         id_search = input("Ingrese el código del producto a buscar: ").strip()
 
         if id_search in self.productos:
@@ -127,6 +175,7 @@ class Inventario:
             )
 
     def actualizar_cantidad(self):
+        """Solicita un código y actualiza la cantidad de ese producto."""
         id_search = input("Ingrese el código del producto a actualizar: ").strip()
 
         if id_search not in self.productos:
@@ -140,7 +189,8 @@ class Inventario:
             try:
                 # Muestra el nombre del producto que se está actualizando
                 new_cantidad_str = input(
-                    f"Ingrese la nueva cantidad para '{producto_a_actualizar.nombre}' (actual: {producto_a_actualizar.cantidad}): "
+                    f"Ingrese la nueva cantidad para '{producto_a_actualizar.nombre}' "
+                    f"(actual: {producto_a_actualizar.cantidad}): "
                 ).strip()
                 new_cantidad = int(new_cantidad_str)
 
@@ -157,15 +207,23 @@ class Inventario:
             except ValueError:
                 print("❌ Error de Valor: Se espera una cantidad numérica entera.")
             except Exception as e:
-                print(f"Ocurrió un error inesperado al leer la nueva cantidad: {e}")
+                # Se mantiene la captura general para errores inesperados en un contexto interactivo
+                print(f"Ocurrió un error inesperado al leer la nueva cantidad: {e}") 
 
         # Asigna la nueva cantidad (llamando al setter de Producto)
-        producto_a_actualizar.cantidad = new_cantidad
-        print(
-            f"✅ Éxito: Cantidad del producto '{producto_a_actualizar.nombre}' actualizada a {new_cantidad}."
-        )
+        try:
+            producto_a_actualizar.cantidad = new_cantidad
+            print(
+                f"✅ Éxito: Cantidad del producto '{producto_a_actualizar.nombre}' actualizada a {new_cantidad}."
+            )
+        except ValueError as e:
+            # Captura si el setter de Producto rechaza el valor (aunque ya se validó antes)
+             print(f"❌ Error de validación: {e}")
+            
+
 
     def eliminar_producto(self):
+        """Solicita un código y elimina el producto del inventario."""
         id_search = input("Ingrese el código del producto a eliminar: ").strip()
 
         if id_search not in self.productos:
@@ -181,13 +239,18 @@ class Inventario:
         )
 
 
-# ====================================================================
+# --------------------------------------------------------------------
 # MENÚ PRINCIPAL Y LÓGICA DE LA APLICACIÓN
-# ====================================================================
+# --------------------------------------------------------------------
 
 
 def obtener_datos_producto():
-    """Solicita los datos del producto al usuario con validación."""
+    """
+    Solicita los datos del producto al usuario con validación.
+    
+    Returns:
+        Producto: Objeto Producto si los datos son válidos, None en caso contrario.
+    """
     try:
         nombre = input("Nombre del producto: ").strip()
         # Intentamos obtener y convertir precio y cantidad
@@ -205,12 +268,13 @@ def obtener_datos_producto():
         )
         return None
     except Exception as e:
+        # Se mantiene la captura general para errores inesperados
         print(f"❌ Ocurrió un error inesperado al obtener los datos: {e}")
         return None
 
 
 def main_menu():
-    """Ejecuta el menú interactivo."""
+    """Ejecuta el menú interactivo de la aplicación."""
     mi_inventario = Inventario()
 
     while True:
@@ -256,6 +320,7 @@ def main_menu():
                 print("⚠️ Opción no válida. Por favor, selecciona un número del 1 al 6.")
 
         except Exception as e:
+            # Se mantiene la captura general para que la aplicación no se caiga
             print(f"❌ Ocurrió un error inesperado en el menú: {e}")
 
 

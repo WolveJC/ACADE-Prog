@@ -8,6 +8,7 @@ en formato JSON).
 
 import os
 import json
+from typing import Union 
 
 from ..models.productos import Producto
 
@@ -45,7 +46,7 @@ class Inventario:
         # El operador 'or {}' garantiza que self.productos sea un diccionario.
         self.productos = self.load_stock() or {}
 
-    def load_stock(self) -> dict | None:
+    def load_stock(self) -> Union[dict, None]:
         """
         Carga los datos del inventario desde el archivo JSON de persistencia.
 

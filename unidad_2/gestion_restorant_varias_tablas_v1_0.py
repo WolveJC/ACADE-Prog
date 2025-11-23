@@ -13,7 +13,8 @@ import datetime
 # Third-party libraries
 import matplotlib.pyplot as plt
 from matplotlib import table
-import pandas as pd  # Añadido para manejo estructurado de datos en CSV (opcional, pero buena práctica)
+import pandas as pd
+# Añadido para manejo estructurado de datos en CSV (opcional, pero buena práctica)
 
 
 # ---------------------------------------
@@ -287,7 +288,8 @@ ordenamientos = [
     },
 ]
 
-# Iterar sobre cada criterio de ordenamiento, generar y mostrar la tabla, y guardar el CSV correspondiente.
+# Iterar sobre cada criterio de ordenamiento, generar y mostrar la tabla
+# Finalmente, guardar el CSV correspondiente.
 for orden in ordenamientos:
     generate_table_and_csv(
         sorted_data=orden["data"],

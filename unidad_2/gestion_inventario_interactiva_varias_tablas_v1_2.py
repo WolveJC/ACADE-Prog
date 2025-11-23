@@ -13,7 +13,7 @@ import datetime
 import random
 import string
 import sys
-from typing import Union
+from typing import Union, List, Dict, Any # Añadidas las importaciones de tipos faltantes
 
 # Third-party libraries
 import matplotlib.pyplot as plt
@@ -26,12 +26,7 @@ import matplotlib.pyplot as plt
 def generar_codigo_aleatorio(longitud: int = 6) -> str:
     """
     Genera un código alfanumérico aleatorio.
-
-    Args:
-        longitud: Longitud del código deseado.
-
-    Returns:
-        Cadena alfanumérica aleatoria.
+    ...
     """
     caracteres = string.ascii_uppercase + string.digits
     return "".join(random.choices(caracteres, k=longitud))
@@ -58,7 +53,7 @@ def _obtener_fecha_valida(prompt: str, formato: str = "%Y-%m-%d") -> Union[str, 
 
 
 # ------------------------------------------
-# Ingreso interactivo de productos (W0621 Corregido)
+# Ingreso interactivo de productos
 # ------------------------------------------
 def ingresar_productos(lista_inventario: list):
     """Permite al usuario ingresar productos de manera interactiva."""
@@ -69,14 +64,12 @@ def ingresar_productos(lista_inventario: list):
         codigo_input = input("Código (dejar vacío para auto-generar): ").strip()
         if not codigo_input:
             codigo = generar_codigo_aleatorio()
-            # W0621 corregido: usar lista_inventario en lugar de inventario
             existentes = {p["codigo"] for p in lista_inventario}
             while codigo in existentes:
                 codigo = generar_codigo_aleatorio()
             print(f"Se generó el código automático: {codigo}")
         else:
             codigo = codigo_input
-            # W0621 corregido: usar lista_inventario en lugar de inventario
             if codigo in {p["codigo"] for p in lista_inventario}:
                 print(f"Error: El código '{codigo}' ya existe.")
                 continue
@@ -130,7 +123,7 @@ def ingresar_productos(lista_inventario: list):
 # ------------------------------------------
 # 2. Funciones de ordenamiento
 # ------------------------------------------
-
+# ... (Funciones de ordenamiento sin cambios) ...
 
 def insertion_sort(lista: list, key: callable, descending: bool = False) -> list:
     """
@@ -200,7 +193,6 @@ def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
     Implementa el Selection Sort (utilizado aquí de forma estable con lista temporal).
     ...
     """
-    # Esta implementación es la versión 'estable' del selection sort
     nueva_lista = []
     temp = lista.copy()
     while temp:
@@ -219,7 +211,7 @@ def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
 
 
 # ------------------------------------------
-# 3. Generar listas ordenadas utilizando distintos algoritmos (W0621 Corregido)
+# 3. Generar listas ordenadas utilizando distintos algoritmos
 # ------------------------------------------
 
 
@@ -245,13 +237,55 @@ def generar_inventarios_ordenados(datos_originales: list) -> dict:
 
 
 # ------------------------------------------
-# 4. Función para visualizar y guardar cada tabla (E/W Corregidos)
+# 4. Función para visualizar y guardar cada tabla (Refactorizado)
 # ------------------------------------------
 
 
+def _generate_visual_table(data_matrix: List[List[Any]], title: str, headers: list, query_date: str, algorithm_key: str):
+    """Genera la tabla visual con Matplotlib y la guarda."""
+    fig, ax = plt.subplots(figsize=(10, len(data_matrix) * 0.6 + 2))
+    ax.axis("off")
+    tbl = ax.table(cellText=data_matrix, colLabels=headers, loc="center", cellLoc="center")
+    tbl.auto_set_font_size(False)
+    tbl.set_fontsize(10)
+    tbl.scale(1.2, 1.2)
+
+    plt.title(title, fontsize=14)
+    plt.figtext(0.5, 0.01, f"Consulta generada: {query_date}", ha="center", fontsize=8)
+
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    image_filename = f"inventario_{algorithm_key}_{timestamp}.png"
+
+    try:
+        plt.savefig(image_filename, bbox_inches="tight")
+        plt.show()  # Muestra la tabla
+    except IOError as e:
+        print(f" Error al guardar la imagen {image_filename}: {e}")
+
+    plt.close(fig)
+    return image_filename
+
+
+def _generate_csv_log(data_matrix: List[List[Any]], title: str, headers: list, query_date: str, algorithm_key: str):
+    """Guarda el registro de datos en un archivo CSV."""
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    csv_filename = f"registro_{algorithm_key}_{timestamp}.csv"
+    
+    try:
+        with open(csv_filename, mode="w", newline="", encoding="utf-8") as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(["Fecha Consulta"] + headers)
+            for row in data_matrix:
+                writer.writerow([query_date] + row)
+    except IOError as e:
+        print(f"Error al escribir el archivo CSV {csv_filename}: {e}")
+        return None # Devuelve None en caso de fallo
+
+    return csv_filename
+
+
 def generate_table_and_csv(
-    sorted_data: list, title: str, visual_headers: list, csv_headers: list, # <-- Firma Corregida
-    query_date: str, algorithm_key: str
+    sorted_data: list, title: str, headers: list, query_date: str, algorithm_key: str # <--- R0913 Corregido (5/5 argumentos)
 ):
     """
     Genera una tabla visual con Matplotlib, guarda la imagen PNG y un CSV de registro.
@@ -259,11 +293,12 @@ def generate_table_and_csv(
     Args:
         sorted_data: La lista de diccionarios de inventario ya ordenada.
         title: Título del gráfico.
-        headers_visual: Encabezados de la tabla para Matplotlib.
-        csv_headers: Encabezados para el archivo CSV.
+        headers: Encabezados para la tabla visual y el archivo CSV.
         query_date: Fecha y hora de la consulta (timestamp).
         algorithm_key: Clave del algoritmo (usada para nombrar archivos).
     """
+    # R0914 Corregido: La complejidad de variables se movió a las funciones auxiliares.
+    
     # Preparar la matriz de datos para la tabla
     data_matrix = []
     for item in sorted_data:
@@ -277,44 +312,17 @@ def generate_table_and_csv(
         ]
         data_matrix.append(row)
 
-    # Crear figura para la tabla
-    fig, ax = plt.subplots(figsize=(10, len(sorted_data) * 0.6 + 2))
-    ax.axis("off")
-    tbl = ax.table(cellText=data_matrix, colLabels=visual_headers, loc="center", cellLoc="center")
-    tbl.auto_set_font_size(False)
-    tbl.set_fontsize(10)
-    tbl.scale(1.2, 1.2)
+    # Llama a las funciones auxiliares
+    image_filename = _generate_visual_table(data_matrix, title, headers, query_date, algorithm_key)
+    csv_filename = _generate_csv_log(data_matrix, title, headers, query_date, algorithm_key)
 
-    plt.title(title, fontsize=14)
-    plt.figtext(0.5, 0.01, f"Consulta generada: {query_date}", ha="center", fontsize=8)
-
-    # Guardar la figura
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    image_filename = f"inventario_{algorithm_key}_{timestamp}.png"
-
-    try:
-        plt.savefig(image_filename, bbox_inches="tight")
-        plt.show()  # Muestra la tabla
-    except IOError as e:
-        print(f" Error al guardar la imagen {image_filename}: {e}")
-
-    plt.close(fig)
-
-    # Guardar registro en CSV
-    csv_filename = f"registro_{algorithm_key}_{timestamp}.csv"
-    try:
-        with open(csv_filename, mode="w", newline="", encoding="utf-8") as csvfile:
-            writer = csv.writer(csvfile)
-            # W0613 Corregido: Usar el parámetro 'csv_headers' para el CSV
-            writer.writerow(["Fecha Consulta"] + csv_headers)
-            for row in data_matrix:
-                writer.writerow([query_date] + row)
-    except IOError as e:
-        print(f"Error al escribir el archivo CSV {csv_filename}: {e}")
 
     print(f"\n {title} - Archivos generados:")
-    print(" Imagen:", image_filename)
-    print(" Registro CSV:", csv_filename)
+    # Solo imprime si la generación fue exitosa
+    if image_filename:
+        print(" Imagen:", image_filename)
+    if csv_filename:
+        print(" Registro CSV:", csv_filename)
     print("-----------------------------------------")
 
 
@@ -333,9 +341,8 @@ if __name__ == "__main__":
     inventarios_ordenados = generar_inventarios_ordenados(inventario)
 
     # Definición de variables locales para los encabezados
-    headers_visual = ["Código", "Nombre", "Demanda", "Tiempo entrega", "Fecha límite", "Cantidad"]
-    headers_csv = headers_visual.copy()
-    
+    headers_all = ["Código", "Nombre", "Demanda", "Tiempo entrega", "Fecha límite", "Cantidad"]
+
     fecha_consulta = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     ordenamientos_config = [
@@ -365,8 +372,7 @@ if __name__ == "__main__":
         generate_table_and_csv(
             sorted_data=orden["data"],
             title=orden["title"],
-            visual_headers=headers_visual, 
-            csv_headers=headers_csv,
+            headers=headers_all, # <--- headers_visual y headers_csv agrupados
             query_date=fecha_consulta,
             algorithm_key=orden["algorithm_key"],
         )

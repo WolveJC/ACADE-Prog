@@ -8,7 +8,7 @@ import time
 import unittest
 from unittest.mock import patch
 # Se importa Union para compatibilidad con Python < 3.10
-from typing import Union 
+from typing import Union, List, Tuple
 
 # Definir el directorio
 DIRUTH = "/content/drive/My Drive/"
@@ -23,7 +23,7 @@ def list_arch(directory: str) -> Union[list[tuple[str, float]], None]:
         directory (str): La ruta del directorio a escanear.
 
     Returns:
-        Union[list[tuple[str, float]], None]: Una lista de tuplas 
+        Union[List[Tuple[str, float]], None]: Una lista de tuplas 
         (nombre_archivo, mtime_timestamp) ordenada, o None si ocurre un error.
     """
     file_dates = []

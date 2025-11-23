@@ -256,11 +256,6 @@ def obtener_datos_producto():
     except TypeError as e:
         print(f"Error de tipo de dato: {e}")
         return None
-    except Exception as e:
-        # Se deja la captura de Exception aquí para evitar que errores inesperados 
-        # en la creación del objeto Producto rompan el menú principal.
-        print(f"Ocurrió un error inesperado al obtener los datos: {e}")
-        return None
 
 
 def main_menu():
@@ -314,8 +309,6 @@ def main_menu():
             # Captura Ctrl+C y sys.exit(0)
             print("\nInterrupción detectada. Terminando el programa.")
             sys.exit(0)
-        except Exception as e:
-            print(f"Error inesperado: {e}")
 
 
 # Punto de entrada de la aplicación

@@ -99,7 +99,8 @@ def main_menu():
 
         except Exception as e:
             # W0718: Se mantiene la captura de Exception aquí para garantizar
-            # que el bucle del menú no se rompa por un error inesperado en las funciones del manager.
+            # que el bucle del menú no se rompa por un error
+            # inesperado en las funciones del manager.
             print(f"Ocurrió un error inesperado en el menú: {e}")
 
 

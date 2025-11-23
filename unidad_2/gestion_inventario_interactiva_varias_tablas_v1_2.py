@@ -12,8 +12,8 @@ import csv
 import datetime
 import random
 import string
-# import sys  # Eliminado W0611: sys no se usa.
-from typing import Union, List, Tuple # Añadido List/Tuple para compatibilidad si Python < 3.9
+import sys
+from typing import Union
 
 # Third-party libraries
 import matplotlib.pyplot as plt
@@ -250,7 +250,7 @@ def generar_inventarios_ordenados(datos_originales: list) -> dict:
 
 
 def generate_table_and_csv(
-    sorted_data: list, title: str, headers_visual: list, csv_headers: list, # <-- Firma Corregida
+    sorted_data: list, title: str, visual_headers: list, csv_headers: list, # <-- Firma Corregida
     query_date: str, algorithm_key: str
 ):
     """
@@ -280,8 +280,7 @@ def generate_table_and_csv(
     # Crear figura para la tabla
     fig, ax = plt.subplots(figsize=(10, len(sorted_data) * 0.6 + 2))
     ax.axis("off")
-    # E0606 Corregido: Usar el parámetro 'headers_visual' para la tabla
-    tbl = ax.table(cellText=data_matrix, colLabels=headers_visual, loc="center", cellLoc="center")
+    tbl = ax.table(cellText=data_matrix, colLabels=visual_headers, loc="center", cellLoc="center")
     tbl.auto_set_font_size(False)
     tbl.set_fontsize(10)
     tbl.scale(1.2, 1.2)
@@ -329,8 +328,7 @@ if __name__ == "__main__":
 
     if not inventario:
         print("\n No se ingresaron productos. El programa se cerrará.")
-        # Usamos quit() o exit() en lugar de sys.exit() ya que sys fue eliminado
-        quit()
+        sys.exit()
 
     inventarios_ordenados = generar_inventarios_ordenados(inventario)
 
@@ -367,8 +365,7 @@ if __name__ == "__main__":
         generate_table_and_csv(
             sorted_data=orden["data"],
             title=orden["title"],
-            # E1123/E1120 Corregidos: Usar los nombres de argumentos esperados
-            headers_visual=headers_visual, 
+            visual_headers=headers_visual, 
             csv_headers=headers_csv,
             query_date=fecha_consulta,
             algorithm_key=orden["algorithm_key"],

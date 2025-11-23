@@ -38,9 +38,8 @@ def obtener_datos_producto() -> Union[Producto, None]:
         print(f"Error de entrada de datos: {e}")
         print("Asegúrate de ingresar tipos y valores correctos (números para precio/cantidad).")
         return None
-    except Exception as e:
-        # Captura cualquier otro error no anticipado durante la lectura o creación
-        print(f"Ocurrió un error inesperado al obtener los datos: {e}")
+    except TypeError as e:
+        print(f"Error de tipo: {e}")
         return None
 
 
@@ -99,11 +98,15 @@ def main_menu():
                 print("Opción no válida.")
                 print("Por favor, selecciona un número del 1 al 6.")
 
-        except Exception as e:
-            # W0718: Se mantiene la captura de Exception aquí para garantizar
-            # que el bucle del menú no se rompa por un error
-            # inesperado en las funciones del manager.
-            print(f"Ocurrió un error inesperado en el menú: {e}")
+        except (IOError, OSError, ValueError, TypeError) as e:
+            # Captura errores comunes de I/O, disco o validación interna
+            print(f"Error crítico en la operación: {e}")
+        except BaseException as e:
+            # Captura KeyboardInterrupt, SystemExit o cualquier otro error fatal
+            # (Si no se usa sys.exit)
+            print(f"Error fatal del sistema: {e}")
+            sys.exit(1) 
+# Aseguramos la salida en caso de error fatal
 
 
 # Punto de entrada de la aplicación

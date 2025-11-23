@@ -106,9 +106,8 @@ def main_menu():
             if isinstance(e, SystemExit):
                 raise
             
-            print(
-"\nInterrupción detectada (Ctrl+C)." 
-"Terminando el programa.")
+            print("\nInterrupción detectada (Ctrl+C).")
+            print("Terminando el programa.")
             sys.exit(1)
 
 

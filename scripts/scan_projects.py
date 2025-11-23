@@ -34,18 +34,18 @@ for root, dirs, files in os.walk(REPO_PATH):
         ICON_FILE = None
         for ext in [".png", ".jpg", ".jpeg", ".svg"]:
             CANDIDATE = f"icon{ext}"
-            if candidate in files:
+            if CANDIDATE in files:
                 ICON_FILE = os.path.join(root, candidate)
                 break
 
         # Construir objeto del proyecto
-        project = {
+        PROJECT = {
             "id": PROJECT_NAME.lower(),
             "title": PROJECT_NAME,
             "readme": os.path.join(root, "README.md"),
             "icon": ICON_FILE,
             # NOTA: Asegúrate de reemplazar USUARIO/REPO con los valores correctos
-            "url": f"https://github.com/USUARIO/REPO/tree/main/{root}",
+            "url": f"https://github.com/WolveJC/ACADE-Prog/tree/main/{root}",
         }
 
         PROJECTS.append(project)

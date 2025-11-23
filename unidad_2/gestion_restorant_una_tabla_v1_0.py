@@ -11,17 +11,13 @@ tabular con Matplotlib y un registro en CSV.
 import csv
 import datetime
 
-# Eliminado el import de 'os' que fue añadido en una revisión previa
-# pero no se utiliza, aunque Pylint no lo marcó aquí, es buena práctica.
-
 # Third-party libraries
 import matplotlib.pyplot as plt
-from matplotlib import table  # W0611: Unused table imported from matplotlib.
 
 # ==========================================================================
 # Inventario de Ejemplo
 # ==========================================================================
-INVENTARIO = [  # C0103: Renombrado a constante
+INVENTARIO = [
     {
         "codigo": 1,
         "nombre": "Manzana",
@@ -148,40 +144,40 @@ def selection_sort_stable(lista: list, key: callable, reverse: bool = False) -> 
         indice_candidato = 0
 
         # Buscar el elemento más extremo
-        for i, item in enumerate(temp):
-            comparacion = (key(item) > key(candidato)) if reverse else (key(item) < key(candidato))
+        for i, inventario_item in enumerate(temp):
+            comparacion = (
+                key(inventario_item) > key(candidato)
+            ) if reverse else (key(inventario_item) < key(candidato))
 
             if comparacion:
-                candidato = item
+                candidato = inventario_item
                 indice_candidato = i
 
         # Asegurar la estabilidad: usar el índice para eliminar el primer
         # ejemplar encontrado con ese valor extremo
         nueva_lista.append(candidato)
-        temp.pop(indice_candidato)  # Usar pop(indice) es más eficiente/claro que remove(objeto)
+        temp.pop(indice_candidato)
     return nueva_lista
 
 
 # ==========================================================================
 # Ordenamiento jerárquico (Multiple Stable Sort)
 # ==========================================================================
-# Para lograr una clasificación jerárquica (criterios anidados), se debe
-# aplicar el ordenamiento desde el criterio **menos importante** al **más importante**,
-# utilizando algoritmos de ordenamiento estables en los pasos intermedios.
 
 # 4º (menos importante): Demanda (Selection Sort, orden descendente)
-# NOTA: Usamos Selection Sort Stable. Es estable para la implementación dada.
-ordenados = selection_sort_stable(INVENTARIO.copy(), key=lambda x: x["demanda"], reverse=True)
+ordenados = selection_sort_stable(
+    INVENTARIO.copy(), key=lambda x: x["demanda"], reverse=True
+)
 
 # 3º: Tiempo de entrega (Insertion Sort es estable, orden descendente)
-ordenados = insertion_sort(ordenados, key=lambda x: x["tiempo_entrega"], descending=True)
+ordenados = insertion_sort(
+    ordenados, key=lambda x: x["tiempo_entrega"], descending=True
+)
 
 # 2º: Cantidad en inventario (Insertion Sort es estable, orden ascendente)
 ordenados = insertion_sort(ordenados, key=lambda x: x["cantidad"], descending=False)
 
 # 1º (más importante): Fecha límite (Quick Sort, orden ascendente)
-# Quick Sort es inestable, pero como es el paso final, el resultado es el deseado:
-# la prioridad final es la fecha límite.
 ordenados = quick_sort(
     ordenados, key=lambda x: datetime.datetime.strptime(x["fecha_limite"], "%Y-%m-%d")
 )
@@ -189,7 +185,7 @@ ordenados = quick_sort(
 # ==========================================================================
 # Preparar datos y Visualización
 # ==========================================================================
-HEADERS = [  # C0103: Renombrado a constante
+HEADERS = [
     "Código",
     "Nombre",
     "Demanda",
@@ -199,22 +195,20 @@ HEADERS = [  # C0103: Renombrado a constante
 ]
 
 data_matrix = []
-# Corregido: W0621: Redefining name 'item' from outer scope.
-# En este contexto, 'item' no se redefine en un loop anidado, el error es benigno
-# pero la advertencia persiste por la sintaxis. Se mantiene para coherencia.
-for item in ordenados:
+# W0621: Cambiado 'item' por 'inventario_item' para evitar la advertencia
+for inventario_item in ordenados:
     row = [
-        item["codigo"],
-        item["nombre"],
-        item["demanda"],
-        item["tiempo_entrega"],
-        item["fecha_limite"],
-        item["cantidad"],
+        inventario_item["codigo"],
+        inventario_item["nombre"],
+        inventario_item["demanda"],
+        inventario_item["tiempo_entrega"],
+        inventario_item["fecha_limite"],
+        inventario_item["cantidad"],
     ]
     data_matrix.append(row)
 
 # Fecha y hora de la consulta
-FECHA_CONSULTA = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # C0103: Renombrado
+FECHA_CONSULTA = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 # Visualización con Matplotlib
 fig, ax = plt.subplots(figsize=(10, len(ordenados) * 0.6 + 2))
@@ -230,18 +224,17 @@ plt.title("Inventario Ordenado Jerárquicamente", fontsize=16)
 plt.figtext(0.5, 0.01, f"Consulta generada: {FECHA_CONSULTA}", ha="center", fontsize=8)
 
 # Guardar una imagen con un timestamp (PNG)
-TIMESTAMP = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")  # C0103: Renombrado
-NOMBRE_IMAGEN = f"inventario_jerarquico_{TIMESTAMP}.png"  # C0103: Renombrado
-plt.savefig(NOMBRE_IMAGEN, bbox_inches="tight")
+TIMESTAMP = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+IMAGEN_FILENAME = f"inventario_jerarquico_{TIMESTAMP}.png"
+plt.savefig(IMAGEN_FILENAME, bbox_inches="tight")
 plt.show()
 
 # ==========================================================================
 # Generar un archivo CSV con el registro de la consulta
 # ==========================================================================
-NOMBRE_CSV = f"registro_inventario_jerarquico_{TIMESTAMP}.csv"  # C0103: Renombrado
+CSV_FILENAME = f"registro_inventario_jerarquico_{TIMESTAMP}.csv"
 try:
-    # C0303: Eliminado trailing whitespace en líneas finales (se detecta en el EOF)
-    with open(NOMBRE_CSV, mode="w", newline="", encoding="utf-8") as file:
+    with open(CSV_FILENAME, mode="w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
         # Escribir encabezado con la fecha de consulta
         writer.writerow(["Fecha Consulta"] + HEADERS)
@@ -251,5 +244,5 @@ except IOError as e:
     print(f"Error al escribir el archivo CSV: {e}")
 
 print("Archivos generados:")
-print(" Imagen:", NOMBRE_IMAGEN)
-print(" Registro CSV:", NOMBRE_CSV)
+print(" Imagen:", IMAGEN_FILENAME)
+print(" Registro CSV:", CSV_FILENAME)

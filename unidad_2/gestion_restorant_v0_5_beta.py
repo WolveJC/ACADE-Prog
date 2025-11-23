@@ -9,11 +9,9 @@ ordenado, además de generar un registro en formato CSV.
 # Standard library
 import csv
 import datetime
-import os  # Añadido para manejo de rutas de archivo si fuera necesario
 
 # Third-party libraries
 import matplotlib.pyplot as plt
-from matplotlib import table
 
 # Nota: La importación de 'table' dentro del módulo 'matplotlib' es correcta
 

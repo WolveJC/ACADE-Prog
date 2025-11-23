@@ -39,7 +39,9 @@ class Producto:
         self.codigo = codigo
 
     def __del__(self):
-        """Método de finalización que se llama cuando el objeto es destruido (garbage collection)."""
+        """Método de finalización que se llama 
+        cuando el objeto es destruido 
+        (garbage collection)."""
         # Método para demostrar la eliminación de la referencia
         # (no garantizado que se ejecute al instante)
         print(f"Objeto {self.codigo} - {self.nombre} eliminado")

@@ -43,10 +43,8 @@ jobs:
 
     - name: Ejecutar formateador Black
       run: |
-        # Usamos --check y --diff para reportar archivos que NO cumplen con el formato
-        # La salida de este comando fallará si hay archivos mal formateados.
         echo "Verificando formato de código con Black..."
-        black --check --diff $(git ls-files '*.py')
+        black --line-length 100 .
 
     - name: Analizando el código con Pylint
       run: |

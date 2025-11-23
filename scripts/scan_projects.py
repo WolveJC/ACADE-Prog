@@ -1,12 +1,22 @@
+"""
+Script para escanear el repositorio en busca de proyectos.
+
+Un proyecto se define como un directorio que contiene un archivo README.md.
+El script genera un archivo `projects.json` con metadatos de cada proyecto, 
+incluyendo el nombre, la ruta del README y la ruta de un posible icono.
+"""
 import os
 import json
 
-# Ruta base del repositorio (puedes ajustar si lo necesitas)
-repo_path = "."
+# C0103: Las variables que actúan como constantes (no cambian durante la ejecución) 
+# deben nombrarse en MAYÚSCULAS_CON_GUION_BAJO (UPPER_CASE).
 
-projects = []
+# Ruta base del repositorio (punto actual)
+REPO_PATH = "."
 
-for root, dirs, files in os.walk(repo_path):
+PROJECTS = [] # C0103: Renombrado a constante (aunque se llena, su inicialización es constante)
+
+for root, dirs, files in os.walk(REPO_PATH):
     # Ignorar carpetas ocultas y la carpeta .git
     if any(part.startswith(".") for part in root.split(os.sep)):
         continue
@@ -14,6 +24,10 @@ for root, dirs, files in os.walk(repo_path):
     # Detectar proyectos: carpeta que contiene un README.md
     if "README.md" in files:
         project_name = os.path.basename(root)
+        
+        # Ignorar la raíz del repositorio si no tiene un nombre significativo
+        if project_name in ("", "."):
+             continue 
 
         # Buscar icono si existe
         icon_file = None
@@ -29,13 +43,18 @@ for root, dirs, files in os.walk(repo_path):
             "title": project_name,
             "readme": os.path.join(root, "README.md"),
             "icon": icon_file,
-            "url": f"https://github.com/USUARIO/REPO/tree/main/{project_name}",
+            # NOTA: Asegúrate de reemplazar USUARIO/REPO con los valores correctos
+            "url": f"https://github.com/USUARIO/REPO/tree/main/{root}", 
         }
 
-        projects.append(project)
+        PROJECTS.append(project)
 
 # Guardar en projects.json
-with open("projects.json", "w", encoding="utf-8") as f:
-    json.dump(projects, f, indent=2, ensure_ascii=False)
+OUTPUT_FILE = "projects.json" # C0103: Definido como constante
+try:
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as file:
+        json.dump(PROJECTS, file, indent=2, ensure_ascii=False)
 
-print(f"✅ Generados {len(projects)} proyectos en projects.json")
+    print(f" Generados {len(PROJECTS)} proyectos en {OUTPUT_FILE}")
+except IOError as e:
+    print(f"Error al escribir el archivo {OUTPUT_FILE}: {e}")

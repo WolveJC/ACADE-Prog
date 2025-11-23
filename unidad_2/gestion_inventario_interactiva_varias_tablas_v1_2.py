@@ -13,7 +13,7 @@ import datetime
 import random
 import string
 import sys
-from typing import Union, List, Dict, Any # Añadidas las importaciones de tipos faltantes
+from typing import Union, List, Any
 
 # Third-party libraries
 import matplotlib.pyplot as plt
@@ -266,7 +266,7 @@ def _generate_visual_table(data_matrix: List[List[Any]], title: str, headers: li
     return image_filename
 
 
-def _generate_csv_log(data_matrix: List[List[Any]], title: str, headers: list, query_date: str, algorithm_key: str):
+def _generate_csv_log(data_matrix: List[List[Any]], _: str, headers: list, query_date: str, algorithm_key: str):
     """Guarda el registro de datos en un archivo CSV."""
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     csv_filename = f"registro_{algorithm_key}_{timestamp}.csv"

@@ -90,16 +90,13 @@ class TestListArch(unittest.TestCase):
         self.assertEqual(result, expected)
 
     @patch("os.listdir", side_effect=FileNotFoundError)
-    # W0613 Corregido: Se añade el argumento no usado '_' a los argumentos del decorador, 
-    # pero se ignora al pasar el decorador a la función.
-    def test_directory_not_found(self, mock_listdir):
+    def test_directory_not_found(self, _): # <--- W0613 Corregido: Argumento renombrado a '_'
         """
         Verifica que list_arch maneja correctamente la excepción FileNotFoundError 
         y devuelve None.
         
-        Se renombra mock_listdir (el mock del decorador) a un nombre significativo 
-        en lugar de '_' para una mejor lectura, aunque Pylint lo puede marcar 
-        como W0613 (que es lo que se pidió ignorar con el cambio a '_').
+        Se usa '_' para indicar que el mock está presente solo para el side_effect 
+        del decorador, resolviendo W0613.
         """
         result = list_arch("missing_dir")
         self.assertIsNone(result)

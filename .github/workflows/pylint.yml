@@ -1,6 +1,10 @@
-name: Pylint
+name: Pylint + Black
 
-on: [push]
+on: 
+  push:
+    branches: [ "main" ] # Ejecutar solo en 'main' o las ramas que definas
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -10,26 +14,41 @@ jobs:
         python-version: ["3.8", "3.9", "3.10"]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4 # 1. Clonar el repositorio
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Instalar dependencias
+    - name: Instalar dependencias, Pylint y Black
       run: |
         python -m pip install --upgrade pip
-        # Buscar todos los requisitos.txt en el proyecto y subcarpetas
+        
+        # Buscar y instalar dependencias desde requisitos.txt
         REQS=$(find . -name requisitos.txt)
         if [ -n "$REQS" ]; then
+          echo "Se encontraron archivos de requisitos:"
+          echo "$REQS"
           for req in $REQS; do
-            echo "Instalando dependencias desde $req"
+            echo "Instalando dependencias desde $req..."
             pip install -r "$req"
           done
+        else
+          echo "No se encontraron archivos requisitos.txt. Omitiendo instalación de dependencias."
         fi
-        pip install pylint
+        
+        # 2. Instalar Pylint y Black
+        pip install pylint black
 
-    - name: Analysing the code with pylint
+    - name: Ejecutar formateador Black
       run: |
+        # Usamos --check y --diff para reportar archivos que NO cumplen con el formato
+        # La salida de este comando fallará si hay archivos mal formateados.
+        echo "Verificando formato de código con Black..."
+        black --check --diff $(git ls-files '*.py')
+
+    - name: Analizando el código con Pylint
+      run: |
+        # 4. Ejecutar Pylint en todos los archivos .py rastreados por Git
         pylint $(git ls-files '*.py')

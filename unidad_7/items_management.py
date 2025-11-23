@@ -42,7 +42,8 @@ class Producto:
 
     def __del__(self):
         """Método de finalización que se llama cuando el objeto es destruido."""
-        # Método para demostrar la eliminación de la referencia (no garantizado que se ejecute al instante)
+        # Método para demostrar la eliminación de la referencia 
+        # (no garantizado que se ejecute al instante)
         print(f"Objeto {self.codigo} - {self.nombre} eliminado")
 
     def __str__(self):
@@ -200,8 +201,9 @@ class Inventario:
                 ).strip()
                 new_cantidad = int(new_cantidad_str)
 
-                # La validación de new_cantidad < 0 ya la tienes en el setter, pero es buena práctica
-                # validar antes de la asignación para mejorar el feedback al usuario.
+                # La validación de new_cantidad < 0 ya la tienes en el setter, 
+                # pero es buena práctica validar antes de la asignación 
+                # para mejorar el feedback al usuario.
                 if new_cantidad < 0:
                     print(
                         "❌ Error: La cantidad no puede ser un número negativo. Inténtalo de nuevo."
@@ -211,7 +213,7 @@ class Inventario:
                 break
 
             except ValueError:
-                print("❌ Error de Valor: Se espera una cantidad numérica entera.")
+                print("Error de Valor: Se espera una cantidad numérica entera.")
             except Exception as e:
                 # Se mantiene la captura general para errores inesperados en un contexto interactivo
                 print(f"Ocurrió un error inesperado al leer la nueva cantidad: {e}")
@@ -220,11 +222,12 @@ class Inventario:
         try:
             producto_a_actualizar.cantidad = new_cantidad
             print(
-                f"✅ Éxito: Cantidad del producto '{producto_a_actualizar.nombre}' actualizada a {new_cantidad}."
+                f"Éxito: Cantidad del producto '{producto_a_actualizar.nombre}'"
+                f"actualizada a '{new_cantidad}'."
             )
         except ValueError as e:
             # Captura si el setter de Producto rechaza el valor (aunque ya se validó antes)
-            print(f"❌ Error de validación: {e}")
+            print(f"Error de validación: {e}")
 
     def eliminar_producto(self):
         """Solicita un código y elimina el producto del inventario."""

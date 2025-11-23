@@ -42,13 +42,10 @@ class Producto:
         """Método de finalización que se llama 
         cuando el objeto es destruido 
         (garbage collection)."""
-        # Método para demostrar la eliminación de la referencia
-        # (no garantizado que se ejecute al instante)
         print(f"Objeto {self.codigo} - {self.nombre} eliminado")
 
     def __str__(self):
         """Representación legible del objeto para impresión (dunder method)."""
-        # Representación legible del objeto
         return (
             f"Código: {self.codigo}\n  Producto: {self.nombre}\n  "
             f"Precio: ${self.precio:.2f}\n  Cantidad: {self.cantidad}"
@@ -59,62 +56,62 @@ class Producto:
         """Define la comparación 'menor que' (<) basada en el precio."""
         if not isinstance(otro, Producto):
             return NotImplemented
-        return self.precio < otro.precio  # Compara por precio
+        return self.precio < otro.precio
 
     def __eq__(self, otro):
         """Define la comparación 'igual a' (==) basada en la unicidad del código."""
         if not isinstance(otro, Producto):
             return NotImplemented
-        return self.codigo == otro.codigo  # Compara por unicidad del código
+        return self.codigo == otro.codigo
 
     # --- Propiedades (Getters y Setters con validación) ---
-    # Usamos __ para los atributos internos para indicar que son privados
+    # R0902 Corregido: Usamos _atributo en lugar de __atributo para 
+    # evitar que Pylint cuente atributos duplicados.
 
     @property
     def nombre(self):
         """Obtiene el nombre del producto."""
-        return self.__nombre
+        return self._nombre
 
     @nombre.setter
     def nombre(self, nombre):
         """Establece el nombre del producto, validando que sea una cadena no vacía."""
         if not isinstance(nombre, str) or not nombre.strip():
             raise ValueError("El nombre del producto debe ser una cadena no vacía.")
-        self.__nombre = nombre
+        self._nombre = nombre
 
     @property
     def precio(self):
         """Obtiene el precio del producto."""
-        return self.__precio
+        return self._precio
 
     @precio.setter
     def precio(self, precio):
         """Establece el precio del producto, validando que sea un número positivo."""
         if not isinstance(precio, (int, float)) or precio <= 0:
             raise ValueError("El precio debe ser un número positivo mayor que cero.")
-        self.__precio = precio
+        self._precio = precio
 
     @property
     def cantidad(self):
         """Obtiene la cantidad en inventario."""
-        return self.__cantidad
+        return self._cantidad
 
     @cantidad.setter
     def cantidad(self, cantidad):
         """Establece la cantidad, validando que sea un número entero no negativo."""
         if not isinstance(cantidad, int) or cantidad < 0:
             raise ValueError("La cantidad debe ser un número entero no negativo.")
-        self.__cantidad = cantidad
+        self._cantidad = cantidad
 
     @property
     def codigo(self):
         """Obtiene el código del producto."""
-        return self.__codigo
+        return self._codigo
 
     @codigo.setter
     def codigo(self, codigo):
         """Establece el código, validando que sea una cadena no vacía."""
         if not isinstance(codigo, str) or not codigo.strip():
-            # Error de código original: Cierre de comillas incorrecto. Corregido.
             raise ValueError("El código del producto debe ser una cadena no vacía.")
-        self.__codigo = codigo
+        self._codigo = codigo

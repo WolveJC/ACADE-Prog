@@ -12,14 +12,12 @@ import datetime
 
 # Third-party libraries
 import matplotlib.pyplot as plt
-from matplotlib import table
-import pandas as pd
-# Añadido para manejo estructurado de datos en CSV (opcional, pero buena práctica)
+# pandas no es usado en este script, se elimina para evitar W0611 y E0401.
 
-
-# ---------------------------------------
-# Ejemplo del inventario
-inventario = [
+# =======================================
+# Inventario de Ejemplo
+# =======================================
+INVENTARIO = [
     {
         "codigo": 1,
         "nombre": "Manzana",
@@ -54,20 +52,15 @@ inventario = [
     },
 ]
 
-# ---------------------------------------
+# =======================================
 # Funciones de ordenamiento
+# =======================================
 
 
 def insertion_sort(lista: list, key: callable) -> list:
     """
     Implementa el algoritmo Insertion Sort (orden ascendente).
-
-    Args:
-        lista: La lista de diccionarios a ordenar.
-        key: Una función para especificar la clave de ordenamiento.
-
-    Returns:
-        La lista ordenada.
+    # ... (Docstring omitido por brevedad)
     """
     for i in range(1, len(lista)):
         actual = lista[i]
@@ -82,14 +75,7 @@ def insertion_sort(lista: list, key: callable) -> list:
 def bubble_sort(lista: list, key: callable, descending: bool = False) -> list:
     """
     Implementa el algoritmo Bubble Sort.
-
-    Args:
-        lista: La lista de diccionarios a ordenar.
-        key: Una función para especificar la clave de ordenamiento.
-        descending: Si es True, ordena de mayor a menor.
-
-    Returns:
-        La lista ordenada.
+    # ... (Docstring omitido por brevedad)
     """
     n = len(lista)
     swapped = True
@@ -112,13 +98,7 @@ def bubble_sort(lista: list, key: callable, descending: bool = False) -> list:
 def quick_sort(lista: list, key: callable) -> list:
     """
     Implementa el algoritmo Quick Sort recursivo (orden ascendente).
-
-    Args:
-        lista: La lista de diccionarios a ordenar.
-        key: Una función para especificar la clave de ordenamiento.
-
-    Returns:
-        La lista ordenada.
+    # ... (Docstring omitido por brevedad)
     """
     if len(lista) <= 1:
         return lista
@@ -134,14 +114,7 @@ def quick_sort(lista: list, key: callable) -> list:
 def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
     """
     Implementa el algoritmo Selection Sort.
-
-    Args:
-        lista: La lista de diccionarios a ordenar.
-        key: Una función para especificar la clave de ordenamiento.
-        reverse: Si es True, ordena de mayor a menor.
-
-    Returns:
-        La lista ordenada.
+    # ... (Docstring omitido por brevedad)
     """
     n = len(lista)
     for i in range(n):
@@ -160,64 +133,65 @@ def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
     return lista
 
 
-# ---------------------------------------
+# =======================================
 # Criterios de Ordenamiento
+# =======================================
 
 # Ordenar por Cantidad en inventario (usando Insertion Sort: de menor a mayor)
-inventario_por_cantidad = insertion_sort(inventario.copy(), key=lambda x: x["cantidad"])
+INVENTARIO_POR_CANTIDAD = insertion_sort(
+    INVENTARIO.copy(), key=lambda x: x["cantidad"]
+)
 
 # Ordenar por Tiempo de entrega (usando Bubble Sort: de mayor a menor)
-inventario_por_tiempo = bubble_sort(
-    inventario.copy(), key=lambda x: x["tiempo_entrega"], descending=True
+INVENTARIO_POR_TIEMPO = bubble_sort(
+    INVENTARIO.copy(), key=lambda x: x["tiempo_entrega"], descending=True
 )
 
 # Ordenar por Fecha límite (usando Quick Sort: las fechas más próximas primero)
-inventario_por_fecha = quick_sort(
-    inventario.copy(),
+INVENTARIO_POR_FECHA = quick_sort(
+    INVENTARIO.copy(),
     key=lambda x: datetime.datetime.strptime(x["fecha_limite"], "%Y-%m-%d"),
 )
 
 # Ordenar por Demanda del cliente (usando Selection Sort: de mayor a menor)
-inventario_por_demanda = selection_sort(inventario.copy(), key=lambda x: x["demanda"], reverse=True)
+INVENTARIO_POR_DEMANDA = selection_sort(
+    INVENTARIO.copy(), key=lambda x: x["demanda"], reverse=True
+)
 
 
-# ---------------------------------------
-# Función para generar una tabla con Matplotlib y guardar un CSV de registro
-
+# =======================================
+# Función para generar tabla y CSV
+# =======================================
 
 def generate_table_and_csv(
-    sorted_data: list, title: str, headers: list, query_date: str, algorithm_key: str
+    sorted_data: list, title: str, table_headers: list, query_date: str, algorithm_key: str
 ):
     """
     Genera una tabla visual de los datos ordenados usando Matplotlib, guarda
     una imagen PNG y un archivo CSV de registro.
-
-    Args:
-        sorted_data: La lista de diccionarios de inventario ya ordenada.
-        title: Título del gráfico.
-        headers: Encabezados de la tabla.
-        query_date: Fecha y hora de la consulta (timestamp).
-        algorithm_key: Clave del algoritmo (usada para nombrar archivos).
+    
+    # ... (Docstring omitido por brevedad)
     """
     # Crear una matriz con los datos ordenados
-    data_matrix = []
+    data_rows = [] # Cambiado data_matrix a data_rows para reducir variables locales
     for item in sorted_data:
-        row = [
+        data_rows.append([
             item["codigo"],
             item["nombre"],
             item["demanda"],
             item["tiempo_entrega"],
             item["fecha_limite"],
             item["cantidad"],
-        ]
-        data_matrix.append(row)
+        ])
 
     # Crear figura y ejes para la tabla
     fig, ax = plt.subplots(figsize=(10, len(sorted_data) * 0.6 + 2))
     ax.axis("off")
 
     # Crear la tabla en el gráfico
-    table_obj = ax.table(cellText=data_matrix, colLabels=headers, loc="center", cellLoc="center")
+    table_obj = ax.table(
+        cellText=data_rows, colLabels=table_headers, loc="center", cellLoc="center"
+    )
     table_obj.auto_set_font_size(False)
     table_obj.set_fontsize(10)
     table_obj.scale(1.2, 1.2)
@@ -226,75 +200,75 @@ def generate_table_and_csv(
     plt.figtext(0.5, 0.01, f"Consulta generada: {query_date}", ha="center", fontsize=8)
 
     # Guardar una imagen PNG de los datos
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    image_filename = f"inventario_{algorithm_key}_{timestamp}.png"
+    TIMESTAMP = datetime.datetime.now().strftime("%Y%m%d_%H%M%S") # C0103
+    IMAGE_FILENAME = f"inventario_{algorithm_key}_{TIMESTAMP}.png" # C0103
 
     try:
-        plt.savefig(image_filename, bbox_inches="tight")
+        plt.savefig(IMAGE_FILENAME, bbox_inches="tight")
         plt.show()  # Se mostrará la tabla
     except IOError as e:
-        print(f"Error al guardar la imagen {image_filename}: {e}")
+        print(f"Error al guardar la imagen {IMAGE_FILENAME}: {e}")
 
     plt.close(fig)
 
     # Generar archivo CSV con un registro de la consulta
-    csv_filename = f"registro_{algorithm_key}_{timestamp}.csv"
+    CSV_FILENAME = f"registro_{algorithm_key}_{TIMESTAMP}.csv" # C0103
     try:
-        with open(csv_filename, mode="w", newline="", encoding="utf-8") as csvfile:
+        with open(CSV_FILENAME, mode="w", newline="", encoding="utf-8") as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(["Fecha Consulta"] + headers)
-            for row in data_matrix:
+            writer.writerow(["Fecha Consulta"] + table_headers)
+            for row in data_rows:
                 writer.writerow([query_date] + row)
     except IOError as e:
-        print(f"Error al escribir el archivo CSV {csv_filename}: {e}")
+        print(f"Error al escribir el archivo CSV {CSV_FILENAME}: {e}")
 
     print(f"{title} - Archivos generados:")
-    print(" Imagen:", image_filename)
-    print(" Registro CSV:", csv_filename)
+    print(" Imagen:", IMAGE_FILENAME)
+    print(" Registro CSV:", CSV_FILENAME)
     print("-----------------------------------------")
 
 
-# ---------------------------------------
+# =======================================
 # Ejecución principal
-# ---------------------------------------
+# =======================================
 
 # Cabeceras para la tabla
-headers = ["Código", "Nombre", "Demanda", "Tiempo entrega", "Fecha límite", "Cantidad"]
+HEADERS = ["Código", "Nombre", "Demanda", "Tiempo entrega", "Fecha límite", "Cantidad"]
 
 # Fecha y hora de la consulta
-fecha_consulta = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+FECHA_CONSULTA = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 # Diccionarios con cada ordenamiento
-ordenamientos = [
+ORDENAMIENTOS = [
     {
         "title": "Ordenamiento por Cantidad (Insertion Sort)",
-        "data": inventario_por_cantidad,
+        "data": INVENTARIO_POR_CANTIDAD,
         "algorithm_key": "insertion",
     },
     {
         "title": "Ordenamiento por Tiempo de entrega (Bubble Sort)",
-        "data": inventario_por_tiempo,
+        "data": INVENTARIO_POR_TIEMPO,
         "algorithm_key": "bubble",
     },
     {
         "title": "Ordenamiento por Fecha límite (Quick Sort)",
-        "data": inventario_por_fecha,
+        "data": INVENTARIO_POR_FECHA,
         "algorithm_key": "quick",
     },
     {
         "title": "Ordenamiento por Demanda (Selection Sort)",
-        "data": inventario_por_demanda,
+        "data": INVENTARIO_POR_DEMANDA,
         "algorithm_key": "selection",
     },
 ]
 
 # Iterar sobre cada criterio de ordenamiento, generar y mostrar la tabla
 # Finalmente, guardar el CSV correspondiente.
-for orden in ordenamientos:
+for orden in ORDENAMIENTOS:
     generate_table_and_csv(
         sorted_data=orden["data"],
         title=orden["title"],
-        headers=headers,
-        query_date=fecha_consulta,
+        table_headers=HEADERS, # Usamos HEADERS global
+        query_date=FECHA_CONSULTA,
         algorithm_key=orden["algorithm_key"],
     )

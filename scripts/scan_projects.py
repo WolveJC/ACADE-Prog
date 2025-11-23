@@ -24,26 +24,26 @@ for root, dirs, files in os.walk(REPO_PATH):
 
     # Detectar proyectos: carpeta que contiene un README.md
     if "README.md" in files:
-        project_name = os.path.basename(root)
+        PROJECT_NAME = os.path.basename(root)
 
         # Ignorar la raíz del repositorio si no tiene un nombre significativo
-        if project_name in ("", "."):
+        if PROJECT_NAME in ("", "."):
             continue
 
         # Buscar icono si existe
-        icon_file = None
+        ICON_FILE = None
         for ext in [".png", ".jpg", ".jpeg", ".svg"]:
-            candidate = f"icon{ext}"
+            CANDIDATE = f"icon{ext}"
             if candidate in files:
-                icon_file = os.path.join(root, candidate)
+                ICON_FILE = os.path.join(root, candidate)
                 break
 
         # Construir objeto del proyecto
         project = {
-            "id": project_name.lower(),
-            "title": project_name,
+            "id": PROJECT_NAME.lower(),
+            "title": PROJECT_NAME,
             "readme": os.path.join(root, "README.md"),
-            "icon": icon_file,
+            "icon": ICON_FILE,
             # NOTA: Asegúrate de reemplazar USUARIO/REPO con los valores correctos
             "url": f"https://github.com/USUARIO/REPO/tree/main/{root}",
         }

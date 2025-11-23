@@ -49,4 +49,5 @@ jobs:
     - name: Analizando el código con Pylint
       run: |
         # 4. Ejecutar Pylint en todos los archivos .py rastreados por Git
+        export PYTHONPATH=$PYTHONPATH:$(pwd)/unidad_7/pystock_management
         pylint $(git ls-files '*.py')

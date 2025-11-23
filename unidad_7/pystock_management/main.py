@@ -1,22 +1,24 @@
 """
 Módulo principal para la ejecución de la aplicación de Gestión de Inventario.
 
-Este módulo contiene la lógica del menú interactivo y la función para 
+Este módulo contiene la lógica del menú interactivo y la función para
 obtener datos de productos del usuario, actuando como la capa de Presentación.
 """
+
 from src.services.inventario_manager import Inventario
 from src.models.productos import Producto
-import sys # Añadido para salida limpia
+import sys  # Añadido para salida limpia
+
 
 def obtener_datos_producto() -> Producto | None:
     """
     Solicita los datos del producto al usuario con validación.
 
-    Maneja errores de conversión (ValueError) y errores de validación 
+    Maneja errores de conversión (ValueError) y errores de validación
     lanzados por los setters de la clase Producto.
 
     Returns:
-        Producto: Una instancia de Producto si los datos son válidos, 
+        Producto: Una instancia de Producto si los datos son válidos,
                   o None en caso de error de entrada.
     """
     try:
@@ -96,7 +98,7 @@ def main_menu():
                 print("Por favor, selecciona un número del 1 al 6.")
 
         except Exception as e:
-            # W0718: Se mantiene la captura de Exception aquí para garantizar 
+            # W0718: Se mantiene la captura de Exception aquí para garantizar
             # que el bucle del menú no se rompa por un error inesperado en las funciones del manager.
             print(f"Ocurrió un error inesperado en el menú: {e}")
 

@@ -6,12 +6,13 @@ ordenamiento a criterios clave (cantidad, tiempo, fecha, demanda) y genera
 una visualización tabular (Matplotlib) y un archivo de registro CSV para
 cada uno de los criterios.
 """
+
 # Standard library
 import csv
 import datetime
 import random
 import string
-import sys # Añadido para salida limpia
+import sys  # Añadido para salida limpia
 
 # Third-party libraries
 import matplotlib.pyplot as plt
@@ -20,6 +21,7 @@ from matplotlib import table
 # ------------------------------------------
 # 1. Funciones Auxiliares
 # ------------------------------------------
+
 
 def generar_codigo_aleatorio(longitud: int = 6) -> str:
     """
@@ -62,7 +64,7 @@ def ingresar_productos(inventario: list):
     """Permite al usuario ingresar productos de manera interactiva."""
     while True:
         print("\n--- Ingrese los datos del nuevo producto ---")
-        
+
         # 1. Código
         codigo_input = input("Código (dejar vacío para auto-generar): ").strip()
         if not codigo_input:
@@ -124,6 +126,7 @@ def ingresar_productos(inventario: list):
 # 2. Funciones de ordenamiento
 # ------------------------------------------
 
+
 def insertion_sort(lista: list, key: callable, descending: bool = False) -> list:
     """
     Implementa el Insertion Sort, adaptable para orden ascendente o descendente.
@@ -139,12 +142,13 @@ def insertion_sort(lista: list, key: callable, descending: bool = False) -> list
     for i in range(1, len(lista)):
         actual = lista[i]
         j = i - 1
-        
+
         while j >= 0:
             # Lógica de comparación
-            comparacion = (key(lista[j]) < key(actual)) if descending else \
-                          (key(lista[j]) > key(actual))
-                          
+            comparacion = (
+                (key(lista[j]) < key(actual)) if descending else (key(lista[j]) > key(actual))
+            )
+
             if comparacion:
                 lista[j + 1] = lista[j]
                 j -= 1
@@ -171,8 +175,11 @@ def bubble_sort(lista: list, key: callable, descending: bool = False) -> list:
     while swapped:
         swapped = False
         for i in range(1, n):
-            comparacion = (key(lista[i - 1]) < key(lista[i])) if descending else \
-                          (key(lista[i - 1]) > key(lista[i]))
+            comparacion = (
+                (key(lista[i - 1]) < key(lista[i]))
+                if descending
+                else (key(lista[i - 1]) > key(lista[i]))
+            )
 
             if comparacion:
                 lista[i - 1], lista[i] = lista[i], lista[i - 1]
@@ -194,12 +201,12 @@ def quick_sort(lista: list, key: callable) -> list:
     """
     if len(lista) <= 1:
         return lista
-    
+
     pivot = lista[0]
     menos = [x for x in lista[1:] if key(x) < key(pivot)]
     iguales = [x for x in lista if key(x) == key(pivot)]
     mayor = [x for x in lista[1:] if key(x) >= key(pivot)]
-    
+
     return quick_sort(menos, key) + iguales + quick_sort(mayor, key)
 
 
@@ -222,13 +229,12 @@ def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
         candidato = temp[0]
         indice_candidato = 0
         for i, item in enumerate(temp):
-            comparacion = (key(item) > key(candidato)) if reverse else \
-                          (key(item) < key(candidato))
-            
+            comparacion = (key(item) > key(candidato)) if reverse else (key(item) < key(candidato))
+
             if comparacion:
                 candidato = item
                 indice_candidato = i
-                
+
         nueva_lista.append(candidato)
         temp.pop(indice_candidato)
     return nueva_lista
@@ -237,6 +243,7 @@ def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
 # ------------------------------------------
 # 3. Generar listas ordenadas utilizando distintos algoritmos
 # ------------------------------------------
+
 
 def generar_inventarios_ordenados(inventario: list) -> dict:
     """Aplica los cuatro algoritmos de ordenamiento al inventario."""
@@ -251,9 +258,7 @@ def generar_inventarios_ordenados(inventario: list) -> dict:
             inventario.copy(),
             key=lambda x: datetime.datetime.strptime(x["fecha_limite"], "%Y-%m-%d"),
         ),
-        "demanda": selection_sort(
-            inventario.copy(), key=lambda x: x["demanda"], reverse=True
-        ),
+        "demanda": selection_sort(inventario.copy(), key=lambda x: x["demanda"], reverse=True),
     }
 
 
@@ -261,7 +266,10 @@ def generar_inventarios_ordenados(inventario: list) -> dict:
 # 4. Función para visualizar y guardar cada tabla
 # ------------------------------------------
 
-def generate_table_and_csv(sorted_data: list, title: str, headers: list, query_date: str, algorithm_key: str):
+
+def generate_table_and_csv(
+    sorted_data: list, title: str, headers: list, query_date: str, algorithm_key: str
+):
     """
     Genera una tabla visual con Matplotlib, guarda la imagen PNG y un CSV de registro.
 
@@ -292,8 +300,6 @@ def generate_table_and_csv(sorted_data: list, title: str, headers: list, query_d
     tbl.auto_set_font_size(False)
     tbl.set_fontsize(10)
     tbl.scale(1.2, 1.2)
-    
-
 
     plt.title(title, fontsize=14)
     plt.figtext(0.5, 0.01, f"Consulta generada: {query_date}", ha="center", fontsize=8)
@@ -301,13 +307,13 @@ def generate_table_and_csv(sorted_data: list, title: str, headers: list, query_d
     # Guardar la figura
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     image_filename = f"inventario_{algorithm_key}_{timestamp}.png"
-    
+
     try:
         plt.savefig(image_filename, bbox_inches="tight")
-        plt.show() # Muestra la tabla
+        plt.show()  # Muestra la tabla
     except IOError as e:
         print(f" Error al guardar la imagen {image_filename}: {e}")
-        
+
     plt.close(fig)
 
     # Guardar registro en CSV
@@ -340,7 +346,7 @@ if __name__ == "__main__":
         sys.exit()
 
     inventarios_ordenados = generar_inventarios_ordenados(inventario)
-    
+
     headers = ["Código", "Nombre", "Demanda", "Tiempo entrega", "Fecha límite", "Cantidad"]
     fecha_consulta = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -374,4 +380,4 @@ if __name__ == "__main__":
             headers=headers,
             query_date=fecha_consulta,
             algorithm_key=orden["algorithm_key"],
-)
+        )

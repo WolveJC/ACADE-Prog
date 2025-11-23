@@ -5,8 +5,9 @@ Implementa las clases Producto (Modelo) e Inventario (Servicio/Manager)
 para la gestión básica de productos con validación de datos mediante
 propiedades (getters y setters).
 """
+
 # Standard library
-import datetime # Se mantiene porque se usa en el dunder __del__ como ejemplo.
+import datetime  # Se mantiene porque se usa en el dunder __del__ como ejemplo.
 
 # Third-party libraries
 # (No hay librerías de terceros en este ejemplo)
@@ -15,16 +16,18 @@ import datetime # Se mantiene porque se usa en el dunder __del__ como ejemplo.
 # CLASE PRODUCTO (Modelos)
 # ====================================================================
 
+
 class Producto:
     """
     Representa un producto con sus atributos de nombre, precio, cantidad y código.
-    
+
     Utiliza propiedades (getters/setters) para encapsular y validar los datos.
     """
+
     def __init__(self, nombre: str, precio: float, cantidad: int, codigo: str):
         """
         Inicializa una nueva instancia de Producto.
-        
+
         Args:
             nombre: Nombre del producto.
             precio: Precio del producto (debe ser positivo).
@@ -45,8 +48,10 @@ class Producto:
     def __str__(self):
         """Representación legible del objeto para impresión."""
         # Representación legible del objeto
-        return (f"Código: {self.codigo}\n  Producto: {self.nombre}\n  "
-                f"Precio: ${self.precio:.2f}\n  Cantidad: {self.cantidad}")
+        return (
+            f"Código: {self.codigo}\n  Producto: {self.nombre}\n  "
+            f"Precio: ${self.precio:.2f}\n  Cantidad: {self.cantidad}"
+        )
 
     # Métodos dunder de comparación
     def __lt__(self, otro):
@@ -121,9 +126,10 @@ class Producto:
 class Inventario:
     """
     Gestiona una colección de objetos Producto utilizando un diccionario.
-    
+
     Las operaciones incluyen agregar, listar, buscar, actualizar y eliminar productos.
     """
+
     def __init__(self):
         """Inicializa el inventario con un diccionario vacío."""
         self.productos = {}  # Diccionario: clave=código (str), valor=objeto Producto
@@ -208,7 +214,7 @@ class Inventario:
                 print("❌ Error de Valor: Se espera una cantidad numérica entera.")
             except Exception as e:
                 # Se mantiene la captura general para errores inesperados en un contexto interactivo
-                print(f"Ocurrió un error inesperado al leer la nueva cantidad: {e}") 
+                print(f"Ocurrió un error inesperado al leer la nueva cantidad: {e}")
 
         # Asigna la nueva cantidad (llamando al setter de Producto)
         try:
@@ -218,9 +224,7 @@ class Inventario:
             )
         except ValueError as e:
             # Captura si el setter de Producto rechaza el valor (aunque ya se validó antes)
-             print(f"❌ Error de validación: {e}")
-            
-
+            print(f"❌ Error de validación: {e}")
 
     def eliminar_producto(self):
         """Solicita un código y elimina el producto del inventario."""
@@ -247,7 +251,7 @@ class Inventario:
 def obtener_datos_producto():
     """
     Solicita los datos del producto al usuario con validación.
-    
+
     Returns:
         Producto: Objeto Producto si los datos son válidos, None en caso contrario.
     """

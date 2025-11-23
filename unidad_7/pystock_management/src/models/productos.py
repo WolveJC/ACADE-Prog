@@ -1,26 +1,29 @@
 """
 Módulo Producto.
 
-Define el modelo de datos fundamental 'Producto', que encapsula los 
+Define el modelo de datos fundamental 'Producto', que encapsula los
 atributos de un artículo de inventario y aplica validaciones estrictas
 mediante el uso de propiedades (getters y setters).
 """
+
+
 class Producto:
     """
     Representa un producto con sus atributos de nombre, precio, cantidad y código.
-    
+
     Utiliza propiedades (getters/setters) para encapsular y validar los datos.
-    
+
     Attributes:
         nombre (str): Nombre descriptivo del producto.
         precio (float): Precio unitario (debe ser > 0).
         cantidad (int): Cantidad en inventario (debe ser >= 0).
         codigo (str): Identificador único del producto.
     """
+
     def __init__(self, nombre, precio, cantidad, codigo):
         """
         Inicializa una nueva instancia de Producto.
-        
+
         Al asignar a self.atributo, se llama automáticamente al setter para la validación inicial.
 
         Args:
@@ -44,8 +47,10 @@ class Producto:
     def __str__(self):
         """Representación legible del objeto para impresión (dunder method)."""
         # Representación legible del objeto
-        return (f"Código: {self.codigo}\n  Producto: {self.nombre}\n  "
-                f"Precio: ${self.precio:.2f}\n  Cantidad: {self.cantidad}")
+        return (
+            f"Código: {self.codigo}\n  Producto: {self.nombre}\n  "
+            f"Precio: ${self.precio:.2f}\n  Cantidad: {self.cantidad}"
+        )
 
     # Métodos dunder de comparación
     def __lt__(self, otro):
@@ -109,5 +114,5 @@ class Producto:
         """Establece el código, validando que sea una cadena no vacía."""
         if not isinstance(codigo, str) or not codigo.strip():
             # Error de código original: Cierre de comillas incorrecto. Corregido.
-            raise ValueError("El código del producto debe ser una cadena no vacía.") 
+            raise ValueError("El código del producto debe ser una cadena no vacía.")
         self.__codigo = codigo

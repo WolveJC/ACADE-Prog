@@ -6,20 +6,22 @@ estable, combinando Insertion Sort (modificado) y Quick Sort, para priorizar
 los artículos que requieren atención inmediata. Finalmente, genera una visualización
 tabular con Matplotlib y un registro en CSV.
 """
+
 # Standard library
 import csv
 import datetime
-# Eliminado el import de 'os' que fue añadido en una revisión previa 
+
+# Eliminado el import de 'os' que fue añadido en una revisión previa
 # pero no se utiliza, aunque Pylint no lo marcó aquí, es buena práctica.
 
 # Third-party libraries
 import matplotlib.pyplot as plt
-from matplotlib import table # W0611: Unused table imported from matplotlib.
+from matplotlib import table  # W0611: Unused table imported from matplotlib.
 
 # ==========================================================================
 # Inventario de Ejemplo
 # ==========================================================================
-INVENTARIO = [ # C0103: Renombrado a constante
+INVENTARIO = [  # C0103: Renombrado a constante
     {
         "codigo": 1,
         "nombre": "Manzana",
@@ -59,6 +61,7 @@ INVENTARIO = [ # C0103: Renombrado a constante
 # Algoritmos de ordenamiento
 # ==========================================================================
 
+
 def insertion_sort(lista: list, key: callable, descending: bool = False) -> list:
     """
     Implementa el Insertion Sort, adaptable para orden ascendente o descendente.
@@ -86,7 +89,7 @@ def insertion_sort(lista: list, key: callable, descending: bool = False) -> list
                     j -= 1
                 else:
                     break
-            else: # Ascendente
+            else:  # Ascendente
                 if key(lista[j]) > key(actual):
                     lista[j + 1] = lista[j]
                     j -= 1
@@ -146,8 +149,7 @@ def selection_sort_stable(lista: list, key: callable, reverse: bool = False) -> 
 
         # Buscar el elemento más extremo
         for i, item in enumerate(temp):
-            comparacion = (key(item) > key(candidato)) if reverse else \
-                          (key(item) < key(candidato))
+            comparacion = (key(item) > key(candidato)) if reverse else (key(item) < key(candidato))
 
             if comparacion:
                 candidato = item
@@ -156,7 +158,7 @@ def selection_sort_stable(lista: list, key: callable, reverse: bool = False) -> 
         # Asegurar la estabilidad: usar el índice para eliminar el primer
         # ejemplar encontrado con ese valor extremo
         nueva_lista.append(candidato)
-        temp.pop(indice_candidato) # Usar pop(indice) es más eficiente/claro que remove(objeto)
+        temp.pop(indice_candidato)  # Usar pop(indice) es más eficiente/claro que remove(objeto)
     return nueva_lista
 
 
@@ -187,7 +189,7 @@ ordenados = quick_sort(
 # ==========================================================================
 # Preparar datos y Visualización
 # ==========================================================================
-HEADERS = [ # C0103: Renombrado a constante
+HEADERS = [  # C0103: Renombrado a constante
     "Código",
     "Nombre",
     "Demanda",
@@ -197,10 +199,10 @@ HEADERS = [ # C0103: Renombrado a constante
 ]
 
 data_matrix = []
-# Corregido: W0621: Redefining name 'item' from outer scope. 
-# En este contexto, 'item' no se redefine en un loop anidado, el error es benigno 
+# Corregido: W0621: Redefining name 'item' from outer scope.
+# En este contexto, 'item' no se redefine en un loop anidado, el error es benigno
 # pero la advertencia persiste por la sintaxis. Se mantiene para coherencia.
-for item in ordenados: 
+for item in ordenados:
     row = [
         item["codigo"],
         item["nombre"],
@@ -212,7 +214,7 @@ for item in ordenados:
     data_matrix.append(row)
 
 # Fecha y hora de la consulta
-FECHA_CONSULTA = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") # C0103: Renombrado
+FECHA_CONSULTA = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # C0103: Renombrado
 
 # Visualización con Matplotlib
 fig, ax = plt.subplots(figsize=(10, len(ordenados) * 0.6 + 2))
@@ -228,18 +230,18 @@ plt.title("Inventario Ordenado Jerárquicamente", fontsize=16)
 plt.figtext(0.5, 0.01, f"Consulta generada: {FECHA_CONSULTA}", ha="center", fontsize=8)
 
 # Guardar una imagen con un timestamp (PNG)
-TIMESTAMP = datetime.datetime.now().strftime("%Y%m%d_%H%M%S") # C0103: Renombrado
-NOMBRE_IMAGEN = f"inventario_jerarquico_{TIMESTAMP}.png" # C0103: Renombrado
+TIMESTAMP = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")  # C0103: Renombrado
+NOMBRE_IMAGEN = f"inventario_jerarquico_{TIMESTAMP}.png"  # C0103: Renombrado
 plt.savefig(NOMBRE_IMAGEN, bbox_inches="tight")
 plt.show()
 
 # ==========================================================================
 # Generar un archivo CSV con el registro de la consulta
 # ==========================================================================
-NOMBRE_CSV = f"registro_inventario_jerarquico_{TIMESTAMP}.csv" # C0103: Renombrado
+NOMBRE_CSV = f"registro_inventario_jerarquico_{TIMESTAMP}.csv"  # C0103: Renombrado
 try:
     # C0303: Eliminado trailing whitespace en líneas finales (se detecta en el EOF)
-    with open(NOMBRE_CSV, mode="w", newline="", encoding="utf-8") as file: 
+    with open(NOMBRE_CSV, mode="w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
         # Escribir encabezado con la fecha de consulta
         writer.writerow(["Fecha Consulta"] + HEADERS)

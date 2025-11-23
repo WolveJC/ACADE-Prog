@@ -5,6 +5,7 @@ Implementa y demuestra cuatro algoritmos de ordenamiento (Insertion, Bubble,
 Quick, Selection) aplicados a diferentes criterios de gestión de inventario:
 cantidad, tiempo de entrega, fecha límite y demanda.
 """
+
 from datetime import datetime
 
 # ==========================================================================
@@ -49,6 +50,7 @@ inventario = [
 # ==========================================================================
 # Algoritmos de Ordenamiento
 # ==========================================================================
+
 
 def insertion_sort(lista: list, key: callable) -> list:
     """
@@ -95,8 +97,11 @@ def bubble_sort(lista: list, key: callable, descending: bool = False) -> list:
         swapped = False
         for i in range(1, n):
             # Lógica central del Bubble Sort con manejo de orden
-            comparacion = (key(lista[i - 1]) < key(lista[i])) if descending else \
-                          (key(lista[i - 1]) > key(lista[i]))
+            comparacion = (
+                (key(lista[i - 1]) < key(lista[i]))
+                if descending
+                else (key(lista[i - 1]) > key(lista[i]))
+            )
 
             if comparacion:
                 lista[i - 1], lista[i] = lista[i], lista[i - 1]
@@ -121,13 +126,13 @@ def quick_sort(lista: list, key: callable) -> list:
     """
     if len(lista) <= 1:
         return lista
-    
+
     pivot = lista[0]
     # Se usa list comprehensions para crear las particiones
     menos = [x for x in lista[1:] if key(x) < key(pivot)]
     iguales = [x for x in lista if key(x) == key(pivot)]
     mayor = [x for x in lista[1:] if key(x) >= key(pivot)]
-    
+
     return quick_sort(menos, key) + iguales + quick_sort(mayor, key)
 
 
@@ -152,8 +157,11 @@ def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
         index_extremo = i
         # Se busca el índice del elemento más extremo (mínimo o máximo)
         for j in range(i + 1, n):
-            comparacion = (key(lista[j]) > key(lista[index_extremo])) if reverse else \
-                          (key(lista[j]) < key(lista[index_extremo]))
+            comparacion = (
+                (key(lista[j]) > key(lista[index_extremo]))
+                if reverse
+                else (key(lista[j]) < key(lista[index_extremo]))
+            )
 
             if comparacion:
                 index_extremo = j

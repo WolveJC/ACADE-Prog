@@ -105,8 +105,10 @@ def _guardar_inventario_csv(inventario_data: list, filename: str) -> str:
     """Función auxiliar para guardar la lista de inventario en un archivo CSV."""
     ruta_archivo_creado = os.path.join(app.config["UPLOAD_FOLDER"], filename)
 
-    if not inventario_data or not isinstance(inventario_data, list) or not all(
-        isinstance(item, dict) for item in inventario_data
+    if (
+        not inventario_data
+        or not isinstance(inventario_data, list)
+        or not all(isinstance(item, dict) for item in inventario_data)
     ):
         raise ValueError("Formato de inventario inválido o vacío.")
 
@@ -157,11 +159,7 @@ def crear_inventario():
 
             return (
                 jsonify(
-                    {
-                        "message": (
-                            f"Inventario creado y guardado como {nombre_archivo_creado}."
-                        )
-                    }
+                    {"message": (f"Inventario creado y guardado como {nombre_archivo_creado}.")}
                 ),
                 200,
             )
@@ -200,9 +198,7 @@ def _manejar_subida_csv(file):
             "Fecha límite",
         ]
         if not all(col in data.columns for col in columnas_esperadas):
-            raise ValueError(
-                f"El CSV debe contener las columnas: {', '.join(columnas_esperadas)}"
-            )
+            raise ValueError(f"El CSV debe contener las columnas: {', '.join(columnas_esperadas)}")
 
         data.fillna("", inplace=True)
         json_data = data.to_dict(orient="records")
@@ -299,9 +295,7 @@ def pedir_stock():
 
         if not pedido_stock:
             return (
-                jsonify(
-                    {"message": "No se especificó ninguna cantidad válida para el pedido."}
-                ),
+                jsonify({"message": "No se especificó ninguna cantidad válida para el pedido."}),
                 400,
             )
 
@@ -324,9 +318,7 @@ def pedir_stock():
                     nueva_demanda = (
                         demanda_actual + (cantidad_pedida - demanda_actual) * factor_aprendizaje
                     )
-                    producto["Demanda"] = min(
-                        round(nueva_demanda), 10
-                    )  # Limitar a 10 como máximo
+                    producto["Demanda"] = min(round(nueva_demanda), 10)  # Limitar a 10 como máximo
 
                     resultados_pedido_msg.append(
                         f"Pedido de {cantidad_pedida} {producto['Nombre']} OK. Nuevo stock: {producto['Cantidad']}"
@@ -369,6 +361,7 @@ def pedir_stock():
 
 # --------------------------------------------------------------------------
 
+
 def _obtener_y_validar_pedido(productos: list, form_data: dict) -> tuple[list, list]:
     """
     Función auxiliar para extraer y validar los datos del pedido del proveedor
@@ -391,9 +384,7 @@ def _obtener_y_validar_pedido(productos: list, form_data: dict) -> tuple[list, l
         error_en_item = False
 
         if not producto_info:
-            errores_validacion.append(
-                f"Producto con código {codigo} no encontrado en inventario."
-            )
+            errores_validacion.append(f"Producto con código {codigo} no encontrado en inventario.")
             continue
 
         try:
@@ -457,9 +448,7 @@ def pedir_proveedor():
 
             if not pedido_proveedor:
                 return (
-                    jsonify(
-                        {"message": "No se especificó ningún producto válido para el pedido."}
-                    ),
+                    jsonify({"message": "No se especificó ningún producto válido para el pedido."}),
                     400,
                 )
 
@@ -490,6 +479,7 @@ def pedir_proveedor():
 
 
 # --------------------------------------------------------------------------
+
 
 def _crear_pdf_pedido(pedido_proveedor: list) -> tuple[bytes, str]:
     """Función auxiliar para generar el contenido binario del PDF."""
@@ -619,9 +609,7 @@ def export_csv():
             df.to_csv(output, index=False, encoding="utf-8")
         else:
             # Devolver solo encabezados si la lista está vacía
-            output.write(
-                "Código,Nombre,Cantidad,Demanda,Tiempo entrega(Días),Fecha límite\n"
-            )
+            output.write("Código,Nombre,Cantidad,Demanda,Tiempo entrega(Días),Fecha límite\n")
 
         output.seek(0)
         return send_file(

@@ -5,6 +5,7 @@ Demuestra cuatro algoritmos de ordenamiento (Insertion, Bubble, Quick, Selection
 aplicados a diferentes criterios de gestión de inventario. Por cada criterio,
 genera una visualización tabular con Matplotlib y un archivo de registro CSV.
 """
+
 # Standard library
 import csv
 import datetime
@@ -12,7 +13,7 @@ import datetime
 # Third-party libraries
 import matplotlib.pyplot as plt
 from matplotlib import table
-import pandas as pd # Añadido para manejo estructurado de datos en CSV (opcional, pero buena práctica)
+import pandas as pd  # Añadido para manejo estructurado de datos en CSV (opcional, pero buena práctica)
 
 
 # ---------------------------------------
@@ -94,8 +95,11 @@ def bubble_sort(lista: list, key: callable, descending: bool = False) -> list:
     while swapped:
         swapped = False
         for i in range(1, n):
-            comparacion = (key(lista[i - 1]) < key(lista[i])) if descending else \
-                          (key(lista[i - 1]) > key(lista[i]))
+            comparacion = (
+                (key(lista[i - 1]) < key(lista[i]))
+                if descending
+                else (key(lista[i - 1]) > key(lista[i]))
+            )
 
             if comparacion:
                 lista[i - 1], lista[i] = lista[i], lista[i - 1]
@@ -117,12 +121,12 @@ def quick_sort(lista: list, key: callable) -> list:
     """
     if len(lista) <= 1:
         return lista
-    
+
     pivot = lista[0]
     menos = [x for x in lista[1:] if key(x) < key(pivot)]
     iguales = [x for x in lista if key(x) == key(pivot)]
     mayor = [x for x in lista[1:] if key(x) >= key(pivot)]
-    
+
     return quick_sort(menos, key) + iguales + quick_sort(mayor, key)
 
 
@@ -142,12 +146,15 @@ def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
     for i in range(n):
         index_extremo = i
         for j in range(i + 1, n):
-            comparacion = (key(lista[j]) > key(lista[index_extremo])) if reverse else \
-                          (key(lista[j]) < key(lista[index_extremo]))
-            
+            comparacion = (
+                (key(lista[j]) > key(lista[index_extremo]))
+                if reverse
+                else (key(lista[j]) < key(lista[index_extremo]))
+            )
+
             if comparacion:
                 index_extremo = j
-                
+
         lista[i], lista[index_extremo] = lista[index_extremo], lista[i]
     return lista
 
@@ -176,7 +183,10 @@ inventario_por_demanda = selection_sort(inventario.copy(), key=lambda x: x["dema
 # ---------------------------------------
 # Función para generar una tabla con Matplotlib y guardar un CSV de registro
 
-def generate_table_and_csv(sorted_data: list, title: str, headers: list, query_date: str, algorithm_key: str):
+
+def generate_table_and_csv(
+    sorted_data: list, title: str, headers: list, query_date: str, algorithm_key: str
+):
     """
     Genera una tabla visual de los datos ordenados usando Matplotlib, guarda
     una imagen PNG y un archivo CSV de registro.
@@ -210,8 +220,6 @@ def generate_table_and_csv(sorted_data: list, title: str, headers: list, query_d
     table_obj.auto_set_font_size(False)
     table_obj.set_fontsize(10)
     table_obj.scale(1.2, 1.2)
-    
-
 
     plt.title(title, fontsize=14)
     plt.figtext(0.5, 0.01, f"Consulta generada: {query_date}", ha="center", fontsize=8)
@@ -219,13 +227,13 @@ def generate_table_and_csv(sorted_data: list, title: str, headers: list, query_d
     # Guardar una imagen PNG de los datos
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     image_filename = f"inventario_{algorithm_key}_{timestamp}.png"
-    
+
     try:
         plt.savefig(image_filename, bbox_inches="tight")
         plt.show()  # Se mostrará la tabla
     except IOError as e:
         print(f"Error al guardar la imagen {image_filename}: {e}")
-        
+
     plt.close(fig)
 
     # Generar archivo CSV con un registro de la consulta
@@ -287,4 +295,4 @@ for orden in ordenamientos:
         headers=headers,
         query_date=fecha_consulta,
         algorithm_key=orden["algorithm_key"],
-)
+    )

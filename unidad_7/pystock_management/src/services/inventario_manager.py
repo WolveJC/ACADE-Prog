@@ -1,23 +1,26 @@
 """
 Módulo InventarioManager.
 
-Contiene la clase Inventario, responsable de gestionar la colección de 
-objetos Producto y manejar la persistencia de datos (carga y guardado 
+Contiene la clase Inventario, responsable de gestionar la colección de
+objetos Producto y manejar la persistencia de datos (carga y guardado
 en formato JSON).
 """
+
 import os
 import json
 
 from ..models.productos import Producto
 
+
 class Inventario:
     """
     Gestiona la colección de objetos Producto y sus operaciones de persistencia.
-    
+
     Attributes:
         route_file (str): Ruta completa al archivo JSON de stock.
         productos (dict): Diccionario de productos, clave=código, valor=Objeto Producto.
     """
+
     def __init__(self, file_name: str = "data_stock.json"):
         """
         Inicializa el Inventario, configura la ruta del archivo y carga el stock inicial.
@@ -29,15 +32,15 @@ class Inventario:
         current_dir = os.path.dirname(__file__)
         # Construye la ruta para que apunte a la carpeta 'models' un nivel superior.
         # Esto es un patrón común en proyectos modulados.
-        base_dir = os.path.join(current_dir, "..", "models_data") 
-        
+        base_dir = os.path.join(current_dir, "..", "models_data")
+
         # Crear archio en la ruta indicada y nombre declarado
         self.route_file = os.path.join(base_dir, file_name)
-        
+
         # Asegurar que exista la ruta
         if not os.path.exists(base_dir):
             os.makedirs(base_dir)  # Si la ruta NO existe ENTONCES la crea
-            
+
         # Diccionario: clave=código (str), valor=objeto Producto
         # El operador 'or {}' garantiza que self.productos sea un diccionario.
         self.productos = self.load_stock() or {}
@@ -49,7 +52,7 @@ class Inventario:
         Transforma los datos JSON cargados de vuelta a objetos Producto.
 
         Returns:
-            dict | None: Un diccionario con objetos Producto si la carga es exitosa, 
+            dict | None: Un diccionario con objetos Producto si la carga es exitosa,
                          o None si hay un error o el archivo no existe.
         """
         if os.path.exists(self.route_file):
@@ -73,7 +76,7 @@ class Inventario:
     def save_stock(self):
         """
         Guarda el inventario actual en el archivo JSON de persistencia.
-        
+
         Convierte los objetos Producto a un diccionario básico para la serialización.
         """
         # Convertir objetos en Producto a un diccionario básico
@@ -90,7 +93,7 @@ class Inventario:
             with open(self.route_file, "w", encoding="utf-8") as file:
                 json.dump(save_data, file, indent=4)
             print(f"Éxito: Inventario guardado en '{self.route_file}'")
-        except IOError as e: 
+        except IOError as e:
             # W0718: Cambiado de 'Exception' a 'IOError' para manejo específico de disco/ruta.
             print(f"Error: No fue posible guardar el inventario en '{self.route_file}'")
             print(f"Detalle del error: {e}")
@@ -137,9 +140,7 @@ class Inventario:
             print(resultado_producto)
             print("--------------------------\n")
         else:
-            print(
-                f"Error: El producto con el código {id_search} no se encuentra en el inventario."
-            )
+            print(f"Error: El producto con el código {id_search} no se encuentra en el inventario.")
 
     def actualizar_cantidad(self):
         """Solicita un código y actualiza la cantidad de ese producto."""
@@ -162,9 +163,7 @@ class Inventario:
                 new_cantidad = int(new_cantidad_str)
 
                 if new_cantidad < 0:
-                    print(
-                        "Error: La cantidad no puede ser un número negativo. Inténtalo de nuevo."
-                    )
+                    print("Error: La cantidad no puede ser un número negativo. Inténtalo de nuevo.")
                     continue
 
                 break
@@ -172,7 +171,7 @@ class Inventario:
             except ValueError:
                 print("Error de Valor: Se espera una cantidad numérica entera.")
             except Exception as e:
-                 # Se mantiene la captura general para errores inesperados en un contexto interactivo
+                # Se mantiene la captura general para errores inesperados en un contexto interactivo
                 print(f"Ocurrió un error inesperado al leer la nueva cantidad: {e}")
 
         # Asigna la nueva cantidad (llamando al setter de Producto)

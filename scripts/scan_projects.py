@@ -2,19 +2,20 @@
 Script para escanear el repositorio en busca de proyectos.
 
 Un proyecto se define como un directorio que contiene un archivo README.md.
-El script genera un archivo `projects.json` con metadatos de cada proyecto, 
+El script genera un archivo `projects.json` con metadatos de cada proyecto,
 incluyendo el nombre, la ruta del README y la ruta de un posible icono.
 """
+
 import os
 import json
 
-# C0103: Las variables que actúan como constantes (no cambian durante la ejecución) 
+# C0103: Las variables que actúan como constantes (no cambian durante la ejecución)
 # deben nombrarse en MAYÚSCULAS_CON_GUION_BAJO (UPPER_CASE).
 
 # Ruta base del repositorio (punto actual)
 REPO_PATH = "."
 
-PROJECTS = [] # C0103: Renombrado a constante (aunque se llena, su inicialización es constante)
+PROJECTS = []  # C0103: Renombrado a constante (aunque se llena, su inicialización es constante)
 
 for root, dirs, files in os.walk(REPO_PATH):
     # Ignorar carpetas ocultas y la carpeta .git
@@ -24,10 +25,10 @@ for root, dirs, files in os.walk(REPO_PATH):
     # Detectar proyectos: carpeta que contiene un README.md
     if "README.md" in files:
         project_name = os.path.basename(root)
-        
+
         # Ignorar la raíz del repositorio si no tiene un nombre significativo
         if project_name in ("", "."):
-             continue 
+            continue
 
         # Buscar icono si existe
         icon_file = None
@@ -44,13 +45,13 @@ for root, dirs, files in os.walk(REPO_PATH):
             "readme": os.path.join(root, "README.md"),
             "icon": icon_file,
             # NOTA: Asegúrate de reemplazar USUARIO/REPO con los valores correctos
-            "url": f"https://github.com/USUARIO/REPO/tree/main/{root}", 
+            "url": f"https://github.com/USUARIO/REPO/tree/main/{root}",
         }
 
         PROJECTS.append(project)
 
 # Guardar en projects.json
-OUTPUT_FILE = "projects.json" # C0103: Definido como constante
+OUTPUT_FILE = "projects.json"  # C0103: Definido como constante
 try:
     with open(OUTPUT_FILE, "w", encoding="utf-8") as file:
         json.dump(PROJECTS, file, indent=2, ensure_ascii=False)

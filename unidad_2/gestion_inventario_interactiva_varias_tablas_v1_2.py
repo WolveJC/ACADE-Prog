@@ -60,7 +60,7 @@ def _obtener_fecha_valida(prompt: str, formato: str = "%Y-%m-%d") -> Union[str, 
 # ------------------------------------------
 # Ingreso interactivo de productos
 # ------------------------------------------
-def ingresar_productos(inventario: list):
+def ingresar_productos(lista_inventario: list):
     """Permite al usuario ingresar productos de manera interactiva."""
     while True:
         print("\n--- Ingrese los datos del nuevo producto ---")
@@ -118,7 +118,7 @@ def ingresar_productos(inventario: list):
             "fecha_limite": fecha_limite,
             "cantidad": cantidad,
         }
-        inventario.append(producto)
+        lista_inventario.append(producto)
 
         continuar = input("¿Desea ingresar otro producto? (s/n): ").strip().lower()
         if continuar != "s":
@@ -248,20 +248,24 @@ def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
 # ------------------------------------------
 
 
-def generar_inventarios_ordenados(inventario: list) -> dict:
+def generar_inventarios_ordenados(datos_originales: list) -> dict:
     """Aplica los cuatro algoritmos de ordenamiento al inventario."""
     return {
         "cantidad": insertion_sort(
-            inventario.copy(), key=lambda x: x["cantidad"], descending=False
+            datos_originales.copy(), key=lambda x: x["cantidad"], descending=False
         ),
         "tiempo": bubble_sort(
-            inventario.copy(), key=lambda x: x["tiempo_entrega"], descending=True
+            datos_originales.copy(), key=lambda x: x["tiempo_entrega"], descending=True
         ),
         "fecha": quick_sort(
-            inventario.copy(),
+            datos_originales.copy(),
             key=lambda x: datetime.datetime.strptime(x["fecha_limite"], "%Y-%m-%d"),
         ),
-        "demanda": selection_sort(inventario.copy(), key=lambda x: x["demanda"], reverse=True),
+        "demanda": selection_sort(
+            datos_originales.copy(), 
+            key=lambda x: x["demanda"],
+            reverse=True
+        ),
     }
 
 
@@ -271,7 +275,8 @@ def generar_inventarios_ordenados(inventario: list) -> dict:
 
 
 def generate_table_and_csv(
-    sorted_data: list, title: str, headers: list, query_date: str, algorithm_key: str
+    sorted_data: list, title: str, csv_headers: list,
+    query_date: str, algorithm_key: str
 ):
     """
     Genera una tabla visual con Matplotlib, guarda la imagen PNG y un CSV de registro.

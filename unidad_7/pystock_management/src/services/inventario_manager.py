@@ -178,7 +178,8 @@ class Inventario:
         try:
             producto_a_actualizar.cantidad = new_cantidad
             print(
-                f"Éxito: Cantidad del producto '{producto_a_actualizar.nombre}' actualizada a {new_cantidad}."
+                f"Éxito: Cantidad del producto '{producto_a_actualizar.nombre}'"
+                f"actualizada a {new_cantidad}."
             )
         except ValueError as e:
             # Captura si el setter de Producto rechaza el valor

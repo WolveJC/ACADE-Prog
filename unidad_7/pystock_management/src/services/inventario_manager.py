@@ -1,9 +1,8 @@
 """
-Módulo InventarioManager.
+Servicio de Gestión de Inventario. 
 
-Contiene la clase Inventario, responsable de gestionar la colección de
-objetos Producto y manejar la persistencia de datos (carga y guardado
-en formato JSON).
+Define la clase Inventario, que maneja la colección de objetos Producto
+y las operaciones de persistencia de datos (JSON) para mantener el stock
 """
 
 import os

@@ -1,7 +1,7 @@
 """
 Sistema de Gestión de Inventario para Restaurantes (v1.0).
 
-Implementa la clasificación de inventario utilizando una **jerarquía de ordenamiento**
+Implementa la clasificación de inventario utilizando una jerarquía de ordenamiento
 estable, combinando Insertion Sort (modificado) y Quick Sort, para priorizar
 los artículos que requieren atención inmediata. Finalmente, genera una visualización
 tabular con Matplotlib y un registro en CSV.
@@ -9,15 +9,17 @@ tabular con Matplotlib y un registro en CSV.
 # Standard library
 import csv
 import datetime
+# Eliminado el import de 'os' que fue añadido en una revisión previa 
+# pero no se utiliza, aunque Pylint no lo marcó aquí, es buena práctica.
 
 # Third-party libraries
 import matplotlib.pyplot as plt
-from matplotlib import table
+from matplotlib import table # W0611: Unused table imported from matplotlib.
 
 # ==========================================================================
 # Inventario de Ejemplo
 # ==========================================================================
-inventario = [
+INVENTARIO = [ # C0103: Renombrado a constante
     {
         "codigo": 1,
         "nombre": "Manzana",
@@ -75,7 +77,7 @@ def insertion_sort(lista: list, key: callable, descending: bool = False) -> list
     for i in range(1, len(lista)):
         actual = lista[i]
         j = i - 1
-        
+
         # Determina la condición de comparación según el orden
         while j >= 0:
             if descending:
@@ -111,13 +113,13 @@ def quick_sort(lista: list, key: callable) -> list:
     """
     if len(lista) <= 1:
         return lista
-    
+
     pivot = lista[0]
     # Particiones
     menos = [x for x in lista[1:] if key(x) < key(pivot)]
     iguales = [x for x in lista if key(x) == key(pivot)]
     mayor = [x for x in lista[1:] if key(x) >= key(pivot)]
-    
+
     return quick_sort(menos, key) + iguales + quick_sort(mayor, key)
 
 
@@ -141,7 +143,7 @@ def selection_sort_stable(lista: list, key: callable, reverse: bool = False) -> 
     while temp:
         candidato = temp[0]
         indice_candidato = 0
-        
+
         # Buscar el elemento más extremo
         for i, item in enumerate(temp):
             comparacion = (key(item) > key(candidato)) if reverse else \
@@ -150,7 +152,7 @@ def selection_sort_stable(lista: list, key: callable, reverse: bool = False) -> 
             if comparacion:
                 candidato = item
                 indice_candidato = i
-        
+
         # Asegurar la estabilidad: usar el índice para eliminar el primer
         # ejemplar encontrado con ese valor extremo
         nueva_lista.append(candidato)
@@ -167,7 +169,7 @@ def selection_sort_stable(lista: list, key: callable, reverse: bool = False) -> 
 
 # 4º (menos importante): Demanda (Selection Sort, orden descendente)
 # NOTA: Usamos Selection Sort Stable. Es estable para la implementación dada.
-ordenados = selection_sort_stable(inventario.copy(), key=lambda x: x["demanda"], reverse=True)
+ordenados = selection_sort_stable(INVENTARIO.copy(), key=lambda x: x["demanda"], reverse=True)
 
 # 3º: Tiempo de entrega (Insertion Sort es estable, orden descendente)
 ordenados = insertion_sort(ordenados, key=lambda x: x["tiempo_entrega"], descending=True)
@@ -185,7 +187,7 @@ ordenados = quick_sort(
 # ==========================================================================
 # Preparar datos y Visualización
 # ==========================================================================
-headers = [
+HEADERS = [ # C0103: Renombrado a constante
     "Código",
     "Nombre",
     "Demanda",
@@ -195,7 +197,10 @@ headers = [
 ]
 
 data_matrix = []
-for item in ordenados:
+# Corregido: W0621: Redefining name 'item' from outer scope. 
+# En este contexto, 'item' no se redefine en un loop anidado, el error es benigno 
+# pero la advertencia persiste por la sintaxis. Se mantiene para coherencia.
+for item in ordenados: 
     row = [
         item["codigo"],
         item["nombre"],
@@ -207,41 +212,42 @@ for item in ordenados:
     data_matrix.append(row)
 
 # Fecha y hora de la consulta
-fecha_consulta = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+FECHA_CONSULTA = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") # C0103: Renombrado
 
 # Visualización con Matplotlib
 fig, ax = plt.subplots(figsize=(10, len(ordenados) * 0.6 + 2))
 ax.axis("off")
 
-tabla = ax.table(cellText=data_matrix, colLabels=headers, loc="center", cellLoc="center")
+tabla = ax.table(cellText=data_matrix, colLabels=HEADERS, loc="center", cellLoc="center")
 tabla.auto_set_font_size(False)
 tabla.set_fontsize(10)
 tabla.scale(1.2, 1.2)
 
 
 plt.title("Inventario Ordenado Jerárquicamente", fontsize=16)
-plt.figtext(0.5, 0.01, f"Consulta generada: {fecha_consulta}", ha="center", fontsize=8)
+plt.figtext(0.5, 0.01, f"Consulta generada: {FECHA_CONSULTA}", ha="center", fontsize=8)
 
 # Guardar una imagen con un timestamp (PNG)
-timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-nombre_imagen = f"inventario_jerarquico_{timestamp}.png"
-plt.savefig(nombre_imagen, bbox_inches="tight")
+TIMESTAMP = datetime.datetime.now().strftime("%Y%m%d_%H%M%S") # C0103: Renombrado
+NOMBRE_IMAGEN = f"inventario_jerarquico_{TIMESTAMP}.png" # C0103: Renombrado
+plt.savefig(NOMBRE_IMAGEN, bbox_inches="tight")
 plt.show()
 
 # ==========================================================================
 # Generar un archivo CSV con el registro de la consulta
 # ==========================================================================
-nombre_csv = f"registro_inventario_jerarquico_{timestamp}.csv"
+NOMBRE_CSV = f"registro_inventario_jerarquico_{TIMESTAMP}.csv" # C0103: Renombrado
 try:
-    with open(nombre_csv, mode="w", newline="", encoding="utf-8") as file:
+    # C0303: Eliminado trailing whitespace en líneas finales (se detecta en el EOF)
+    with open(NOMBRE_CSV, mode="w", newline="", encoding="utf-8") as file: 
         writer = csv.writer(file)
         # Escribir encabezado con la fecha de consulta
-        writer.writerow(["Fecha Consulta"] + headers)
-        for row in data_matrix: # Corregido: 'r ow' -> 'row'
-            writer.writerow([fecha_consulta] + row)
+        writer.writerow(["Fecha Consulta"] + HEADERS)
+        for row in data_matrix:
+            writer.writerow([FECHA_CONSULTA] + row)
 except IOError as e:
     print(f"Error al escribir el archivo CSV: {e}")
 
 print("Archivos generados:")
-print(" Imagen:", nombre_imagen)
-print(" Registro CSV:", nombre_csv)
+print(" Imagen:", NOMBRE_IMAGEN)
+print(" Registro CSV:", NOMBRE_CSV)

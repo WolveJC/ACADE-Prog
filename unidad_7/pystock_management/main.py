@@ -4,11 +4,12 @@ Módulo principal para la ejecución de la aplicación de Gestión de Inventario
 Este módulo contiene la lógica del menú interactivo y la función para
 obtener datos de productos del usuario, actuando como la capa de Presentación.
 """
+import sys  
+# Añadido para salida limpia
 from typing import Union
 
 from src.services.inventario_manager import Inventario
 from src.models.productos import Producto
-import sys  # Añadido para salida limpia
 
 
 def obtener_datos_producto() -> Union[Producto, None]:

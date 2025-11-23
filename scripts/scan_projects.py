@@ -35,7 +35,7 @@ for root, dirs, files in os.walk(REPO_PATH):
         for ext in [".png", ".jpg", ".jpeg", ".svg"]:
             CANDIDATE = f"icon{ext}"
             if CANDIDATE in files:
-                ICON_FILE = os.path.join(root, candidate)
+                ICON_FILE = os.path.join(root, CANDIDATE)
                 break
 
         # Construir objeto del proyecto
@@ -48,7 +48,7 @@ for root, dirs, files in os.walk(REPO_PATH):
             "url": f"https://github.com/WolveJC/ACADE-Prog/tree/main/{root}",
         }
 
-        PROJECTS.append(project)
+        PROJECTS.append(PROJECT)
 
 # Guardar en projects.json
 OUTPUT_FILE = "projects.json"  # C0103: Definido como constante

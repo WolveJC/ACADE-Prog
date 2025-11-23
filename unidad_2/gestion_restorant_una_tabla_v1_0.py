@@ -12,9 +12,7 @@ import csv
 import datetime
 import random
 import string
-# import sys  # Eliminado W0611: sys no se usa.
-# Se mantienen Union, List y Tuple para compatibilidad con Python < 3.9/3.10
-from typing import Union, List, Tuple 
+import sys
 
 # Third-party libraries
 import matplotlib.pyplot as plt
@@ -358,8 +356,7 @@ if __name__ == "__main__":
 
     if not inventario:
         print("\n No se ingresaron productos. El programa se cerrará.")
-        # Usamos quit() o exit() si no se quiere re-importar sys.
-        quit() 
+        sys.exit() 
 
     inventarios_ordenados = generar_inventarios_ordenados(inventario)
 

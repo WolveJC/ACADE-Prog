@@ -57,9 +57,9 @@ def list_arch(directory: str) -> Union[list[tuple[str, float]], None]:
     
     # Se mantiene la captura general ya que el propósito del script 
     # es manejar errores de I/O impredecibles en el sistema de archivos.
-    except Exception as e: 
-        print(f"Ocurrió un error inesperado: {e}")
-        return None # R1710: Asegurar que se devuelve None en caso de error
+    except OSError as e: 
+        print(f"Ocurrió un error de E/S inesperado: {e}")
+        return None
 
 
 # ============================

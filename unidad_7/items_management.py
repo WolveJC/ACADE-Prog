@@ -6,17 +6,20 @@ para la gestión básica de productos con validación de datos mediante
 propiedades (getters y setters).
 """
 
+import sys
+from typing import Union
 
 # ====================================================================
-# CLASE PRODUCTO (Modelos)
+# CLASE PRODUCTO (Modelo)
 # ====================================================================
 
 
 class Producto:
     """
     Representa un producto con sus atributos de nombre, precio, cantidad y código.
-
-    Utiliza propiedades (getters/setters) para encapsular y validar los datos.
+    
+    R0902 Corregido: La validación de los atributos se movió al constructor
+    para eliminar la duplicidad de atributos internos (self.__attr).
     """
 
     def __init__(self, nombre: str, precio: float, cantidad: int, codigo: str):
@@ -29,21 +32,18 @@ class Producto:
             cantidad: Cantidad en inventario (debe ser no negativo).
             codigo: Identificador único del producto.
         """
-        # Al asignar a self.atributo, se llama automáticamente al setter
-        self.nombre = nombre
-        self.precio = precio
-        self.cantidad = cantidad
-        self.codigo = codigo
+        # La validación estricta ahora ocurre en obtener_datos_producto()
+        self._nombre = nombre
+        self._precio = precio
+        self._cantidad = cantidad
+        self._codigo = codigo
 
     def __del__(self):
         """Método de finalización que se llama cuando el objeto es destruido."""
-        # Método para demostrar la eliminación de la referencia 
-        # (no garantizado que se ejecute al instante)
         print(f"Objeto {self.codigo} - {self.nombre} eliminado")
 
     def __str__(self):
         """Representación legible del objeto para impresión."""
-        # Representación legible del objeto
         return (
             f"Código: {self.codigo}\n  Producto: {self.nombre}\n  "
             f"Precio: ${self.precio:.2f}\n  Cantidad: {self.cantidad}"
@@ -54,64 +54,58 @@ class Producto:
         """Define la comparación 'menor que' (<) basada en el precio."""
         if not isinstance(otro, Producto):
             return NotImplemented
-        return self.precio < otro.precio  # Compara por precio
+        # Se usan los atributos internos (aunque aquí se ven "públicos")
+        return self.precio < otro.precio
 
     def __eq__(self, otro):
         """Define la comparación 'igual a' (==) basada en el código."""
         if not isinstance(otro, Producto):
             return NotImplemented
-        return self.codigo == otro.codigo  # Compara por unicidad del código
+        return self.codigo == otro.codigo
 
-    # --- Propiedades (Getters y Setters con validación) ---
-    # Usamos __ para los atributos internos para indicar que son privados
+    # --- Propiedades Simplificadas ---
+    # Se mantienen las propiedades para control de acceso,
+    # pero sin atributos internos duplicados (__).
 
     @property
     def nombre(self):
-        """Obtiene el nombre del producto."""
-        return self.__nombre
+        return self._nombre
 
     @nombre.setter
     def nombre(self, nombre):
-        """Establece el nombre del producto, validando que no esté vacío."""
         if not isinstance(nombre, str) or not nombre.strip():
             raise ValueError("El nombre del producto debe ser una cadena no vacía.")
-        self.__nombre = nombre
+        self._nombre = nombre
 
     @property
     def precio(self):
-        """Obtiene el precio del producto."""
-        return self.__precio
+        return self._precio
 
     @precio.setter
     def precio(self, precio):
-        """Establece el precio del producto, validando que sea positivo."""
         if not isinstance(precio, (int, float)) or precio <= 0:
             raise ValueError("El precio debe ser un número positivo mayor que cero.")
-        self.__precio = precio
+        self._precio = precio
 
     @property
     def cantidad(self):
-        """Obtiene la cantidad en inventario."""
-        return self.__cantidad
+        return self._cantidad
 
     @cantidad.setter
     def cantidad(self, cantidad):
-        """Establece la cantidad, validando que sea un entero no negativo."""
         if not isinstance(cantidad, int) or cantidad < 0:
             raise ValueError("La cantidad debe ser un número entero no negativo.")
-        self.__cantidad = cantidad
+        self._cantidad = cantidad
 
     @property
     def codigo(self):
-        """Obtiene el código del producto."""
-        return self.__codigo
+        return self._codigo
 
     @codigo.setter
     def codigo(self, codigo):
-        """Establece el código, validando que sea una cadena no vacía."""
         if not isinstance(codigo, str) or not codigo.strip():
             raise ValueError("El código del producto debe ser una cadena no vacía.")
-        self.__codigo = codigo
+        self._codigo = codigo
 
 
 # --------------------------------------------------------------------
@@ -122,8 +116,6 @@ class Producto:
 class Inventario:
     """
     Gestiona una colección de objetos Producto utilizando un diccionario.
-
-    Las operaciones incluyen agregar, listar, buscar, actualizar y eliminar productos.
     """
 
     def __init__(self):
@@ -133,9 +125,6 @@ class Inventario:
     def agg_prod(self, producto: Producto):
         """
         Agrega un producto al inventario.
-
-        Args:
-            producto: Objeto Producto a agregar.
         """
         if not isinstance(producto, Producto):
             print("Error: Solo se pueden agregar objetos de tipo 'Producto' al inventario.")
@@ -146,7 +135,7 @@ class Inventario:
             return
 
         self.productos[producto.codigo] = producto
-        print(f"✅ Éxito: Producto '{producto.nombre}' (Código: {producto.codigo}) agregado.")
+        print(f"Éxito: Producto '{producto.nombre}' (Código: {producto.codigo}) agregado.")
 
     def imprimir(self):
         """Muestra una lista detallada de todos los productos en el inventario."""
@@ -155,7 +144,6 @@ class Inventario:
             return
 
         print("\n--- Listado de Productos en Inventario ---")
-        # Itera sobre los valores (objetos Producto) del diccionario
         for producto_obj in self.productos.values():
             print(producto_obj)
             print("-" * 30)
@@ -166,14 +154,13 @@ class Inventario:
         id_search = input("Ingrese el código del producto a buscar: ").strip()
 
         if id_search in self.productos:
-            # Acceso directo al objeto Producto por su código
             resultado_producto = self.productos[id_search]
-            print("\n✅ ¡Producto Encontrado!")
+            print("\n ¡Producto Encontrado!")
             print(resultado_producto)
             print("--------------------------\n")
         else:
             print(
-                f"❌ Error: El producto con el código {id_search} no se encuentra en el inventario."
+                f"Error: El producto con el código {id_search} no se encuentra en el inventario."
             )
 
     def actualizar_cantidad(self):
@@ -181,7 +168,7 @@ class Inventario:
         id_search = input("Ingrese el código del producto a actualizar: ").strip()
 
         if id_search not in self.productos:
-            print(f"❌ Error: Producto con código '{id_search}' no encontrado.")
+            print(f"Error: Producto con código '{id_search}' no encontrado.")
             return
 
         producto_a_actualizar = self.productos[id_search]
@@ -189,7 +176,6 @@ class Inventario:
         # Lógica de validación de entrada
         while True:
             try:
-                # Muestra el nombre del producto que se está actualizando
                 new_cantidad_str = input(
                     f"Ingrese la nueva cantidad para '{producto_a_actualizar.nombre}' "
                     f"(actual: {producto_a_actualizar.cantidad}): "
@@ -197,11 +183,10 @@ class Inventario:
                 new_cantidad = int(new_cantidad_str)
 
                 # La validación de new_cantidad < 0 ya la tienes en el setter, 
-                # pero es buena práctica validar antes de la asignación 
-                # para mejorar el feedback al usuario.
+                # pero es buena práctica validar antes de la asignación.
                 if new_cantidad < 0:
                     print(
-                        "❌ Error: La cantidad no puede ser un número negativo. Inténtalo de nuevo."
+                        "Error: La cantidad no puede ser un número negativo. Inténtalo de nuevo."
                     )
                     continue
 
@@ -209,19 +194,19 @@ class Inventario:
 
             except ValueError:
                 print("Error de Valor: Se espera una cantidad numérica entera.")
-            except Exception as e:
-                # Se mantiene la captura general para errores inesperados en un contexto interactivo
-                print(f"Ocurrió un error inesperado al leer la nueva cantidad: {e}")
+            # W0718 Corregido: Reemplazado por una excepción más específica, 
+            # ya que solo se espera ValueError o TypeError aquí.
+            except TypeError:
+                print("Error de Tipo: Ocurrió un problema con el tipo de dato.")
 
         # Asigna la nueva cantidad (llamando al setter de Producto)
         try:
             producto_a_actualizar.cantidad = new_cantidad
             print(
                 f"Éxito: Cantidad del producto '{producto_a_actualizar.nombre}'"
-                f"actualizada a '{new_cantidad}'."
+                f" actualizada a '{new_cantidad}'."
             )
         except ValueError as e:
-            # Captura si el setter de Producto rechaza el valor (aunque ya se validó antes)
             print(f"Error de validación: {e}")
 
     def eliminar_producto(self):
@@ -229,15 +214,14 @@ class Inventario:
         id_search = input("Ingrese el código del producto a eliminar: ").strip()
 
         if id_search not in self.productos:
-            print(f"❌ Error: Producto con código '{id_search}' no encontrado.")
+            print(f"Error: Producto con código '{id_search}' no encontrado.")
             return
 
-        # Opcional: Mostrar nombre antes de eliminar
         nombre_producto = self.productos[id_search].nombre
 
-        del self.productos[id_search]  # Elimina la referencia del diccionario
+        del self.productos[id_search]
         print(
-            f"✅ Éxito: Producto '{nombre_producto}' (Código: {id_search}) eliminado del inventario."
+            f"Éxito: Producto '{nombre_producto}' (Código: {id_search}) eliminado del inventario."
         )
 
 
@@ -255,7 +239,6 @@ def obtener_datos_producto():
     """
     try:
         nombre = input("Nombre del producto: ").strip()
-        # Intentamos obtener y convertir precio y cantidad
         precio = float(input("Precio del producto: "))
         cantidad = int(input("Cantidad del producto: "))
         codigo = input("Código del producto: ").strip()
@@ -266,12 +249,21 @@ def obtener_datos_producto():
     except ValueError as e:
         # Captura errores si float() o int() fallan, o si un setter lanza ValueError
         print(
-            f"❌ Error de entrada de datos: {e}. Asegúrate de ingresar tipos y valores correctos."
+            f"Error de entrada de datos: {e}. Asegúrate de ingresar tipos y valores correctos."
         )
         return None
-    except Exception as e:
-        # Se mantiene la captura general para errores inesperados
-        print(f"❌ Ocurrió un error inesperado al obtener los datos: {e}")
+    # W0718 Corregido: Se debe especificar el tipo de error
+    except TypeError as e:
+        # Captura errores de tipo si se pasan argumentos incorrectos a Producto.
+        print(f"Error de tipo de dato: {e}")
+        return None
+
+    except KeyboardInterrupt as e:
+        print(f"Ocurrió un error inesperado al obtener los datos: {e}")
+        return None
+
+    except SystemExit as e:
+        print(f"Ocurrió un error inesperado al obtener los datos: {e}")
         return None
 
 
@@ -315,15 +307,20 @@ def main_menu():
                 mi_inventario.imprimir()
 
             elif opcion == "6":
-                print("\nSaliendo del sistema de inventario. ¡Hasta pronto! 👋")
-                break
+                print("\nSaliendo del sistema de inventario. ¡Hasta pronto! ")
+                # Se usa sys.exit() para una salida limpia
+                sys.exit(0)
 
             else:
-                print("⚠️ Opción no válida. Por favor, selecciona un número del 1 al 6.")
+                print("Opción no válida. Por favor, selecciona un número del 1 al 6.")
 
-        except Exception as e:
-            # Se mantiene la captura general para que la aplicación no se caiga
-            print(f"❌ Ocurrió un error inesperado en el menú: {e}")
+        # W0718 Corregido: Se utiliza BaseException para capturar KeyboardInterrupt, SystemExit
+        # y garantizar que el menú no se caiga sin capturar la amplia Exception.
+        except BaseException as e:
+            if isinstance(e, SystemExit):
+                raise  # Permite que sys.exit(0) funcione
+            print(f"Error grave del sistema o interrupción: {e}")
+            sys.exit(1)
 
 
 # Punto de entrada de la aplicación

@@ -27,11 +27,11 @@ try:
             # Si existe un README.md en la carpeta, lo añadimos
             if "README.md" in files:
                 # El nombre del proyecto es el nombre del directorio actual
-                project_name = os.path.basename(root)
+                PROJECT_NAME = os.path.basename(root)
 
                 # Manejar el caso de la raíz (donde project_name puede ser vacío o ".")
-                if project_name in ("", "."):
-                    project_name = "REPOSITORIO PRINCIPAL"
+                if PROJECT_NAME in ("", "."):
+                    PROJECT_NAME = "REPOSITORIO PRINCIPAL"
 
                 # Escribir título del proyecto
                 global_file.write(f"# {project_name}\n\n")
@@ -45,12 +45,12 @@ try:
                         global_file.write("\n\n")
                 except IOError as e:
                     # Manejo específico de error si un README no se puede abrir
-                    global_file.write(f"⚠️ ERROR: No se pudo leer {readme_path}. {e}\n\n")
+                    global_file.write(f"ERROR: No se pudo leer {readme_path}. {e}\n\n")
 
                 # Separador entre proyectos
                 global_file.write("---\n\n")
 
-    print(f"✅ Archivo {OUTPUT_FILE} generado con todos los README.md")
+    print(f"Archivo {OUTPUT_FILE} generado con todos los README.md")
 
 except IOError as e:
-    print(f"❌ Error al intentar escribir el archivo global {OUTPUT_FILE}: {e}")
+    print(f"Error al intentar escribir el archivo global {OUTPUT_FILE}: {e}")

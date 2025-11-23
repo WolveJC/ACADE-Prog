@@ -13,6 +13,7 @@ import datetime
 import random
 import string
 import sys
+from typing import Union, List, Tuple
 
 # Third-party libraries
 import matplotlib.pyplot as plt
@@ -277,7 +278,7 @@ def generar_inventarios_ordenados(datos_originales: list) -> dict:
 
 def generate_table_and_csv(
     sorted_data: list, title: str, 
-    headers_visual: list, csv_headers: list, 
+    visual_headers: list, csv_headers: list, 
     query_date: str, algorithm_key: str
 ):
     """

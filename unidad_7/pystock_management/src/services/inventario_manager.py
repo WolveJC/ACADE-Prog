@@ -171,9 +171,6 @@ class Inventario:
 
             except ValueError:
                 print("Error de Valor: Se espera una cantidad numérica entera.")
-            except Exception as e:
-                # Se mantiene la captura general para errores inesperados en un contexto interactivo
-                print(f"Ocurrió un error inesperado al leer la nueva cantidad: {e}")
 
         # Asigna la nueva cantidad (llamando al setter de Producto)
         try:

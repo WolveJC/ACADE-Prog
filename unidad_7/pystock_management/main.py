@@ -101,12 +101,15 @@ def main_menu():
         except (IOError, OSError, ValueError, TypeError) as e:
             # Captura errores comunes de I/O, disco o validación interna
             print(f"Error crítico en la operación: {e}")
-        except BaseException as e:
-            # Captura KeyboardInterrupt, SystemExit o cualquier otro error fatal
-            # (Si no se usa sys.exit)
-            print(f"Error fatal del sistema: {e}")
-            sys.exit(1) 
-# Aseguramos la salida en caso de error fatal
+        except (KeyboardInterrupt, SystemExit) as e:
+            # Captura Ctrl+C y sys.exit.
+            if isinstance(e, SystemExit):
+                raise
+            
+            print(
+"\nInterrupción detectada (Ctrl+C)." 
+"Terminando el programa.")
+            sys.exit(1)
 
 
 # Punto de entrada de la aplicación

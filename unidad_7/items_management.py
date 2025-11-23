@@ -6,11 +6,6 @@ para la gestión básica de productos con validación de datos mediante
 propiedades (getters y setters).
 """
 
-# Standard library
-import datetime  # Se mantiene porque se usa en el dunder __del__ como ejemplo.
-
-# Third-party libraries
-# (No hay librerías de terceros en este ejemplo)
 
 # ====================================================================
 # CLASE PRODUCTO (Modelos)

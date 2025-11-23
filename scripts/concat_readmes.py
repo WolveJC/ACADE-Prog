@@ -34,7 +34,7 @@ try:
                     PROJECT_NAME = "REPOSITORIO PRINCIPAL"
 
                 # Escribir título del proyecto
-                global_file.write(f"# {project_name}\n\n")
+                global_file.write(f"# {PROJECT_NAME}\n\n")
 
                 # Escribir contenido del README
                 readme_path = os.path.join(root, "README.md")

@@ -60,7 +60,8 @@ def generar_codigo_aleatorio(longitud: int = 6) -> str:
 
 def limpiar_archivos_antiguos(dias: int = 1):
     """
-    Elimina archivos de la carpeta 'uploads' que sean más antiguos que el número de días especificado.
+    Elimina archivos de la carpeta 'uploads' que sean más antiguos 
+    que el número de días especificado.
 
     Args:
         dias: Número de días de antigüedad para considerar un archivo como 'antiguo'.
@@ -321,12 +322,14 @@ def pedir_stock():
                     producto["Demanda"] = min(round(nueva_demanda), 10)  # Limitar a 10 como máximo
 
                     resultados_pedido_msg.append(
-                        f"Pedido de {cantidad_pedida} {producto['Nombre']} OK. Nuevo stock: {producto['Cantidad']}"
+                        f"Pedido de {cantidad_pedida} {producto['Nombre']} OK."
+                        f"Nuevo stock: {producto['Cantidad']}"
                     )
                     hubo_cambios = True
                 else:
                     resultados_pedido_msg.append(
-                        f"Stock insuficiente de {producto['Nombre']} (disp: {stock_actual}) para pedir {cantidad_pedida}."
+                        f"Stock insuficiente de {producto['Nombre']}"
+                        f"(disp: {stock_actual}) para pedir {cantidad_pedida}."
                     )
 
         # 3. Guardar Cambios

@@ -1,42 +1,81 @@
+"""
+Módulo InventarioManager.
+
+Contiene la clase Inventario, responsable de gestionar la colección de 
+objetos Producto y manejar la persistencia de datos (carga y guardado 
+en formato JSON).
+"""
 import os
 import json
 
 from ..models.productos import Producto
 
 class Inventario:
-    def __init__(self, file_name="data_stock.json"):
-        # Crear referencia de ruta
+    """
+    Gestiona la colección de objetos Producto y sus operaciones de persistencia.
+    
+    Attributes:
+        route_file (str): Ruta completa al archivo JSON de stock.
+        productos (dict): Diccionario de productos, clave=código, valor=Objeto Producto.
+    """
+    def __init__(self, file_name: str = "data_stock.json"):
+        """
+        Inicializa el Inventario, configura la ruta del archivo y carga el stock inicial.
+
+        Args:
+            file_name: Nombre del archivo de persistencia JSON.
+        """
+        # Crear referencia de ruta (asumiendo estructura src/services/inventario_manager.py)
         current_dir = os.path.dirname(__file__)
-        base_dir = os.path.join(current_dir, "..", "..", "models")
+        # Construye la ruta para que apunte a la carpeta 'models' un nivel superior.
+        # Esto es un patrón común en proyectos modulados.
+        base_dir = os.path.join(current_dir, "..", "models_data") 
+        
         # Crear archio en la ruta indicada y nombre declarado
         self.route_file = os.path.join(base_dir, file_name)
+        
         # Asegurar que exista la ruta
         if not os.path.exists(base_dir):
             os.makedirs(base_dir)  # Si la ruta NO existe ENTONCES la crea
+            
         # Diccionario: clave=código (str), valor=objeto Producto
+        # El operador 'or {}' garantiza que self.productos sea un diccionario.
         self.productos = self.load_stock() or {}
 
-    def load_stock(self):
-        """Cargar datos del JSON en data"""
+    def load_stock(self) -> dict | None:
+        """
+        Carga los datos del inventario desde el archivo JSON de persistencia.
+
+        Transforma los datos JSON cargados de vuelta a objetos Producto.
+
+        Returns:
+            dict | None: Un diccionario con objetos Producto si la carga es exitosa, 
+                         o None si hay un error o el archivo no existe.
+        """
         if os.path.exists(self.route_file):
             try:
-                with open(self.route_file, "r") as dicc:
+                # W1514: Especificar 'encoding="utf-8"' es buena práctica.
+                with open(self.route_file, "r", encoding="utf-8") as dicc:
                     data_loaded = json.load(dicc)
                     stock_loaded = {}
                     for codigo, data in data_loaded.items():
-                        # Aquí debes asegurarte de que los datos tengan en
-                        # los campos necesarios
+                        # Aquí se reconstruye el objeto Producto
                         stock_loaded[codigo] = Producto(
                             data["nombre"], data["precio"], data["cantidad"], data["codigo"]
                         )
                     return stock_loaded
-            except (json.JSONDecodeError, FileNotFoundError):
-                print(f"Error al cargar el inventario desde '{self.route_file}'")
-                print("Se iniciara un inventario Vacío")
+            except (json.JSONDecodeError, FileNotFoundError, TypeError) as e:
+                # Captura errores de JSON mal formado o problemas en la creación de Producto
+                print(f"Error al cargar/procesar el inventario desde '{self.route_file}': {e}")
+                print("Se iniciará un inventario Vacío.")
         return None
 
     def save_stock(self):
-        """Guardar inventario actual en sesión"""
+        """
+        Guarda el inventario actual en el archivo JSON de persistencia.
+        
+        Convierte los objetos Producto a un diccionario básico para la serialización.
+        """
         # Convertir objetos en Producto a un diccionario básico
         save_data = {}
         for codigo, producto_obj in self.productos.items():
@@ -47,15 +86,22 @@ class Inventario:
                 "cantidad": producto_obj.cantidad,
             }
         try:
-            with open(self.route_file, "w") as f:
-                json.dump(save_data, f, indent=4)
-            print(f"Exito: Inventario guardado en '{self.route_file}'")
-        except Exception as e:
+            # W1514: Especificar 'encoding="utf-8"' es buena práctica.
+            with open(self.route_file, "w", encoding="utf-8") as file:
+                json.dump(save_data, file, indent=4)
+            print(f"Éxito: Inventario guardado en '{self.route_file}'")
+        except IOError as e: 
+            # W0718: Cambiado de 'Exception' a 'IOError' para manejo específico de disco/ruta.
             print(f"Error: No fue posible guardar el inventario en '{self.route_file}'")
-            print("/n")
-            print(f"Error '{e}'")
+            print(f"Detalle del error: {e}")
 
-    def agg_prod(self, producto):
+    def agg_prod(self, producto: Producto):
+        """
+        Agrega un nuevo objeto Producto al inventario.
+
+        Args:
+            producto: El objeto Producto a añadir.
+        """
         if not isinstance(producto, Producto):
             print("Error: Solo se pueden agregar objetos de tipo 'Producto' al inventario.")
             return
@@ -65,9 +111,10 @@ class Inventario:
             return
 
         self.productos[producto.codigo] = producto
-        print(f" Éxito: Producto '{producto.nombre}' (Código: {producto.codigo}) agregado.")
+        print(f"Éxito: Producto '{producto.nombre}' (Código: {producto.codigo}) agregado.")
 
     def imprimir(self):
+        """Muestra una lista detallada de todos los productos en el inventario."""
         if not self.productos:
             print("El inventario está vacío. No hay productos para mostrar.")
             return
@@ -80,6 +127,7 @@ class Inventario:
         print("--- Fin del Listado ---")
 
     def buscar_producto(self):
+        """Solicita un código y muestra la información del producto si existe."""
         id_search = input("Ingrese el código del producto a buscar: ").strip()
 
         if id_search in self.productos:
@@ -90,14 +138,15 @@ class Inventario:
             print("--------------------------\n")
         else:
             print(
-                f" Error: El producto con el código {id_search} no se encuentra en el inventario."
+                f"Error: El producto con el código {id_search} no se encuentra en el inventario."
             )
 
     def actualizar_cantidad(self):
+        """Solicita un código y actualiza la cantidad de ese producto."""
         id_search = input("Ingrese el código del producto a actualizar: ").strip()
 
         if id_search not in self.productos:
-            print(f" Error: Producto con código '{id_search}' no encontrado.")
+            print(f"Error: Producto con código '{id_search}' no encontrado.")
             return
 
         producto_a_actualizar = self.productos[id_search]
@@ -107,36 +156,41 @@ class Inventario:
             try:
                 # Muestra el nombre del producto que se está actualizando
                 new_cantidad_str = input(
-                    f"Ingrese la nueva cantidad para '{producto_a_actualizar.nombre}' (actual: {producto_a_actualizar.cantidad}): "
+                    f"Ingrese la nueva cantidad para '{producto_a_actualizar.nombre}' "
+                    f"(actual: {producto_a_actualizar.cantidad}): "
                 ).strip()
                 new_cantidad = int(new_cantidad_str)
 
-                # La validación de new_cantidad < 0 ya la tienes en el setter, pero es buena práctica
-                # validar antes de la asignación para mejorar el feedback al usuario.
                 if new_cantidad < 0:
                     print(
-                        " Error: La cantidad no puede ser un número negativo. Inténtalo de nuevo."
+                        "Error: La cantidad no puede ser un número negativo. Inténtalo de nuevo."
                     )
                     continue
 
                 break
 
             except ValueError:
-                print(" Error de Valor: Se espera una cantidad numérica entera.")
+                print("Error de Valor: Se espera una cantidad numérica entera.")
             except Exception as e:
+                 # Se mantiene la captura general para errores inesperados en un contexto interactivo
                 print(f"Ocurrió un error inesperado al leer la nueva cantidad: {e}")
 
         # Asigna la nueva cantidad (llamando al setter de Producto)
-        producto_a_actualizar.cantidad = new_cantidad
-        print(
-            f" Éxito: Cantidad del producto '{producto_a_actualizar.nombre}' actualizada a {new_cantidad}."
-        )
+        try:
+            producto_a_actualizar.cantidad = new_cantidad
+            print(
+                f"Éxito: Cantidad del producto '{producto_a_actualizar.nombre}' actualizada a {new_cantidad}."
+            )
+        except ValueError as e:
+            # Captura si el setter de Producto rechaza el valor
+            print(f"Error de validación: {e}")
 
     def eliminar_producto(self):
+        """Solicita un código y elimina el producto del inventario."""
         id_search = input("Ingrese el código del producto a eliminar: ").strip()
 
         if id_search not in self.productos:
-            print(f" Error: Producto con código '{id_search}' no encontrado.")
+            print(f"Error: Producto con código '{id_search}' no encontrado.")
             return
 
         # Opcional: Mostrar nombre antes de eliminar
@@ -144,5 +198,5 @@ class Inventario:
 
         del self.productos[id_search]  # Elimina la referencia del diccionario
         print(
-            f" Éxito: Producto '{nombre_producto}' (Código: {id_search}) eliminado del inventario."
+            f"Éxito: Producto '{nombre_producto}' (Código: {id_search}) eliminado del inventario."
         )

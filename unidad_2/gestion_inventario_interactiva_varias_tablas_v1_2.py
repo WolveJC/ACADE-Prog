@@ -13,6 +13,7 @@ import datetime
 import random
 import string
 import sys  # Añadido para salida limpia
+from typing import Union
 
 # Third-party libraries
 import matplotlib.pyplot as plt
@@ -37,7 +38,7 @@ def generar_codigo_aleatorio(longitud: int = 6) -> str:
     return "".join(random.choices(caracteres, k=longitud))
 
 
-def _obtener_entero_valido(prompt: str) -> int | None:
+def _obtener_entero_valido(prompt: str) -> Union[int, None]:
     """Función auxiliar para obtener una entrada entera válida."""
     try:
         return int(input(prompt).strip())

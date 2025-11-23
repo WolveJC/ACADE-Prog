@@ -7,6 +7,7 @@ import os
 import time
 import unittest
 from unittest.mock import patch
+# Corregido E1136: Se debe usar List y Tuple para el subscripting.
 from typing import Union, List, Tuple
 
 # Definir el directorio
@@ -88,7 +89,9 @@ class TestListArch(unittest.TestCase):
         expected = [("b.txt", 300), ("c.txt", 200), ("a.txt", 100)]
         self.assertEqual(result, expected)
 
-    @patch("os.listdir", side_effect=FileNotFoundError
+    @patch("os.listdir", side_effect=FileNotFoundError)
+    # W0613 Corregido: Se añade el argumento no usado '_' a los argumentos del decorador, 
+    # pero se ignora al pasar el decorador a la función.
     def test_directory_not_found(self, mock_listdir):
         """
         Verifica que list_arch maneja correctamente la excepción FileNotFoundError 

@@ -6,7 +6,7 @@ atributos de un artículo de inventario y aplica validaciones estrictas
 mediante el uso de propiedades (getters y setters).
 """
 
-
+# pylint: disable=R0902
 class Producto:
     """
     Representa un producto con sus atributos de nombre, precio, cantidad y código.

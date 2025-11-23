@@ -105,7 +105,7 @@ inventario_ordenado = selection_sort(inventario.copy(), key=lambda x: x["demanda
 # 2. Preparar la estructura de la tabla para visualizar
 # ==========================================================================
 
-headers = ["Código", "Nombre", "Demanda", "Tiempo entrega", "Fecha límite", "Cantidad"]
+HEADERS = ["Código", "Nombre", "Demanda", "Tiempo entrega", "Fecha límite", "Cantidad"]
 
 # Crear la matriz de datos
 data_matrix = []
@@ -121,7 +121,7 @@ for item in inventario_ordenado:
     data_matrix.append(row)
 
 # Obtener la fecha y hora de la consulta
-fecha_consulta = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+FECHA_CONSULTA = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 # ==========================================================================
 # 3. Visualización con Matplotlib
@@ -134,7 +134,7 @@ ax.yaxis.set_visible(False)
 ax.set_frame_on(False)
 
 # Crear la tabla en el eje (ax)
-tabla = ax.table(cellText=data_matrix, colLabels=headers, loc="center", cellLoc="center")
+tabla = ax.table(cellText=data_matrix, collabels=HEADERS, loc="center", cellLoc="center")
 
 
 tabla.auto_set_font_size(False)
@@ -144,36 +144,36 @@ tabla.scale(1.0, 1.2)  # Ajuste la escala para un mejor aspecto
 plt.title("Inventario Ordenado por Demanda", fontsize=14, pad=20)
 
 # Agregar la fecha de la consulta en la parte inferior
-plt.figtext(0.5, 0.05, f"Consulta generada: {fecha_consulta}", ha="center", fontsize=8)
+plt.figtext(0.5, 0.05, f"Consulta generada: {FECHA_CONSULTA}", ha="center", fontsize=8)
 
 
 # ==========================================================================
 # 4. Guardar la figura generada con una fecha en el nombre del archivo
 # ==========================================================================
 
-imagen_filename = f"inventario_demanda_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+IMAGEN_FILENAME = f"inventario_demanda_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
 # Usar bbox_inches="tight" para que el texto adicional no se corte
-plt.savefig(imagen_filename, bbox_inches="tight")
+plt.savefig(IMAGEN_FILENAME, bbox_inches="tight")
 plt.show()
 
 # ==========================================================================
 # 5. Crear un archivo CSV de registro con los datos y la fecha de consulta
 # ==========================================================================
 
-csv_filename = f"registro_inventario_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+CSV_FILENAME = f"registro_inventario_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
 try:
-    with open(csv_filename, mode="w", newline="", encoding="utf-8") as file:
+    with open(CSV_FILENAME, mode="w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
         # Escribir encabezados
-        writer.writerow(["Fecha Consulta"] + headers)
+        writer.writerow(["Fecha Consulta"] + HEADERS)
         # Escribir datos
         for row in data_matrix:
-            writer.writerow([fecha_consulta] + row)
+            writer.writerow([FECHA_CONSULTA] + row)
 except IOError as e:
     print(f"Error al escribir el archivo CSV: {e}")
 
 
 print("\n--- Generación de Archivos Finalizada ---")
-print("Imagen generada:", imagen_filename)
-print("Registro CSV generado:", csv_filename)
+print("Imagen generada:", IMAGEN_FILENAME)
+print("Registro CSV generado:", CSV_FILENAME)
 print("------------------------------------------")

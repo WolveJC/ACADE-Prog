@@ -144,13 +144,13 @@ def selection_sort_stable(lista: list, key: callable, reverse: bool = False) -> 
         indice_candidato = 0
 
         # Buscar el elemento más extremo
-        for i, inventario_item in enumerate(temp):
+        for i, item_actual in enumerate(temp):
             comparacion = (
-                key(inventario_item) > key(candidato)
-            ) if reverse else (key(inventario_item) < key(candidato))
+                key(item_actual) > key(candidato)
+            ) if reverse else (key(item_actual) < key(candidato))
 
             if comparacion:
-                candidato = inventario_item
+                candidato = item_actual
                 indice_candidato = i
 
         # Asegurar la estabilidad: usar el índice para eliminar el primer

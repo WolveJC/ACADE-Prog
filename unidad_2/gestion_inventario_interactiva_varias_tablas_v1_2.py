@@ -47,7 +47,7 @@ def _obtener_entero_valido(prompt: str) -> Union[int, None]:
         return None
 
 
-def _obtener_fecha_valida(prompt: str, formato: str = "%Y-%m-%d") -> str | None:
+def _obtener_fecha_valida(prompt: str, formato: str = "%Y-%m-%d") -> Union[str, None]:
     """Función auxiliar para obtener una fecha válida."""
     fecha_str = input(prompt).strip()
     try:

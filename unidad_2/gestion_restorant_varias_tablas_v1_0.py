@@ -200,31 +200,31 @@ def generate_table_and_csv(
     plt.figtext(0.5, 0.01, f"Consulta generada: {query_date}", ha="center", fontsize=8)
 
     # Guardar una imagen PNG de los datos
-    TIMESTAMP = datetime.datetime.now().strftime("%Y%m%d_%H%M%S") # C0103
-    IMAGE_FILENAME = f"inventario_{algorithm_key}_{TIMESTAMP}.png" # C0103
+    time_stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S") # C0103
+    image_filename = f"inventario_{algorithm_key}_{time_stamp}.png" # C0103
 
     try:
-        plt.savefig(IMAGE_FILENAME, bbox_inches="tight")
+        plt.savefig(image_filename, bbox_inches="tight")
         plt.show()  # Se mostrará la tabla
     except IOError as e:
-        print(f"Error al guardar la imagen {IMAGE_FILENAME}: {e}")
+        print(f"Error al guardar la imagen {image_filename}: {e}")
 
     plt.close(fig)
 
     # Generar archivo CSV con un registro de la consulta
-    CSV_FILENAME = f"registro_{algorithm_key}_{TIMESTAMP}.csv" # C0103
+    csv_filename = f"registro_{algorithm_key}_{time_stamp}.csv" # C0103
     try:
-        with open(CSV_FILENAME, mode="w", newline="", encoding="utf-8") as csvfile:
+        with open(csv_filename, mode="w", newline="", encoding="utf-8") as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(["Fecha Consulta"] + table_headers)
             for row in data_rows:
                 writer.writerow([query_date] + row)
     except IOError as e:
-        print(f"Error al escribir el archivo CSV {CSV_FILENAME}: {e}")
+        print(f"Error al escribir el archivo CSV {csv_filename}: {e}")
 
     print(f"{title} - Archivos generados:")
-    print(" Imagen:", IMAGE_FILENAME)
-    print(" Registro CSV:", CSV_FILENAME)
+    print(" Imagen:", image_filename)
+    print(" Registro CSV:", csv_filename)
     print("-----------------------------------------")
 
 

@@ -1,37 +1,65 @@
+"""
+Módulo para listar y ordenar archivos por tiempo de modificación 
+(mtime) dentro de un directorio, con especial enfoque en entornos 
+como Google Drive (vía DIRUTH).
+"""
 import os
 import time
 import unittest
 from unittest.mock import patch
+# Se importa Union para compatibilidad con Python < 3.10
+from typing import Union 
 
 # Definir el directorio
 DIRUTH = "/content/drive/My Drive/"
 
 
-def list_arch(directory):
+def list_arch(directory: str) -> Union[list[tuple[str, float]], None]:
+    """
+    Lista los archivos en un directorio dado, excluye directorios y los 
+    ordena de forma descendente por la fecha de última modificación (mtime).
+
+    Args:
+        directory (str): La ruta del directorio a escanear.
+
+    Returns:
+        Union[list[tuple[str, float]], None]: Una lista de tuplas 
+        (nombre_archivo, mtime_timestamp) ordenada, o None si ocurre un error.
+    """
+    file_dates = []
+
     try:
         files = os.listdir(directory)
-        file_dates = []
-
+        
         for file in files:
             file_path = os.path.join(directory, file)
+            
             if os.path.isfile(file_path):
                 modi_time = os.path.getmtime(file_path)
                 file_dates.append((file, modi_time))
 
+        # Ordenar por timestamp (índice 1 de la tupla) de forma descendente (más reciente primero)
         file_dates.sort(key=lambda x: x[1], reverse=True)
 
-        print("Archivos en el directorio ordenados por fecha de subida:")
+        print("\nArchivos en el directorio ordenados por fecha de subida:")
         for file, modi_time in file_dates:
             print(f"{file} - {time.ctime(modi_time)}")
 
-        return file_dates  # útil para pruebas
+        return file_dates
 
     except FileNotFoundError:
         print("Directorio no encontrado.")
+        return None # R1710: Asegurar que se devuelve None en caso de error
+    
     except PermissionError:
         print("No tienes permiso para acceder a este directorio.")
-    except Exception as e:
-        print(f"Ocurrió un error: {e}")
+        return None # R1710: Asegurar que se devuelve None en caso de error
+    
+    # Se mantiene la captura general ya que el propósito del script 
+    # es manejar errores de I/O impredecibles en el sistema de archivos.
+    except Exception as e: 
+        print(f"Ocurrió un error inesperado: {e}")
+        return None # R1710: Asegurar que se devuelve None en caso de error
 
 
 # ============================
@@ -40,13 +68,21 @@ def list_arch(directory):
 
 
 class TestListArch(unittest.TestCase):
+    """
+    Contiene las pruebas unitarias para la función list_arch.
+    """
 
     @patch("os.listdir")
     @patch("os.path.isfile")
     @patch("os.path.getmtime")
     def test_list_arch_sorted(self, mock_getmtime, mock_isfile, mock_listdir):
+        """
+        Verifica que list_arch ordena correctamente los archivos por tiempo de 
+        modificación (mtime) de forma descendente.
+        """
         mock_listdir.return_value = ["a.txt", "b.txt", "c.txt"]
         mock_isfile.return_value = True
+        # mtimes: a=100, b=300, c=200. Orden esperado: b, c, a.
         mock_getmtime.side_effect = [100, 300, 200]
 
         result = list_arch("fake_dir")
@@ -54,7 +90,13 @@ class TestListArch(unittest.TestCase):
         self.assertEqual(result, expected)
 
     @patch("os.listdir", side_effect=FileNotFoundError)
-    def test_directory_not_found(self, mock_listdir):
+    def test_directory_not_found(self, _):
+        """
+        Verifica que list_arch maneja correctamente la excepción FileNotFoundError 
+        y devuelve None.
+        
+        Se renombra mock_listdir a '_' para ignorar W0613.
+        """
         result = list_arch("missing_dir")
         self.assertIsNone(result)
 
@@ -64,4 +106,8 @@ class TestListArch(unittest.TestCase):
 # ============================
 
 if __name__ == "__main__":
+    # Si quisieras ejecutar la función real primero:
+    # list_arch(DIRUTH)
+    
+    # Ejecuta las pruebas unitarias
     unittest.main()

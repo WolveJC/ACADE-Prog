@@ -9,10 +9,10 @@ genera una visualización tabular con Matplotlib y un archivo de registro CSV.
 # Standard library
 import csv
 import datetime
+from typing import List, Any # Añadida importación para anotación de tipo
 
 # Third-party libraries
 import matplotlib.pyplot as plt
-# pandas no es usado en este script, se elimina para evitar W0611 y E0401.
 
 # =======================================
 # Inventario de Ejemplo
@@ -58,10 +58,7 @@ INVENTARIO = [
 
 
 def insertion_sort(lista: list, key: callable) -> list:
-    """
-    Implementa el algoritmo Insertion Sort (orden ascendente).
-    # ... (Docstring omitido por brevedad)
-    """
+    """Implementa el algoritmo Insertion Sort (orden ascendente)."""
     for i in range(1, len(lista)):
         actual = lista[i]
         j = i - 1
@@ -73,10 +70,7 @@ def insertion_sort(lista: list, key: callable) -> list:
 
 
 def bubble_sort(lista: list, key: callable, descending: bool = False) -> list:
-    """
-    Implementa el algoritmo Bubble Sort.
-    # ... (Docstring omitido por brevedad)
-    """
+    """Implementa el algoritmo Bubble Sort."""
     n = len(lista)
     swapped = True
     while swapped:
@@ -96,10 +90,7 @@ def bubble_sort(lista: list, key: callable, descending: bool = False) -> list:
 
 
 def quick_sort(lista: list, key: callable) -> list:
-    """
-    Implementa el algoritmo Quick Sort recursivo (orden ascendente).
-    # ... (Docstring omitido por brevedad)
-    """
+    """Implementa el algoritmo Quick Sort recursivo (orden ascendente)."""
     if len(lista) <= 1:
         return lista
 
@@ -112,10 +103,7 @@ def quick_sort(lista: list, key: callable) -> list:
 
 
 def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
-    """
-    Implementa el algoritmo Selection Sort.
-    # ... (Docstring omitido por brevedad)
-    """
+    """Implementa el algoritmo Selection Sort."""
     n = len(lista)
     for i in range(n):
         index_extremo = i
@@ -160,7 +148,61 @@ INVENTARIO_POR_DEMANDA = selection_sort(
 
 
 # =======================================
-# Función para generar tabla y CSV
+# Funciones auxiliares (para eliminar R0914)
+# =======================================
+
+def _generate_visual_table(
+    data_rows: List[List[Any]], title: str, headers: list, query_date: str, algorithm_key: str
+) -> str:
+    """Genera la tabla visual con Matplotlib y la guarda."""
+    fig, ax = plt.subplots(figsize=(10, len(data_rows) * 0.6 + 2))
+    ax.axis("off")
+
+    table_obj = ax.table(
+        cellText=data_rows, colLabels=headers, loc="center", cellLoc="center"
+    )
+    table_obj.auto_set_font_size(False)
+    table_obj.set_fontsize(10)
+    table_obj.scale(1.2, 1.2)
+
+    plt.title(title, fontsize=14)
+    plt.figtext(0.5, 0.01, f"Consulta generada: {query_date}", ha="center", fontsize=8)
+
+    time_stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    image_filename = f"inventario_{algorithm_key}_{time_stamp}.png"
+
+    try:
+        plt.savefig(image_filename, bbox_inches="tight")
+        plt.show()
+    except IOError as e:
+        print(f"Error al guardar la imagen {image_filename}: {e}")
+        image_filename = None
+
+    plt.close(fig)
+    return image_filename
+
+
+def _generate_csv_log(
+    data_rows: List[List[Any]], headers: list, query_date: str, algorithm_key: str
+) -> str:
+    """Genera y guarda el registro de datos en un archivo CSV."""
+    time_stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    csv_filename = f"registro_{algorithm_key}_{time_stamp}.csv"
+    try:
+        with open(csv_filename, mode="w", newline="", encoding="utf-8") as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(["Fecha Consulta"] + headers)
+            for row in data_rows:
+                writer.writerow([query_date] + row)
+    except IOError as e:
+        print(f"Error al escribir el archivo CSV {csv_filename}: {e}")
+        csv_filename = None
+
+    return csv_filename
+
+
+# =======================================
+# Función para generar tabla y CSV (Refactorizada)
 # =======================================
 
 def generate_table_and_csv(
@@ -170,61 +212,37 @@ def generate_table_and_csv(
     Genera una tabla visual de los datos ordenados usando Matplotlib, guarda
     una imagen PNG y un archivo CSV de registro.
     
-    # ... (Docstring omitido por brevedad)
+    R0914 Corregido: La complejidad de variables locales se ha movido 
+    a las funciones auxiliares.
     """
-    # Crear una matriz con los datos ordenados
-    data_rows = [] # Cambiado data_matrix a data_rows para reducir variables locales
+    # 1. Crear una matriz con los datos ordenados (Variables: data_rows, item, row)
+    data_rows = []
     for item in sorted_data:
-        data_rows.append([
+        row = [
             item["codigo"],
             item["nombre"],
             item["demanda"],
             item["tiempo_entrega"],
             item["fecha_limite"],
             item["cantidad"],
-        ])
+        ]
+        data_rows.append(row)
 
-    # Crear figura y ejes para la tabla
-    fig, ax = plt.subplots(figsize=(10, len(sorted_data) * 0.6 + 2))
-    ax.axis("off")
-
-    # Crear la tabla en el gráfico
-    table_obj = ax.table(
-        cellText=data_rows, colLabels=table_headers, loc="center", cellLoc="center"
+    # 2. Generar y guardar la tabla visual
+    image_filename = _generate_visual_table(
+        data_rows, title, table_headers, query_date, algorithm_key
     )
-    table_obj.auto_set_font_size(False)
-    table_obj.set_fontsize(10)
-    table_obj.scale(1.2, 1.2)
 
-    plt.title(title, fontsize=14)
-    plt.figtext(0.5, 0.01, f"Consulta generada: {query_date}", ha="center", fontsize=8)
-
-    # Guardar una imagen PNG de los datos
-    time_stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S") # C0103
-    image_filename = f"inventario_{algorithm_key}_{time_stamp}.png" # C0103
-
-    try:
-        plt.savefig(image_filename, bbox_inches="tight")
-        plt.show()  # Se mostrará la tabla
-    except IOError as e:
-        print(f"Error al guardar la imagen {image_filename}: {e}")
-
-    plt.close(fig)
-
-    # Generar archivo CSV con un registro de la consulta
-    csv_filename = f"registro_{algorithm_key}_{time_stamp}.csv" # C0103
-    try:
-        with open(csv_filename, mode="w", newline="", encoding="utf-8") as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerow(["Fecha Consulta"] + table_headers)
-            for row in data_rows:
-                writer.writerow([query_date] + row)
-    except IOError as e:
-        print(f"Error al escribir el archivo CSV {csv_filename}: {e}")
+    # 3. Generar y guardar el registro CSV
+    csv_filename = _generate_csv_log(
+        data_rows, table_headers, query_date, algorithm_key
+    )
 
     print(f"{title} - Archivos generados:")
-    print(" Imagen:", image_filename)
-    print(" Registro CSV:", csv_filename)
+    if image_filename:
+        print(" Imagen:", image_filename)
+    if csv_filename:
+        print(" Registro CSV:", csv_filename)
     print("-----------------------------------------")
 
 
@@ -268,7 +286,7 @@ for orden in ORDENAMIENTOS:
     generate_table_and_csv(
         sorted_data=orden["data"],
         title=orden["title"],
-        table_headers=HEADERS, # Usamos HEADERS global
+        table_headers=HEADERS,
         query_date=FECHA_CONSULTA,
         algorithm_key=orden["algorithm_key"],
     )

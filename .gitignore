@@ -1,5 +1,21 @@
-Unidad-7/PystockManagement/src/__pycache__/__init__.cpython-310.pyc
-Unidad-7/PystockManagement/src/models/__pycache__/productos.cpython-310.pyc
-Unidad-7/PystockManagement/src/models/__pycache__/__init__.cpython-310.pyc
-Unidad-7/PystockManagement/src/services/__pycache__/__init__.cpython-310.pyc
-Unidad-7/PystockManagement/src/services/__pycache__/inventario_manager.cpython-310.pyc
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Dependencias
+node_modules/
+
+# Archivos de compilación
+dist/
+build/
+
+# Logs
+*.log
+
+# Temporales
+*.tmp
+*.swp
+
+# Python: ignorar todos los pycache y archivos compilados
+**/__pycache__/
+*.pyc

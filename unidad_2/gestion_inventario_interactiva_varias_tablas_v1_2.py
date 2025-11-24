@@ -81,10 +81,7 @@ def ingresar_productos(lista_inventario: list):
 
         # 2. Demanda
         demanda = _obtener_entero_valido("Demanda (valor entre 1-10): ")
-        if (
-            demanda is None
-            or demanda < 1
-            or demanda > 10):
+        if demanda is None or demanda < 1 or demanda > 10:
             print("La demanda debe ser un número entre 1 y 10.")
             continue
 
@@ -124,6 +121,7 @@ def ingresar_productos(lista_inventario: list):
 # 2. Funciones de ordenamiento
 # ------------------------------------------
 # ... (Funciones de ordenamiento sin cambios) ...
+
 
 def insertion_sort(lista: list, key: callable, descending: bool = False) -> list:
     """
@@ -229,9 +227,7 @@ def generar_inventarios_ordenados(datos_originales: list) -> dict:
             key=lambda x: datetime.datetime.strptime(x["fecha_limite"], "%Y-%m-%d"),
         ),
         "demanda": selection_sort(
-            datos_originales.copy(), 
-            key=lambda x: x["demanda"],
-            reverse=True
+            datos_originales.copy(), key=lambda x: x["demanda"], reverse=True
         ),
     }
 
@@ -241,7 +237,9 @@ def generar_inventarios_ordenados(datos_originales: list) -> dict:
 # ------------------------------------------
 
 
-def _generate_visual_table(data_matrix: List[List[Any]], title: str, headers: list, query_date: str, algorithm_key: str):
+def _generate_visual_table(
+    data_matrix: List[List[Any]], title: str, headers: list, query_date: str, algorithm_key: str
+):
     """Genera la tabla visual con Matplotlib y la guarda."""
     fig, ax = plt.subplots(figsize=(10, len(data_matrix) * 0.6 + 2))
     ax.axis("off")
@@ -266,11 +264,13 @@ def _generate_visual_table(data_matrix: List[List[Any]], title: str, headers: li
     return image_filename
 
 
-def _generate_csv_log(data_matrix: List[List[Any]], _: str, headers: list, query_date: str, algorithm_key: str):
+def _generate_csv_log(
+    data_matrix: List[List[Any]], _: str, headers: list, query_date: str, algorithm_key: str
+):
     """Guarda el registro de datos en un archivo CSV."""
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     csv_filename = f"registro_{algorithm_key}_{timestamp}.csv"
-    
+
     try:
         with open(csv_filename, mode="w", newline="", encoding="utf-8") as csvfile:
             writer = csv.writer(csvfile)
@@ -279,13 +279,17 @@ def _generate_csv_log(data_matrix: List[List[Any]], _: str, headers: list, query
                 writer.writerow([query_date] + row)
     except IOError as e:
         print(f"Error al escribir el archivo CSV {csv_filename}: {e}")
-        return None # Devuelve None en caso de fallo
+        return None  # Devuelve None en caso de fallo
 
     return csv_filename
 
 
 def generate_table_and_csv(
-    sorted_data: list, title: str, headers: list, query_date: str, algorithm_key: str # <--- R0913 Corregido (5/5 argumentos)
+    sorted_data: list,
+    title: str,
+    headers: list,
+    query_date: str,
+    algorithm_key: str,  # <--- R0913 Corregido (5/5 argumentos)
 ):
     """
     Genera una tabla visual con Matplotlib, guarda la imagen PNG y un CSV de registro.
@@ -298,7 +302,7 @@ def generate_table_and_csv(
         algorithm_key: Clave del algoritmo (usada para nombrar archivos).
     """
     # R0914 Corregido: La complejidad de variables se movió a las funciones auxiliares.
-    
+
     # Preparar la matriz de datos para la tabla
     data_matrix = []
     for item in sorted_data:
@@ -315,7 +319,6 @@ def generate_table_and_csv(
     # Llama a las funciones auxiliares
     image_filename = _generate_visual_table(data_matrix, title, headers, query_date, algorithm_key)
     csv_filename = _generate_csv_log(data_matrix, title, headers, query_date, algorithm_key)
-
 
     print(f"\n {title} - Archivos generados:")
     # Solo imprime si la generación fue exitosa
@@ -372,7 +375,7 @@ if __name__ == "__main__":
         generate_table_and_csv(
             sorted_data=orden["data"],
             title=orden["title"],
-            headers=headers_all, # <--- headers_visual y headers_csv agrupados
+            headers=headers_all,  # <--- headers_visual y headers_csv agrupados
             query_date=fecha_consulta,
             algorithm_key=orden["algorithm_key"],
         )

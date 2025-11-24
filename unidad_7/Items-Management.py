@@ -1,10 +1,12 @@
 import sys
+
 # sys se importa solo como ejemplo para manejo de errores generales,
 # aunque no es estrictamente necesario para la lógica central del programa.
 
 # ====================================================================
 # CLASE PRODUCTO (Modelos)
 # ====================================================================
+
 
 class Producto:
     def __init__(self, nombre, precio, cantidad, codigo):
@@ -26,12 +28,12 @@ class Producto:
     def __lt__(self, otro):
         if not isinstance(otro, Producto):
             return NotImplemented
-        return self.precio < otro.precio # Compara por precio
+        return self.precio < otro.precio  # Compara por precio
 
     def __eq__(self, otro):
         if not isinstance(otro, Producto):
             return NotImplemented
-        return self.codigo == otro.codigo # Compara por unicidad del código
+        return self.codigo == otro.codigo  # Compara por unicidad del código
 
     # --- Propiedades (Getters y Setters con validación) ---
     # Usamos __ para los atributos internos para indicar que son privados
@@ -81,6 +83,7 @@ class Producto:
 # CLASE INVENTARIO (Servicios/Manager)
 # ====================================================================
 
+
 class Inventario:
     def __init__(self):
         self.productos = {}  # Diccionario: clave=código (str), valor=objeto Producto
@@ -119,7 +122,9 @@ class Inventario:
             print(resultado_producto)
             print("--------------------------\n")
         else:
-            print(f"❌ Error: El producto con el código {id_search} no se encuentra en el inventario.")
+            print(
+                f"❌ Error: El producto con el código {id_search} no se encuentra en el inventario."
+            )
 
     def actualizar_cantidad(self):
         id_search = input("Ingrese el código del producto a actualizar: ").strip()
@@ -129,20 +134,24 @@ class Inventario:
             return
 
         producto_a_actualizar = self.productos[id_search]
-        
+
         # Lógica de validación de entrada
         while True:
             try:
                 # Muestra el nombre del producto que se está actualizando
-                new_cantidad_str = input(f"Ingrese la nueva cantidad para '{producto_a_actualizar.nombre}' (actual: {producto_a_actualizar.cantidad}): ").strip()
+                new_cantidad_str = input(
+                    f"Ingrese la nueva cantidad para '{producto_a_actualizar.nombre}' (actual: {producto_a_actualizar.cantidad}): "
+                ).strip()
                 new_cantidad = int(new_cantidad_str)
 
                 # La validación de new_cantidad < 0 ya la tienes en el setter, pero es buena práctica
                 # validar antes de la asignación para mejorar el feedback al usuario.
                 if new_cantidad < 0:
-                    print("❌ Error: La cantidad no puede ser un número negativo. Inténtalo de nuevo.")
+                    print(
+                        "❌ Error: La cantidad no puede ser un número negativo. Inténtalo de nuevo."
+                    )
                     continue
-                
+
                 break
 
             except ValueError:
@@ -152,7 +161,9 @@ class Inventario:
 
         # Asigna la nueva cantidad (llamando al setter de Producto)
         producto_a_actualizar.cantidad = new_cantidad
-        print(f"✅ Éxito: Cantidad del producto '{producto_a_actualizar.nombre}' actualizada a {new_cantidad}.")
+        print(
+            f"✅ Éxito: Cantidad del producto '{producto_a_actualizar.nombre}' actualizada a {new_cantidad}."
+        )
 
     def eliminar_producto(self):
         id_search = input("Ingrese el código del producto a eliminar: ").strip()
@@ -163,14 +174,17 @@ class Inventario:
 
         # Opcional: Mostrar nombre antes de eliminar
         nombre_producto = self.productos[id_search].nombre
-        
+
         del self.productos[id_search]  # Elimina la referencia del diccionario
-        print(f"✅ Éxito: Producto '{nombre_producto}' (Código: {id_search}) eliminado del inventario.")
+        print(
+            f"✅ Éxito: Producto '{nombre_producto}' (Código: {id_search}) eliminado del inventario."
+        )
 
 
 # ====================================================================
 # MENÚ PRINCIPAL Y LÓGICA DE LA APLICACIÓN
 # ====================================================================
+
 
 def obtener_datos_producto():
     """Solicita los datos del producto al usuario con validación."""
@@ -183,14 +197,17 @@ def obtener_datos_producto():
 
         # Creamos la instancia de Producto. Las validaciones de los setters se ejecutan aquí.
         return Producto(nombre, precio, cantidad, codigo)
-        
+
     except ValueError as e:
         # Captura errores si float() o int() fallan, o si un setter lanza ValueError
-        print(f"❌ Error de entrada de datos: {e}. Asegúrate de ingresar tipos y valores correctos.")
+        print(
+            f"❌ Error de entrada de datos: {e}. Asegúrate de ingresar tipos y valores correctos."
+        )
         return None
     except Exception as e:
         print(f"❌ Ocurrió un error inesperado al obtener los datos: {e}")
         return None
+
 
 def main_menu():
     """Ejecuta el menú interactivo."""
@@ -209,29 +226,29 @@ def main_menu():
         try:
             opcion = input("Selecciona una opción (1-6): ").strip()
 
-            if opcion == '1':
+            if opcion == "1":
                 print("\n>>> Agregar Producto <<<")
                 nuevo_producto = obtener_datos_producto()
                 if nuevo_producto:
                     mi_inventario.agg_prod(nuevo_producto)
 
-            elif opcion == '2':
+            elif opcion == "2":
                 print("\n>>> Buscar Producto <<<")
                 mi_inventario.buscar_producto()
 
-            elif opcion == '3':
+            elif opcion == "3":
                 print("\n>>> Actualizar Cantidad <<<")
                 mi_inventario.actualizar_cantidad()
 
-            elif opcion == '4':
+            elif opcion == "4":
                 print("\n>>> Eliminar Producto <<<")
                 mi_inventario.eliminar_producto()
 
-            elif opcion == '5':
+            elif opcion == "5":
                 print("\n>>> Listar Productos <<<")
                 mi_inventario.imprimir()
 
-            elif opcion == '6':
+            elif opcion == "6":
                 print("\nSaliendo del sistema de inventario. ¡Hasta pronto! 👋")
                 break
 
@@ -240,7 +257,8 @@ def main_menu():
 
         except Exception as e:
             print(f"❌ Ocurrió un error inesperado en el menú: {e}")
-            
+
+
 # Punto de entrada de la aplicación
 if __name__ == "__main__":
     main_menu()

@@ -5,11 +5,40 @@ import csv
 
 # Ejemplo para el inventario
 inventario = [
-    {"codigo": 1, "nombre": "Manzana", "demanda": 8, "tiempo_entrega": 3, "fecha_limite": "2025-04-28", "cantidad": 15},
-    {"codigo": 2, "nombre": "Banana", "demanda": 7, "tiempo_entrega": 5, "fecha_limite": "2025-04-25", "cantidad": 2},
-    {"codigo": 3, "nombre": "Lechuga", "demanda": 6, "tiempo_entrega": 2, "fecha_limite": "2025-04-22", "cantidad": 7},
-    {"codigo": 4, "nombre": "Tomate", "demanda": 9, "tiempo_entrega": 4, "fecha_limite": "2025-05-01", "cantidad": 3},
+    {
+        "codigo": 1,
+        "nombre": "Manzana",
+        "demanda": 8,
+        "tiempo_entrega": 3,
+        "fecha_limite": "2025-04-28",
+        "cantidad": 15,
+    },
+    {
+        "codigo": 2,
+        "nombre": "Banana",
+        "demanda": 7,
+        "tiempo_entrega": 5,
+        "fecha_limite": "2025-04-25",
+        "cantidad": 2,
+    },
+    {
+        "codigo": 3,
+        "nombre": "Lechuga",
+        "demanda": 6,
+        "tiempo_entrega": 2,
+        "fecha_limite": "2025-04-22",
+        "cantidad": 7,
+    },
+    {
+        "codigo": 4,
+        "nombre": "Tomate",
+        "demanda": 9,
+        "tiempo_entrega": 4,
+        "fecha_limite": "2025-05-01",
+        "cantidad": 3,
+    },
 ]
+
 
 # 1. Selection Sort para ordenar por demanda (de mayor a menor)
 def selection_sort(lista, key, reverse=False):
@@ -26,6 +55,7 @@ def selection_sort(lista, key, reverse=False):
         lista[i], lista[index_extremo] = lista[index_extremo], lista[i]
     return lista
 
+
 inventario_ordenado = selection_sort(inventario.copy(), key=lambda x: x["demanda"], reverse=True)
 
 # 2. Preparar la estructura de la tabla para visualizar
@@ -35,12 +65,12 @@ headers = ["Código", "Nombre", "Demanda", "Tiempo entrega", "Fecha límite", "C
 data_matrix = []
 for item in inventario_ordenado:
     row = [
-        item["codigo"], 
-        item["nombre"], 
-        item["demanda"], 
-        item["tiempo_entrega"], 
-        item["fecha_limite"], 
-        item["cantidad"]
+        item["codigo"],
+        item["nombre"],
+        item["demanda"],
+        item["tiempo_entrega"],
+        item["fecha_limite"],
+        item["cantidad"],
     ]
     data_matrix.append(row)
 
@@ -54,10 +84,7 @@ ax.yaxis.set_visible(False)
 ax.set_frame_on(False)
 
 tabla = table.Table(ax, bbox=[0, 0, 1, 1])
-tabla = ax.table(cellText=data_matrix,
-                 colLabels=headers,
-                 loc='center',
-                 cellLoc='center')
+tabla = ax.table(cellText=data_matrix, colLabels=headers, loc="center", cellLoc="center")
 
 tabla.auto_set_font_size(False)
 tabla.set_fontsize(10)
@@ -75,7 +102,7 @@ plt.show()
 
 # 5. Crear un archivo CSV de registro con los datos y la fecha de consulta
 csv_filename = f"registro_inventario_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-with open(csv_filename, mode='w', newline='', encoding='utf-8') as file:
+with open(csv_filename, mode="w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file)
     writer.writerow(["Fecha Consulta"] + headers)
     for row in data_matrix:

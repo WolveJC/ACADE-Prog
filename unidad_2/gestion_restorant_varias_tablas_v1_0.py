@@ -9,7 +9,7 @@ genera una visualización tabular con Matplotlib y un archivo de registro CSV.
 # Standard library
 import csv
 import datetime
-from typing import List, Any # Añadida importación para anotación de tipo
+from typing import List, Any  # Añadida importación para anotación de tipo
 
 # Third-party libraries
 import matplotlib.pyplot as plt
@@ -126,9 +126,7 @@ def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
 # =======================================
 
 # Ordenar por Cantidad en inventario (usando Insertion Sort: de menor a mayor)
-INVENTARIO_POR_CANTIDAD = insertion_sort(
-    INVENTARIO.copy(), key=lambda x: x["cantidad"]
-)
+INVENTARIO_POR_CANTIDAD = insertion_sort(INVENTARIO.copy(), key=lambda x: x["cantidad"])
 
 # Ordenar por Tiempo de entrega (usando Bubble Sort: de mayor a menor)
 INVENTARIO_POR_TIEMPO = bubble_sort(
@@ -142,14 +140,13 @@ INVENTARIO_POR_FECHA = quick_sort(
 )
 
 # Ordenar por Demanda del cliente (usando Selection Sort: de mayor a menor)
-INVENTARIO_POR_DEMANDA = selection_sort(
-    INVENTARIO.copy(), key=lambda x: x["demanda"], reverse=True
-)
+INVENTARIO_POR_DEMANDA = selection_sort(INVENTARIO.copy(), key=lambda x: x["demanda"], reverse=True)
 
 
 # =======================================
 # Funciones auxiliares (para eliminar R0914)
 # =======================================
+
 
 def _generate_visual_table(
     data_rows: List[List[Any]], title: str, headers: list, query_date: str, algorithm_key: str
@@ -158,9 +155,7 @@ def _generate_visual_table(
     fig, ax = plt.subplots(figsize=(10, len(data_rows) * 0.6 + 2))
     ax.axis("off")
 
-    table_obj = ax.table(
-        cellText=data_rows, colLabels=headers, loc="center", cellLoc="center"
-    )
+    table_obj = ax.table(cellText=data_rows, colLabels=headers, loc="center", cellLoc="center")
     table_obj.auto_set_font_size(False)
     table_obj.set_fontsize(10)
     table_obj.scale(1.2, 1.2)
@@ -205,14 +200,15 @@ def _generate_csv_log(
 # Función para generar tabla y CSV (Refactorizada)
 # =======================================
 
+
 def generate_table_and_csv(
     sorted_data: list, title: str, table_headers: list, query_date: str, algorithm_key: str
 ):
     """
     Genera una tabla visual de los datos ordenados usando Matplotlib, guarda
     una imagen PNG y un archivo CSV de registro.
-    
-    R0914 Corregido: La complejidad de variables locales se ha movido 
+
+    R0914 Corregido: La complejidad de variables locales se ha movido
     a las funciones auxiliares.
     """
     # 1. Crear una matriz con los datos ordenados (Variables: data_rows, item, row)
@@ -234,9 +230,7 @@ def generate_table_and_csv(
     )
 
     # 3. Generar y guardar el registro CSV
-    csv_filename = _generate_csv_log(
-        data_rows, table_headers, query_date, algorithm_key
-    )
+    csv_filename = _generate_csv_log(data_rows, table_headers, query_date, algorithm_key)
 
     print(f"{title} - Archivos generados:")
     if image_filename:

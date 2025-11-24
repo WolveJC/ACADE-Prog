@@ -1,0 +1,51 @@
+name: Build Docs
+
+on:
+  push:
+    branches: [ "main" ]   # Se ejecuta en cada push a main
+  workflow_dispatch:        # Permite lanzarlo manualmente desde la pestaña Actions
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Clonar el repositorio
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 2. Configurar Python (para scripts de documentación)
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # 3. Instalar dependencias necesarias
+      - name: Install dependencies
+        run: |
+          pip install markdown pandoc
+
+      # 4. Generar projects.json recorriendo carpetas y subcarpetas
+      - name: Generate projects.json
+        run: python scripts/scan_projects.py
+
+      # 5. Concatenar todos los README.md en un GLOBAL.md
+      - name: Generate GLOBAL.md
+        run: python scripts/concat_readmes.py
+
+      # 6. Convertir GLOBAL.md a PDF
+      - name: Install Pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc
+      - name: Install LaTeX engine
+        run: sudo apt-get install -y texlive texlive-xetex texlive-fonts-recommended
+      - name: Convert to PDF
+        run: pandoc GLOBAL.md -o GLOBAL.pdf
+
+      # 7. Subir artefactos generados (JSON y PDF)
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-docs
+          path: |
+            projects.json
+            GLOBAL.pdf

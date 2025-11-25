@@ -1,6 +1,6 @@
 {
-    "git.confirmSync": false,
-    "codesandbox.preinstalledExtensions": [
+  "workbench.iconTheme": "vscode-icons",
+  "codesandbox.preinstalledExtensions": [
       "esbenp.prettier-vscode",
       "GitHub.vscode-pull-request-github",
       "njqdev.vscode-python-typehint",
@@ -23,6 +23,13 @@
       "nur-srijan.markdown-rich-preview",
       "vscode-icons-team.vscode-icons"
   ],
-  "workbench.iconTheme": "vscode-icons"
-  }
+  "git.confirmSync": false,
+  "pylint.args": [
+    "--max-line-length=100" 
+  ],
+  "flake8.args":[
+    "--max-line-length=100"
+  ],
+  "files.autoSave": "off"
   
+}

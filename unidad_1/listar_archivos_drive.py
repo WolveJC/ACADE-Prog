@@ -1,6 +1,6 @@
 """
-Módulo para listar y ordenar archivos por tiempo de modificación 
-(mtime) dentro de un directorio, con especial enfoque en entornos 
+Módulo para listar y ordenar archivos por tiempo de modificación
+(mtime) dentro de un directorio, con especial enfoque en entornos
 como Google Drive (vía DIRUTH).
 """
 

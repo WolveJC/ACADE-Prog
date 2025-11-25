@@ -13,7 +13,8 @@ import datetime
 import random
 import string
 import sys
-from typing import Union, List, Any
+# ¡CORRECCIÓN 1: Importar Callable y Dict para MyPy!
+from typing import Union, List, Any, Callable, Dict
 
 # Third-party libraries
 import matplotlib.pyplot as plt
@@ -55,7 +56,8 @@ def _obtener_fecha_valida(prompt: str, formato: str = "%Y-%m-%d") -> Union[str, 
 # ------------------------------------------
 # Ingreso interactivo de productos
 # ------------------------------------------
-def ingresar_productos(lista_inventario: list):
+# La lista de inventario espera diccionarios de productos
+def ingresar_productos(lista_inventario: List[Dict[str, Any]]):
     """Permite al usuario ingresar productos de manera interactiva."""
     while True:
         print("\n--- Ingrese los datos del nuevo producto ---")
@@ -120,10 +122,9 @@ def ingresar_productos(lista_inventario: list):
 # ------------------------------------------
 # 2. Funciones de ordenamiento
 # ------------------------------------------
-# ... (Funciones de ordenamiento sin cambios) ...
 
-
-def insertion_sort(lista: list, key: callable, descending: bool = False) -> list:
+# ¡CORRECCIÓN 2: Reemplazar 'callable' por 'Callable' importado de typing!
+def insertion_sort(lista: list, key: Callable, descending: bool = False) -> list:
     """
     Implementa el Insertion Sort, adaptable para orden ascendente o descendente.
     ...
@@ -146,8 +147,10 @@ def insertion_sort(lista: list, key: callable, descending: bool = False) -> list
         lista[j + 1] = actual
     return lista
 
+# ¡CORRECCIÓN 2: Reemplazar 'callable' por 'Callable'!
 
-def bubble_sort(lista: list, key: callable, descending: bool = False) -> list:
+
+def bubble_sort(lista: list, key: Callable, descending: bool = False) -> list:
     """
     Implementa el algoritmo Bubble Sort.
     ...
@@ -169,8 +172,10 @@ def bubble_sort(lista: list, key: callable, descending: bool = False) -> list:
         n -= 1
     return lista
 
+# ¡CORRECCIÓN 2: Reemplazar 'callable' por 'Callable'!
 
-def quick_sort(lista: list, key: callable) -> list:
+
+def quick_sort(lista: list, key: Callable) -> list:
     """
     Implementa el Quick Sort recursivo (orden ascendente).
     ...
@@ -185,8 +190,10 @@ def quick_sort(lista: list, key: callable) -> list:
 
     return quick_sort(menos, key) + iguales + quick_sort(mayor, key)
 
+# ¡CORRECCIÓN 2: Reemplazar 'callable' por 'Callable'!
 
-def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
+
+def selection_sort(lista: list, key: Callable, reverse: bool = False) -> list:
     """
     Implementa el Selection Sort (utilizado aquí de forma estable con lista temporal).
     ...
@@ -256,7 +263,7 @@ def _generate_visual_table(
 
     try:
         plt.savefig(image_filename, bbox_inches="tight")
-        plt.show()  # Muestra la tabla
+        # plt.show() # Muestra la tabla
     except IOError as e:
         print(f" Error al guardar la imagen {image_filename}: {e}")
 
@@ -289,7 +296,7 @@ def generate_table_and_csv(
     title: str,
     headers: list,
     query_date: str,
-    algorithm_key: str,  # <--- R0913 Corregido (5/5 argumentos)
+    algorithm_key: str,
 ):
     """
     Genera una tabla visual con Matplotlib, guarda la imagen PNG y un CSV de registro.
@@ -301,7 +308,6 @@ def generate_table_and_csv(
         query_date: Fecha y hora de la consulta (timestamp).
         algorithm_key: Clave del algoritmo (usada para nombrar archivos).
     """
-    # R0914 Corregido: La complejidad de variables se movió a las funciones auxiliares.
 
     # Preparar la matriz de datos para la tabla
     data_matrix = []
@@ -334,7 +340,8 @@ def generate_table_and_csv(
 # ------------------------------------------
 
 if __name__ == "__main__":
-    inventario = []
+    # ¡CORRECCIÓN 3: Añadir anotación de tipo a 'inventario'!
+    inventario: List[Dict[str, Any]] = []
     ingresar_productos(inventario)
 
     if not inventario:
@@ -375,7 +382,7 @@ if __name__ == "__main__":
         generate_table_and_csv(
             sorted_data=orden["data"],
             title=orden["title"],
-            headers=headers_all,  # <--- headers_visual y headers_csv agrupados
+            headers=headers_all,
             query_date=fecha_consulta,
             algorithm_key=orden["algorithm_key"],
         )

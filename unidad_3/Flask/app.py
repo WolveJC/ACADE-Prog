@@ -14,7 +14,7 @@ import os
 import random
 import string
 import time
-from typing import List, Tuple, Dict, Union, Any
+from typing import List, Tuple, Dict
 
 # Third-party libraries
 from flask import (
@@ -278,7 +278,7 @@ def _procesar_formulario_stock(form_data: dict) -> Dict[str, int]:
     pedido_stock = {}
     for key, value in form_data.items():
         if key.startswith("pedido_stock[") and key.endswith("]"):
-            codigo_limpio = key[len("pedido_stock[") : -1]
+            codigo_limpio = key[len("pedido_stock["): -1]
             try:
                 cantidad_pedida = int(value)
                 if cantidad_pedida > 0:
@@ -393,7 +393,7 @@ def _obtener_y_validar_pedido(productos: list, form_data: dict) -> Tuple[List, L
     codigos_pedidos = set()
     for key in form_data.keys():
         if key.startswith("pedido_proveedor[") and key.endswith("]"):
-            codigos_pedidos.add(key[len("pedido_proveedor[") : -1])
+            codigos_pedidos.add(key[len("pedido_proveedor["): -1])
 
     for codigo in codigos_pedidos:
         cantidad_str = form_data.get(f"pedido_proveedor[{codigo}]")
@@ -471,10 +471,6 @@ def pedir_proveedor():
         except (KeyError, ValueError) as e:
             print(f"Error de datos en /pedir_proveedor: {e}")
             return jsonify({"message": f"Error al procesar datos: {e}"}), 400
-        except Exception as e:
-            print(f"Error inesperado en /pedir_proveedor: {e}")
-            return jsonify({"message": "Error interno del servidor."}), 500
-
     return render_template("pedir_proveedor.html", productos_proveedor=productos)
 
 
@@ -482,7 +478,7 @@ def pedir_proveedor():
 
 
 # E1136 Corregido: Usar Tuple[bytes, str]
-def _crear_pdf_pedido(pedido_proveedor: list) -> Tuple[bytes, str]:
+def _crear_pdf_pedido(pedido_proveedor: list) -> Tuple[io.BytesIO, str]:
     """Función auxiliar para generar el contenido binario del PDF."""
     pdf = FPDF()
     pdf.add_page()

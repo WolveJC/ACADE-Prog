@@ -33,9 +33,9 @@ for root, dirs, files in os.walk(REPO_PATH):
         # Buscar icono si existe
         ICON_FILE = None
         for ext in [".png", ".jpg", ".jpeg", ".svg"]:
-            candidate = f"icon{ext}"
-            if candidate in files:
-                ICON_FILE = os.path.join(root, candidate)
+            CANDIDATE = f"icon{ext}"
+            if CANDIDATE in files:
+                ICON_FILE = os.path.join(root, CANDIDATE)
                 break
 
         # Construir objeto del proyecto

@@ -10,68 +10,75 @@ on:
 
 jobs:
   analyze:
-    name: Analyze (${{ matrix.language }})
-    runs-on: ubuntu-latest # Usamos ubuntu para todos, ya que Swift no fue solicitado
+    name: Analyze
+    runs-on: ubuntu-latest
 
     permissions:
+      # Requerido para publicar los resultados
       security-events: write
+      # Requerido para descargar paquetes de CodeQL
       packages: read
-      actions: read
-      contents: read
+      contents: read 
 
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          # --- Lenguajes COMPILADOS (Requieren paso de 'build') ---
-          - language: c-cpp
-            build-mode: manual # <-- CAMBIO CLAVE: Activamos la compilación manual
-            build-command: make codeql_all # <-- Comando para tu Makefile Multi-Target
-          
-          - language: java-kotlin # Soporte para Java (y Kotlin)
-            build-mode: manual 
-            build-command: bash ./build_java.sh
-            
-          - language: csharp # Soporte para C#
-            build-mode: manual 
-            build-command: bash ./build_csharp.sh
-
-          # --- Lenguajes INTERPRETADOS / NO COMPILADOS (No requieren build) ---
-          - language: javascript-typescript # Soporte para JS/TS (HTML/CSS que son rastreados aquí)
-            build-mode: none
-            build-command: ""
-            
-          - language: actions
-            build-mode: none
-            build-command: ""
-            
-          - language: python
-            build-mode: none
-            build-command: ""
-
+    # 🛑 Eliminamos la matriz de lenguajes para evitar fallos por "No Code Found"
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # --- PASO DE INICIALIZACIÓN DE CODEQL ---
-    # Inicializa las herramientas CodeQL y activa el 'tracer' para los lenguajes compilados.
+    # 1. SETUP DE ENTORNO
+    # Estos pasos son necesarios para que los comandos 'mvn' y 'dotnet' funcionen si hay código C# o Java.
+    - name: Setup Java Environment
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        
+    - name: Setup .NET Environment
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    # --- 2. INICIALIZACIÓN DE CODEQL (Única llamada para todos los lenguajes) ---
+    # CodeQL ahora detectará automáticamente qué lenguajes tienen código fuente 
+    # y solo creará bases de datos para ellos.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v4
       with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
+        languages: c-cpp, java-kotlin, csharp, javascript-typescript, python, actions
 
-    # --- PASO DE COMPILACIÓN MANUAL (Solo se ejecuta para C/C++ ahora) ---
-    # Este paso compila tu código, y CodeQL intercepta las llamadas al compilador (g++).
-    - name: Run manual build steps (for C/C++)
-      if: matrix.build-mode == 'manual'
+    # 3. COMPILACIÓN CONDICIONAL Y SEGURA (Solo para lenguajes compilados)
+    
+    # --- C/C++ (MANUAL: Makefile) ---
+    - name: Build C/C++
+      # Ejecutar make codeql_all solo si existe el archivo Makefile, 
+      # o si CodeQL detectó algún archivo C/C++.
       shell: bash
       run: |
-        echo "Iniciando compilación manual para ${{ matrix.language }} con: ${{ matrix.build-command }}"
-        ${{ matrix.build-command }} # Ejecuta 'make codeql_all' para C/C++
+        if [ -f "Makefile" ]; then
+          echo "Iniciando compilación C/C++ con Makefile..."
+          make codeql_all
+        else
+          echo "No se encontró Makefile. Saltando compilación C/C++."
+        fi
 
-    # --- PASO DE ANÁLISIS ---
+    # --- JAVA/KOTLIN (MANUAL: Script Personalizado) ---
+    - name: Build Java/Kotlin
+      shell: bash
+      # El script se ejecuta. Si no encuentra 'pom.xml', devuelve éxito (0), evitando el fallo.
+      run: |
+        echo "Iniciando compilación Java/Kotlin..."
+        bash ./build_java.sh
+
+    # --- C# (MANUAL: Script Personalizado) ---
+    - name: Build C#
+      shell: bash
+      # El script se ejecuta. Si no encuentra '.sln' o '.csproj', devuelve éxito (0).
+      run: |
+        echo "Iniciando compilación C#..."
+        bash ./build_csharp.sh
+        
+    # 4. ANÁLISIS FINAL
+    # Este paso analizará todas las bases de datos que CodeQL logró crear.
+    # Dado que no estamos en modo matriz, este paso no fallará si una base de datos (ej. Java) no existe.
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
-      with:
-        category: "/language:${{matrix.language}}"

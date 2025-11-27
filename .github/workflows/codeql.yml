@@ -29,12 +29,12 @@ jobs:
             build-command: make codeql_all # <-- Comando para tu Makefile Multi-Target
           
           - language: java-kotlin # Soporte para Java (y Kotlin)
-            build-mode: autobuild # Deja CodeQL intentar compilación automática (Maven/Gradle)
-            build-command: "" # No se necesita comando manual si autobuild es exitoso
+            build-mode: manual 
+            build-command: bash ./build_java.sh
             
           - language: csharp # Soporte para C#
-            build-mode: autobuild # Deja CodeQL intentar compilación automática (dotnet/msbuild)
-            build-command: ""
+            build-mode: manual 
+            build-command: bash ./build_csharp.sh
 
           # --- Lenguajes INTERPRETADOS / NO COMPILADOS (No requieren build) ---
           - language: javascript-typescript # Soporte para JS/TS (HTML/CSS que son rastreados aquí)

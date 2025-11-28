@@ -1,5 +1,11 @@
 # Proyecto: Gestor de Tareas 📝
 
+![C++ Badge](https://img.shields.io/badge/Language-C++-blue.svg)
+![Structure](https://img.shields.io/badge/Data_Structure-Stack_%26_Queue-purple.svg)
+![Status](https://img.shields.io/badge/Status-Educational-green.svg)
+![Platform](https://img.shields.io/badge/Platform-Console-lightgrey.svg)
+![Purpose](https://img.shields.io/badge/Purpose-Task%20Management-orange.svg)
+
 ## 📌 Descripción
 Este programa en C++ implementa un gestor de tareas simple que clasifica las tareas en:
 - **Urgentes** → almacenadas en una **pila** (stack).

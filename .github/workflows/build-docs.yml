@@ -29,17 +29,22 @@ jobs:
       - name: Generate projects.json
         run: python scripts/scan_projects.py
 
-      # 5. Concatenar todos los README.md en un GLOBAL.md
+      # 5. Concatenar todos los .md en un GLOBAL.md
       - name: Generate GLOBAL.md
         run: python scripts/concat_readmes.py
 
       # 6. Convertir GLOBAL.md a PDF
       - name: Install Pandoc
         run: sudo apt-get update && sudo apt-get install -y pandoc
+
       - name: Install LaTeX engine
         run: sudo apt-get install -y texlive texlive-xetex texlive-fonts-recommended
+
+      - name: Install SVG support
+        run: sudo apt-get install -y librsvg2-bin
+
       - name: Convert to PDF
-        run: pandoc GLOBAL.md -o GLOBAL.pdf
+        run: pandoc GLOBAL.md -o GLOBAL.pdf --pdf-engine=xelatex
 
       # 7. Subir artefactos generados (JSON y PDF)
       - name: Upload artifacts

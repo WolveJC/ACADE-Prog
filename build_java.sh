@@ -7,7 +7,7 @@ echo "Buscando archivos pom.xml para compilar proyectos Java..."
 PROJECT_FILES=$(find . -name 'pom.xml')
 
 if [ -z "$PROJECT_FILES" ]; then
-    echo "✅ No se encontraron archivos pom.xml. El paso de compilación finaliza exitosamente."
+    echo "No se encontraron archivos pom.xml. El paso de compilación finaliza exitosamente."
     exit 0 # Salida exitosa si no hay proyectos.
 else
     echo "Proyectos Maven encontrados. Iniciando compilación..."
@@ -17,10 +17,10 @@ else
     
     # Verificamos el código de salida del último comando. Si falla, el script falla.
     if [ $? -ne 0 ]; then
-        echo "🛑 ERROR: Falló la compilación de uno o más proyectos Maven."
+        echo "ERROR: Falló la compilación de uno o más proyectos Maven."
         exit 1
     else
-        echo "✅ Todos los proyectos Maven compilaron con éxito."
+        echo "Todos los proyectos Maven compilaron con éxito."
         exit 0
     fi
 fi

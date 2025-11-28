@@ -21,24 +21,24 @@ for root, dirs, files in os.walk(REPO_PATH):
     # Detectar proyectos: carpeta que contiene al menos un archivo .md
     md_files = [f for f in files if f.lower().endswith(".md")]
     if md_files:
-        project_name = os.path.basename(root)
-        if project_name in ("", "."):
-            project_name = "root"
+        PROJECT_NAME = os.path.basename(root)
+        if PROJECT_NAME in ("", "."):
+            PROJECT_NAME = "root"
 
         # Buscar icono si existe
-        icon_file = None
+        ICON_FILE = None
         for ext in [".png", ".jpg", ".jpeg", ".svg"]:
             candidate = f"icon{ext}"
             if candidate in files:
-                icon_file = os.path.join(root, candidate)
+                ICON_FILE = os.path.join(root, candidate)
                 break
 
         # Construir objeto del proyecto
         project = {
-            "id": project_name.lower(),
-            "title": project_name,
+            "id": PROJECT_NAME.lower(),
+            "title": PROJECT_NAME,
             "docs": [os.path.join(root, f) for f in md_files],
-            "icon": icon_file,
+            "icon": ICON_FILE,
             "url": f"https://github.com/WolveJC/ACADE-Prog/tree/main/{root}".replace("./", ""),
         }
 

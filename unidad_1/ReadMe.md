@@ -1,5 +1,11 @@
 # 📂 Listado de Archivos en Google Drive (Python + Colab)
 
+![Python Badge](https://img.shields.io/badge/Language-Python-blue.svg)
+![Platform](https://img.shields.io/badge/Platform-Google_Colab-yellow.svg)
+![Feature](https://img.shields.io/badge/Feature-Drive_File_Listing-orange.svg)
+![Status](https://img.shields.io/badge/Status-Educational-green.svg)
+![Purpose](https://img.shields.io/badge/Purpose-File%20Management-purple.svg)
+
 ## 📌 Descripción
 Este script en Python permite listar los archivos y carpetas dentro de un directorio de **Google Drive montado en Google Colab**, mostrando:
 

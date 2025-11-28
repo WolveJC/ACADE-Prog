@@ -9,7 +9,8 @@ incluyendo el nombre, la ruta de los .md y la ruta de un posible icono.
 import os
 import json
 
-REPO_PATH = "."
+# Ruta base del repositorio (un nivel arriba de la carpeta scripts)
+REPO_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 PROJECTS = []
 
 for root, dirs, files in os.walk(REPO_PATH):
@@ -43,8 +44,8 @@ for root, dirs, files in os.walk(REPO_PATH):
 
         PROJECTS.append(project)
 
-# Guardar en projects.json
-OUTPUT_FILE = "projects.json"
+# Guardar en projects.json en la raíz del repo
+OUTPUT_FILE = os.path.join(REPO_PATH, "projects.json")
 try:
     with open(OUTPUT_FILE, "w", encoding="utf-8") as file:
         json.dump(PROJECTS, file, indent=2, ensure_ascii=False)

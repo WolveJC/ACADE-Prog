@@ -29,12 +29,12 @@ md_files_found.sort()
 try:
     with open(OUTPUT_FILE, "w", encoding="utf-8") as global_file:
         for md_path in md_files_found:
-            project_name = os.path.basename(os.path.dirname(md_path))
-            if project_name in ("", "."):
-                project_name = "REPOSITORIO PRINCIPAL"
+            PROJECT_NAME = os.path.basename(os.path.dirname(md_path))
+            if PROJECT_NAME in ("", "."):
+                PROJECT_NAME = "REPOSITORIO PRINCIPAL"
 
             # Escribir título del archivo
-            global_file.write(f"# {project_name} - {os.path.basename(md_path)}\n\n")
+            global_file.write(f"# {PROJECT_NAME} - {os.path.basename(md_path)}\n\n")
 
             try:
                 with open(md_path, encoding="utf-8") as md_file:

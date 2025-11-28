@@ -10,75 +10,64 @@ on:
 
 jobs:
   analyze:
-    name: Analyze
+    name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ c-cpp, java-kotlin, csharp, javascript-typescript, python, actions ]
 
     permissions:
-      # Requerido para publicar los resultados
-      security-events: write
-      # Requerido para descargar paquetes de CodeQL
-      packages: read
-      contents: read 
+      security-events: write   # publicar resultados
+      packages: read           # descargar paquetes CodeQL
+      contents: read           # leer contenido repo
 
-    # 🛑 Eliminamos la matriz de lenguajes para evitar fallos por "No Code Found"
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    # 1. SETUP DE ENTORNO
-    # Estos pasos son necesarios para que los comandos 'mvn' y 'dotnet' funcionen si hay código C# o Java.
-    - name: Setup Java Environment
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17'
-        
-    - name: Setup .NET Environment
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
+      # --- Setup entornos condicionales ---
+      - name: Setup Java Environment
+        if: matrix.language == 'java-kotlin'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    # --- 2. INICIALIZACIÓN DE CODEQL (Única llamada para todos los lenguajes) ---
-    # CodeQL ahora detectará automáticamente qué lenguajes tienen código fuente 
-    # y solo creará bases de datos para ellos.
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v4
-      with:
-        languages: c-cpp, java-kotlin, csharp, javascript-typescript, python, actions
+      - name: Setup .NET Environment
+        if: matrix.language == 'csharp'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
 
-    # 3. COMPILACIÓN CONDICIONAL Y SEGURA (Solo para lenguajes compilados)
-    
-    # --- C/C++ (MANUAL: Makefile) ---
-    - name: Build C/C++
-      # Ejecutar make codeql_all solo si existe el archivo Makefile, 
-      # o si CodeQL detectó algún archivo C/C++.
-      shell: bash
-      run: |
-        if [ -f "Makefile" ]; then
-          echo "Iniciando compilación C/C++ con Makefile..."
-          make codeql_all
-        else
-          echo "No se encontró Makefile. Saltando compilación C/C++."
-        fi
+      # --- Inicialización de CodeQL ---
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
 
-    # --- JAVA/KOTLIN (MANUAL: Script Personalizado) ---
-    - name: Build Java/Kotlin
-      shell: bash
-      # El script se ejecuta. Si no encuentra 'pom.xml', devuelve éxito (0), evitando el fallo.
-      run: |
-        echo "Iniciando compilación Java/Kotlin..."
-        bash ./build_java.sh
+      # --- Compilación condicional ---
+      - name: Build C/C++
+        if: matrix.language == 'c-cpp'
+        shell: bash
+        run: |
+          if [ -f "Makefile" ]; then
+            echo "Compilando C/C++ con Makefile..."
+            make codeql_all
+          else
+            echo "No se encontró Makefile. Saltando compilación C/C++."
+          fi
 
-    # --- C# (MANUAL: Script Personalizado) ---
-    - name: Build C#
-      shell: bash
-      # El script se ejecuta. Si no encuentra '.sln' o '.csproj', devuelve éxito (0).
-      run: |
-        echo "Iniciando compilación C#..."
-        bash ./build_csharp.sh
-        
-    # 4. ANÁLISIS FINAL
-    # Este paso analizará todas las bases de datos que CodeQL logró crear.
-    # Dado que no estamos en modo matriz, este paso no fallará si una base de datos (ej. Java) no existe.
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v4
+      - name: Build Java/Kotlin
+        if: matrix.language == 'java-kotlin'
+        shell: bash
+        run: bash ./build_java.sh
+
+      - name: Build C#
+        if: matrix.language == 'csharp'
+        shell: bash
+        run: bash ./build_csharp.sh
+
+      # --- Análisis final ---
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4

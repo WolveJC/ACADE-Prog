@@ -1,5 +1,12 @@
 # ☕ Sistema de Gestión de Inventario - Touken Café
 
+![Python Badge](https://img.shields.io/badge/Language-Python-blue.svg)
+![Framework](https://img.shields.io/badge/Framework-Flask-lightgrey.svg)
+![Feature](https://img.shields.io/badge/Feature-Inventory_Management-orange.svg)
+![Export](https://img.shields.io/badge/Export-CSV%20%7C%20JSON%20%7C%20PDF-blue.svg)
+![Status](https://img.shields.io/badge/Status-Educational-green.svg)
+![Purpose](https://img.shields.io/badge/Purpose-Café%20Stock%20Control-purple.svg)
+
 Bienvenido al Sistema de Gestión de Inventario para Touken Café, una aplicación web construida con Flask y Python diseñada para optimizar el flujo de inventario, gestionar pedidos internos y generar órdenes de compra a proveedores de manera automatizada.
 
 ## 🚀 Características Principales

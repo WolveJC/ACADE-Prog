@@ -1,7 +1,10 @@
 # 🗂️ Sistema de Registro y Calculadora Temporal en C++
 
 ![C++ Badge](https://img.shields.io/badge/Language-C++-blue.svg)
-![IO](https://img.shields.io/badge/Feature-File_Handling-orange.svg)
+![Feature](https://img.shields.io/badge/Feature-File_Handling-orange.svg)
+![Status](https://img.shields.io/badge/Status-Educational-green.svg)
+![Platform](https://img.shields.io/badge/Platform-Console-lightgrey.svg)
+![Purpose](https://img.shields.io/badge/Purpose-Registration_%26_Time_Calculation-purple.svg)
 
 Herramienta de consola para registrar estudiantes en cursos, generar archivos de respaldo y calcular la duración total del aprendizaje en segundos exactos.
 

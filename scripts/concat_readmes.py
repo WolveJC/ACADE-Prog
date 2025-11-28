@@ -7,8 +7,9 @@ Esto facilita la visualización o el procesamiento del contenido completo.
 
 import os
 
-REPO_PATH = "."
-OUTPUT_FILE = "GLOBAL.md"
+# Ruta base del repositorio (un nivel arriba de la carpeta scripts)
+REPO_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+OUTPUT_FILE = os.path.join(REPO_PATH, "GLOBAL.md")
 
 md_files_found = []
 

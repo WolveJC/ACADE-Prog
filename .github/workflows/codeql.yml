@@ -18,9 +18,9 @@ jobs:
         language: [ c-cpp, java-kotlin, csharp, javascript-typescript, python, actions ]
 
     permissions:
-      security-events: write   # publicar resultados
-      packages: read           # descargar paquetes CodeQL
-      contents: read           # leer contenido repo
+      security-events: write
+      packages: read
+      contents: read
 
     steps:
       - name: Checkout repository
@@ -40,11 +40,32 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      # --- Inicialización de CodeQL ---
+      # --- Inicialización condicional de CodeQL ---
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
-        with:
-          languages: ${{ matrix.language }}
+        shell: bash
+        run: |
+          case "${{ matrix.language }}" in
+            "java-kotlin")
+              if find . -name "*.java" -o -name "*.kt" | grep .; then
+                echo "Fuentes Java/Kotlin encontradas, inicializando CodeQL..."
+                codeql-action/init --languages=java-kotlin
+              else
+                echo "No hay fuentes Java/Kotlin, saltando inicialización."
+              fi
+              ;;
+            "csharp")
+              if find . -name "*.sln" -o -name "*.csproj" | grep .; then
+                echo "Proyectos C# encontrados, inicializando CodeQL..."
+                codeql-action/init --languages=csharp
+              else
+                echo "No hay proyectos C#, saltando inicialización."
+              fi
+              ;;
+            *)
+              echo "Inicializando CodeQL para ${{ matrix.language }}..."
+              codeql-action/init --languages=${{ matrix.language }}
+              ;;
+          esac
 
       # --- Compilación condicional ---
       - name: Build C/C++

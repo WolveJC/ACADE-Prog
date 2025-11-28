@@ -2,6 +2,8 @@
 
 ![C++ Badge](https://img.shields.io/badge/Language-C++-blue.svg)
 ![Status](https://img.shields.io/badge/Status-Educational-green.svg)
+![Platform](https://img.shields.io/badge/Platform-Console-lightgrey.svg)
+![Purpose](https://img.shields.io/badge/Purpose-Authentication%20%26%20Utilities-orange.svg)
 
 Este proyecto implementa un sistema de gestión de usuarios robusto (clase `Loger`) junto con utilidades matemáticas, demostrando conceptos fundamentales de Programación Orientada a Objetos (POO), validación de flujos y seguridad básica en C++.
 

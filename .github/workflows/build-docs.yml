@@ -46,16 +46,6 @@ jobs:
       - name: Install Emoji Fonts
         run: sudo apt-get install -y fonts-noto-color-emoji fonts-symbola
 
-      # Debug: listar fuentes disponibles
-      - name: Debug available fonts
-        run: fc-list | sort | tee fonts-list.txt
-
-      - name: Upload font list artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: available-fonts
-          path: fonts-list.txt
-
       # Header TeX para fuentes
       - name: Prepare font header for Pandoc
         run: |
@@ -65,7 +55,7 @@ jobs:
           \setsansfont{Latin Modern Sans}
           \setmonofont{Latin Modern Mono}
           % Ajustar según nombre detectado en fonts-list.txt
-          \newfontfamily\Emoji{Symbola}
+          \newfontfamily\Emoji{Noto Color Emoji}
           \XeTeXinterchartokenstate=1
           EOF
 

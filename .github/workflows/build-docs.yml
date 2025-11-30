@@ -43,14 +43,36 @@ jobs:
       - name: Install SVG support
         run: sudo apt-get install -y librsvg2-bin
 
-      - name: Convert to PDF
-        run: pandoc GLOBAL.md -o GLOBAL.pdf --pdf-engine=xelatex
+      - name: Install Emoji Fonts
+        run: sudo apt-get install -y fonts-noto-color-emoji
 
-      # 7. Subir artefactos generados (JSON y PDF)
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+      - name: Convert to PDF
+        run: pandoc GLOBAL.md -o doc_proj.pdf --pdf-engine=xelatex \
+             -V mainfont="Latin Modern Roman" \
+             -V emoji="Noto Color Emoji"
+
+      # 7. Mover archivos a sus rutas finales dentro del repo
+      - name: Move artifacts into repo
+        run: |
+          mv doc_proj.pdf Wolves-Page/public/docs/doc_proj.pdf
+          mv projects.json Wolves-Page/src/data/projects_list.json
+
+      # 8. Commit y push de los archivos al repo
+      - name: Commit and push artifacts
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add Wolves-Page/public/docs/doc_proj.pdf Wolves-Page/src/data/projects_list.json
+          git commit -m "Update docs and projects list [CI]" || echo "No changes to commit"
+          git push
+
+      # 9. Publicar GLOBAL.md en GitHub Pages
+      - name: Deploy GLOBAL.md to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: portfolio-docs
-          path: |
-            projects.json
-            GLOBAL.pdf
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          publish_branch: gh-pages
+          keep_files: true
+          exclude_assets: |
+            !GLOBAL.md

@@ -44,7 +44,7 @@ jobs:
         run: sudo apt-get install -y librsvg2-bin
 
       - name: Install Emoji Fonts
-        run: sudo apt-get install -y fonts-noto-color-emoji fonts-symbola
+        run: sudo apt-get install -y fonts-noto-color-emoji
 
       # Header TeX para fuentes
       - name: Prepare font header for Pandoc
@@ -54,7 +54,7 @@ jobs:
           \setmainfont{Latin Modern Roman}
           \setsansfont{Latin Modern Sans}
           \setmonofont{Latin Modern Mono}
-          % Ajustar según nombre detectado en fonts-list.txt
+          % Fuente para emojis y símbolos Unicode (nombre exacto con espacios)
           \newfontfamily\Emoji{Noto Color Emoji}
           \XeTeXinterchartokenstate=1
           EOF
@@ -70,14 +70,15 @@ jobs:
           mv doc_proj.pdf Wolves-Page/public/docs/doc_proj.pdf
           mv projects.json Wolves-Page/src/data/projects_list.json
 
-      # 8. Commit y push de los archivos al repo
+      # 8. Commit y push de los archivos al repo (con GITHUB_TOKEN)
       - name: Commit and push artifacts
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git add Wolves-Page/public/docs/doc_proj.pdf Wolves-Page/src/data/projects_list.json
           git commit -m "Update docs and projects list [CI]" || echo "No changes to commit"
-          git push
+          git push origin HEAD:main
 
       # 9. Publicar GLOBAL.md en GitHub Pages
       - name: Prepare Pages content

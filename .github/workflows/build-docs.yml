@@ -10,24 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Clonar el repositorio
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      # 2. Configurar Python
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
+      # 3. Instalar dependencias necesarias
       - name: Install Python deps
         run: |
-          pip install markdown pandoc-emoji
+          pip install markdown pandocfilters emoji requests
 
+      # 4. Generar projects.json
       - name: Generate projects.json
         run: python scripts/scan_projects.py
 
+      # 5. Concatenar todos los .md en GLOBAL.md
       - name: Generate GLOBAL.md
         run: python scripts/concat_readmes.py
 
+      # 6. Instalar Pandoc y LaTeX
       - name: Install Pandoc
         run: sudo apt-get update && sudo apt-get install -y pandoc
 
@@ -37,10 +43,11 @@ jobs:
       - name: Install SVG support
         run: sudo apt-get install -y librsvg2-bin
 
-      # Convertir a PDF usando el filtro pandoc-emoji
+      # 7. Convertir a PDF usando el filtro emoji_filter.py
       - name: Convert to PDF
-        run: pandoc GLOBAL.md -o doc_proj.pdf --pdf-engine=xelatex --filter pandoc-emoji
+        run: pandoc GLOBAL.md -o doc_proj.pdf --pdf-engine=xelatex --filter ./scripts/emoji_filter.py
 
+      # 8. Mover artefactos al repo
       - name: Move artifacts into repo
         run: |
           mkdir -p Wolves-Page/public/docs
@@ -48,6 +55,7 @@ jobs:
           mv doc_proj.pdf Wolves-Page/public/docs/doc_proj.pdf
           mv projects.json Wolves-Page/src/data/projects_list.json
 
+      # 9. Commit y push con GITHUB_TOKEN
       - name: Commit and push artifacts
         run: |
           git config --global user.name "github-actions[bot]"
@@ -57,6 +65,7 @@ jobs:
           git commit -m "Update docs and projects list [CI]" || echo "No changes to commit"
           git push origin HEAD:main
 
+      # 10. Publicar GLOBAL.md en GitHub Pages
       - name: Prepare Pages content
         run: |
           mkdir -p _site

@@ -47,8 +47,8 @@ jobs:
         run: |
           cat > pandoc-fonts.tex <<'EOF'
           \usepackage{fontspec}
-          \setmainfont{Latin Modern Roman}
-          \setsansfont{Latin Modern Sans}
+          \setmainfont{DejaVu Sans}
+          \setsansfont{DejaVu Sans}
           \setmonofont{DejaVu Sans Mono}
           EOF
 

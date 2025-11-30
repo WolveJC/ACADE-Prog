@@ -43,11 +43,24 @@ jobs:
       - name: Install SVG support
         run: sudo apt-get install -y librsvg2-bin
 
-      # 7. Convertir a PDF usando el filtro emoji_filter.py
-      - name: Convert to PDF
-        run: pandoc GLOBAL.md -o doc_proj.pdf --pdf-engine=xelatex --filter ./scripts/emoji_filter.py
+      - name: Install DejaVu fonts
+        run: sudo apt-get install -y fonts-dejavu
 
-      # 8. Mover artefactos al repo
+      # 7. Preparar header TeX para usar DejaVu Sans Mono
+      - name: Prepare font header
+        run: |
+          cat > pandoc-fonts.tex <<'EOF'
+          \usepackage{fontspec}
+          \setmainfont{Latin Modern Roman}
+          \setsansfont{Latin Modern Sans}
+          \setmonofont{DejaVu Sans Mono}
+          EOF
+
+      # 8. Convertir a PDF usando el filtro emoji_filter.py y el header de fuentes
+      - name: Convert to PDF
+        run: pandoc GLOBAL.md -o doc_proj.pdf --pdf-engine=xelatex --include-in-header=pandoc-fonts.tex --filter ./scripts/emoji_filter.py
+
+      # 9. Mover artefactos al repo
       - name: Move artifacts into repo
         run: |
           mkdir -p Wolves-Page/public/docs
@@ -55,17 +68,18 @@ jobs:
           mv doc_proj.pdf Wolves-Page/public/docs/doc_proj.pdf
           mv projects.json Wolves-Page/src/data/projects_list.json
 
-      # 9. Commit y push con GITHUB_TOKEN
+      # 10. Commit y push con GITHUB_TOKEN
       - name: Commit and push artifacts
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git add Wolves-Page/public/docs/doc_proj.pdf Wolves-Page/src/data/projects_list.json
           git commit -m "Update docs and projects list [CI]" || echo "No changes to commit"
-          git push origin HEAD:main
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # 10. Publicar GLOBAL.md en GitHub Pages
+      # 11. Publicar GLOBAL.md en GitHub Pages
       - name: Prepare Pages content
         run: |
           mkdir -p _site

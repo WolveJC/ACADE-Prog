@@ -55,7 +55,7 @@ jobs:
           \setsansfont{Latin Modern Sans}
           \setmonofont{Latin Modern Mono}
           % Fuente para emojis y símbolos Unicode (nombre exacto con espacios)
-          \newfontfamily\Emoji{Noto Color Emoji}
+          \newfontfamily\Emoji{Noto Color Emoji}[Path=/usr/share/fonts/truetype/noto/]
           \XeTeXinterchartokenstate=1
           EOF
 

@@ -2,8 +2,8 @@ name: Build Docs
 
 on:
   push:
-    branches: [ "main" ]   # Se ejecuta en cada push a main
-  workflow_dispatch:        # Permite lanzarlo manualmente desde la pestaña Actions
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   docs:
@@ -20,10 +20,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      # 3. Instalar dependencias necesarias
-      - name: Install dependencies
+      # 3. Instalar dependencias necesarias (solo python libs)
+      - name: Install Python deps
         run: |
-          pip install markdown pandoc
+          pip install markdown
 
       # 4. Generar projects.json recorriendo carpetas y subcarpetas
       - name: Generate projects.json
@@ -33,32 +33,46 @@ jobs:
       - name: Generate GLOBAL.md
         run: python scripts/concat_readmes.py
 
-      # 6. Convertir GLOBAL.md a PDF
+      # 6. Toolchain para convertir GLOBAL.md a PDF
       - name: Install Pandoc
         run: sudo apt-get update && sudo apt-get install -y pandoc
 
-      - name: Install LaTeX engine
-        run: sudo apt-get install -y texlive texlive-xetex texlive-fonts-recommended
+      - name: Install LaTeX engine and fonts
+        run: sudo apt-get install -y texlive texlive-xetex texlive-fonts-recommended texlive-latex-extra
 
       - name: Install SVG support
         run: sudo apt-get install -y librsvg2-bin
 
-      - name: Install Emoji Fonts
+      - name: Install Emoji fonts
         run: sudo apt-get install -y fonts-noto-color-emoji
 
-      - name: Convert to PDF
-        run: pandoc GLOBAL.md -o doc_proj.pdf --pdf-engine=xelatex \
-             -V mainfont='Latin Modern Roman' \
-             -V fontfamily='Latin Modern Roman' \
-             -V emoji='Noto Color Emoji'
+      # 6.1. Header TeX para fuentes (Latin Modern + Noto Color Emoji)
+      - name: Prepare font header for Pandoc
+        run: |
+          cat > pandoc-fonts.tex <<'EOF'
+          \usepackage{fontspec}
+          \setmainfont{Latin Modern Roman}
+          \setsansfont{Latin Modern Sans}
+          \setmonofont{Latin Modern Mono}
+          % Fuente para emojis
+          \newfontfamily\Emoji{Noto Color Emoji}
+          % Opcional: activar estado de tokens de interchart (fallbacks en XeTeX)
+          \XeTeXinterchartokenstate=1
+          EOF
 
-      # 7. Mover archivos a sus rutas finales dentro del repo
+      # 6.2. Convertir a PDF usando el header (sin -V)
+      - name: Convert to PDF
+        run: pandoc GLOBAL.md --pdf-engine=xelatex --include-in-header=pandoc-fonts.tex -o doc_proj.pdf
+
+      # 7. Mover PDF y JSON a sus rutas finales dentro del repo
       - name: Move artifacts into repo
         run: |
+          mkdir -p Wolves-Page/public/docs
+          mkdir -p Wolves-Page/src/data
           mv doc_proj.pdf Wolves-Page/public/docs/doc_proj.pdf
           mv projects.json Wolves-Page/src/data/projects_list.json
 
-      # 8. Commit y push de los archivos al repo
+      # 8. Commit y push de los archivos al repo (main)
       - name: Commit and push artifacts
         run: |
           git config --global user.name "github-actions[bot]"
@@ -67,13 +81,16 @@ jobs:
           git commit -m "Update docs and projects list [CI]" || echo "No changes to commit"
           git push
 
-      # 9. Publicar GLOBAL.md en GitHub Pages
+      # 9. Publicar solo GLOBAL.md en GitHub Pages
+      - name: Prepare Pages content
+        run: |
+          mkdir -p _site
+          cp GLOBAL.md _site/GLOBAL.md
+
       - name: Deploy GLOBAL.md to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
           publish_branch: gh-pages
+          publish_dir: _site
           keep_files: true
-          exclude_assets: |
-            !GLOBAL.md

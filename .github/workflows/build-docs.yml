@@ -48,8 +48,9 @@ jobs:
 
       - name: Convert to PDF
         run: pandoc GLOBAL.md -o doc_proj.pdf --pdf-engine=xelatex \
-             -V mainfont="Latin Modern Roman" \
-             -V emoji="Noto Color Emoji"
+             -V mainfont='Latin Modern Roman' \
+             -V fontfamily='Latin Modern Roman' \
+             -V emoji='Noto Color Emoji'
 
       # 7. Mover archivos a sus rutas finales dentro del repo
       - name: Move artifacts into repo

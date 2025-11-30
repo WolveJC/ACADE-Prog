@@ -2,38 +2,32 @@ name: Build Docs
 
 on:
   push:
-    branches: [ "main" ]   # Se ejecuta en cada push a main
-  workflow_dispatch:        # Permite lanzarlo manualmente desde la pestaña Actions
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   docs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Clonar el repositorio
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # 2. Configurar Python (para scripts de documentación)
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      # 3. Instalar dependencias necesarias
       - name: Install Python deps
         run: |
-          pip install markdown
+          pip install markdown pandoc-emoji
 
-      # 4. Generar projects.json recorriendo carpetas y subcarpetas
       - name: Generate projects.json
         run: python scripts/scan_projects.py
 
-      # 5. Concatenar todos los .md en un GLOBAL.md
       - name: Generate GLOBAL.md
         run: python scripts/concat_readmes.py
 
-      # 6. Toolchain para convertir GLOBAL.md a PDF
       - name: Install Pandoc
         run: sudo apt-get update && sudo apt-get install -y pandoc
 
@@ -43,26 +37,10 @@ jobs:
       - name: Install SVG support
         run: sudo apt-get install -y librsvg2-bin
 
-      - name: Install Emoji Fonts
-        run: sudo apt-get install -y fonts-noto-color-emoji
-
-      # Header TeX para fuentes
-      - name: Prepare font header for Pandoc
-        run: |
-          cat > pandoc-fonts.tex <<'EOF'
-          \usepackage{fontspec}
-          \setmainfont{Latin Modern Roman}
-          \setsansfont{Latin Modern Sans}
-          \setmonofont{Latin Modern Mono}
-          % Fuente para emojis y símbolos Unicode (nombre exacto con espacios)
-          \newfontfamily\Emoji{Noto Color Emoji}[Path=/usr/share/fonts/truetype/noto/]
-          \XeTeXinterchartokenstate=1
-          EOF
-
+      # Convertir a PDF usando el filtro pandoc-emoji
       - name: Convert to PDF
-        run: pandoc GLOBAL.md --pdf-engine=xelatex --include-in-header=pandoc-fonts.tex -o doc_proj.pdf
+        run: pandoc GLOBAL.md -o doc_proj.pdf --pdf-engine=xelatex --filter pandoc-emoji
 
-      # 7. Mover archivos a sus rutas finales dentro del repo
       - name: Move artifacts into repo
         run: |
           mkdir -p Wolves-Page/public/docs
@@ -70,7 +48,6 @@ jobs:
           mv doc_proj.pdf Wolves-Page/public/docs/doc_proj.pdf
           mv projects.json Wolves-Page/src/data/projects_list.json
 
-      # 8. Commit y push de los archivos al repo (con GITHUB_TOKEN)
       - name: Commit and push artifacts
         run: |
           git config --global user.name "github-actions[bot]"
@@ -80,7 +57,6 @@ jobs:
           git commit -m "Update docs and projects list [CI]" || echo "No changes to commit"
           git push origin HEAD:main
 
-      # 9. Publicar GLOBAL.md en GitHub Pages
       - name: Prepare Pages content
         run: |
           mkdir -p _site

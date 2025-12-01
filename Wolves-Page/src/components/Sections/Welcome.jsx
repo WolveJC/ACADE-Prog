@@ -1,5 +1,6 @@
 import React from "react";
 import Avatar from "../UI/Avatar";
+import { motion } from "framer-motion";
 
 const Welcome = () => {
   return (
@@ -19,13 +20,17 @@ const Welcome = () => {
 
       {/* === Llamada a la Acción === */}
       <div className="mt-8">
-        <a
-          href="#projects"
-          // Botón en tonos forestales para que contraste con el fondo oscuro general
+        <motion.a
+          href="/documentacion"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ duration: 0.4 }}
           className="inline-block px-8 py-3 text-lg font-semibold text-white bg-green-600 rounded-full hover:bg-green-700 transition duration-300 shadow-xl"
         >
           Explorar mi Bosque de Proyectos
-        </a>
+        </motion.a>
       </div>
     </div>
   );

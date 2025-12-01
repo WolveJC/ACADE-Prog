@@ -1,6 +1,7 @@
-/* 1. Directivas BASE, COMPONENTS y UTILITIES de Tailwind CSS. */
-@import 'tailwindcss';
+/* 1. Directivas BASE, COMPONENTS y UTILITIES de Tailwind CSS */
+@import "tailwindcss";
 
+/* 2. Definición de tema con variables de color */
 @theme {
   --color-forest-start: #1b4d3e;
   --color-forest-mid: #4b3621;
@@ -12,9 +13,7 @@
   --color-bosque-verde: #385635;
 }
 
-/*
-  The default border color has changed...
-*/
+/* 3. Ajuste global de border-color */
 @layer base {
   *,
   ::after,
@@ -23,43 +22,52 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
   }
+
+  /* Tipografía base para títulos y párrafos */
+  h1,
+  h2,
+  h3 {
+    @apply font-serif tracking-wide;
+  }
+  p {
+    @apply leading-relaxed;
+  }
 }
 
-/* 2. Regla global opcional para el desplazamiento suave. */
+/* 4. Scroll suave */
 html {
   scroll-behavior: smooth;
 }
 
-/* 3. CONFIGURACIÓN DEL CURSOR PERSONALIZADO */
-/* ------------------------------------------------------------------- */
-
-/* Clase controlada por CustomCursor.js para ocultar el cursor nativo en el BODY */
+/* 5. Cursor personalizado */
 .cursor-none {
-  cursor: none !important; /* Usamos !important para asegurar la anulación */
+  cursor: none !important;
 }
-
-/* Oculta el cursor nativo y previene el cursor de "manita" o "dedo" */
-/* sobre elementos interactivos específicos, forzando la visibilidad del CustomCursor. */
 .leaf-trigger,
 .flower-trigger,
-a, 
+a,
 button {
   cursor: none !important;
 }
 
-/* ------------------------------------------------------------------- */
-
-
-/* 4. Restaurar la regla del body para que no fuerce el 'cursor: none' en todas las páginas */
+/* 6. Restaurar cursor por defecto en body */
 body {
-  /* Si CustomCursor.js añade .cursor-none al body, esta regla no lo impide. */
-  /* Si CustomCursor.js no añade nada, el body usa el cursor predeterminado. (Correcto) */
+  /* Si CustomCursor.js añade .cursor-none al body, esta regla no lo impide */
 }
 
+/* 7. Scrollbar oculto cross-browser */
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+.scrollbar-none {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+}
 
-/* 5. Ocultar la barra de desplazamiento horizontal, etc. */
-::-webkit-scrollbar {
-  height: 0px; /* Chrome, Safari, Opera */
-  width: 0px; /* Firefox */
-  background: transparent;
+/* 8. Estilo "Libro Antiguo" para el visor PDF */
+.libro-antiguo {
+  @apply bg-pan-tostado text-cafe-oscuro font-serif shadow-lg;
+  background-image: url("/textures/paper.jpg");
+  background-size: cover;
+  background-repeat: repeat;
 }

@@ -1,5 +1,10 @@
 # Proyecto: Sistema de Personas, Trabajadores y Estudiantes 👥
 
+![C++ Badge](https://img.shields.io/badge/Language-C++-blue.svg)
+![Status](https://img.shields.io/badge/Status-Educational-green.svg)
+![Platform](https://img.shields.io/badge/Platform-Console-lightgrey.svg)
+![Concepts](https://img.shields.io/badge/Concepts-OOP%20%7C%20Inheritance%20%7C%20Polymorphism-orange.svg)
+
 ## 📌 Descripción
 Este programa en C++ implementa un sistema orientado a objetos para representar diferentes tipos de personas:
 - **Persona**: atributos básicos (nombre, apellido, cédula, edad).

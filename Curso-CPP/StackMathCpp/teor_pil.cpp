@@ -13,7 +13,7 @@ struct per {
 };
 
 struct Cont {
-    per per;
+    per pipol;   // ahora el miembro se llama pipol
     Cont *foll;
 };
 
@@ -21,16 +21,16 @@ per pipol;
 Cont *phill = NULL;
 
 // Crear pila
-void sozoPhill(Cont *&phill, per per) {
+void sozoPhill(Cont *&phill, per p) {
     Cont *novo_dono = new Cont();
-    novo_dono->per = per; // Rellenar dato
+    novo_dono->pipol = p; // Rellenar dato
     novo_dono->foll = phill;
     phill = novo_dono;
     cout << "Datos cargados" << endl;
 }
 
 // Sacar pila
-void hakaiPhill(Cont *&phill, per &per, string filename) {
+void hakaiPhill(Cont *&phill, per &p, string filename) {
     char r;
     if (phill == NULL) {
         cout << "La pila está vacía." << endl;
@@ -44,20 +44,20 @@ void hakaiPhill(Cont *&phill, per &per, string filename) {
     }
 
     while (phill != NULL) {
-        cout << "Nombre: " << phill->per.nom << " " << phill->per.ap << endl;
-        cout << "Apellido: " << phill->per.ap << endl;
-        cout << "Edad: " << phill->per.age << endl;
-        cout << "Altura: " << phill->per.alt << endl;
-        cout << "Numero asignado: " << phill->per.numper << endl;
-        cout << "Numero factorial: " << phill->per.numfact << endl;
+        cout << "Nombre: " << phill->pipol.nom << " " << phill->pipol.ap << endl;
+        cout << "Apellido: " << phill->pipol.ap << endl;
+        cout << "Edad: " << phill->pipol.age << endl;
+        cout << "Altura: " << phill->pipol.alt << endl;
+        cout << "Numero asignado: " << phill->pipol.numper << endl;
+        cout << "Numero factorial: " << phill->pipol.numfact << endl;
 
         // Guardar en archivo
-        arch << "Nombre: " << phill->per.nom << endl;
-        arch << "Apellido: " << phill->per.ap << endl;
-        arch << "Edad: " << phill->per.age << endl;
-        arch << "Altura: " << phill->per.alt << "m" << endl;
-        arch << "Numero asignado: " << phill->per.numper << endl;
-        arch << "Numero factorial: " << phill->per.numfact << endl;
+        arch << "Nombre: " << phill->pipol.nom << endl;
+        arch << "Apellido: " << phill->pipol.ap << endl;
+        arch << "Edad: " << phill->pipol.age << endl;
+        arch << "Altura: " << phill->pipol.alt << "m" << endl;
+        arch << "Numero asignado: " << phill->pipol.numper << endl;
+        arch << "Numero factorial: " << phill->pipol.numfact << endl;
 
         Cont *axil = phill;
         phill = phill->foll;
@@ -100,7 +100,7 @@ int main() {
         sozoPhill(phill, pipol);
         cout << "Debe ingresar más datos? (s/n)" << endl;
         cin >> res;
-        system("cls");
+        cout << string(20, '\n'); // limpiar pantalla portable
     } while (res == 's');
 
     string filename;

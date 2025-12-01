@@ -1,5 +1,11 @@
 # Proyecto: Pila de Personas con Factorial 👤
 
+![C++ Badge](https://img.shields.io/badge/Language-C++-blue.svg)
+![Structure](https://img.shields.io/badge/Data_Structure-Stack_(LIFO)-purple.svg)
+![Status](https://img.shields.io/badge/Status-Educational-green.svg)
+![Platform](https://img.shields.io/badge/Platform-Console-lightgrey.svg)
+![Purpose](https://img.shields.io/badge/Purpose-Factorial%20Calculation%20%26%20Data%20Storage-orange.svg)
+
 ## 📌 Descripción
 Este programa en C++ permite registrar personas y almacenarlas en una **pila**.  
 Cada persona tiene:

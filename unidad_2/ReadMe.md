@@ -1,5 +1,12 @@
 # Gestor de Inventario y Ordenamientos Jerárquicos
 
+![Python Badge](https://img.shields.io/badge/Language-Python-blue.svg)
+![Algorithms](https://img.shields.io/badge/Algorithms-Insertion%20%7C%20Bubble%20%7C%20Quick%20%7C%20Selection-purple.svg)
+![Feature](https://img.shields.io/badge/Feature-Inventory_Management-orange.svg)
+![Platform](https://img.shields.io/badge/Platform-Console-lightgrey.svg)
+![Status](https://img.shields.io/badge/Status-Beta-green.svg)
+![Purpose](https://img.shields.io/badge/Purpose-Restaurant%20Stock%20Control-blue.svg)
+
 Este programa es una herramienta diseñada para ayudar a gestionar el inventario de un mini restaurante o negocio de comida, priorizando la reposición y el control de productos según diversos criterios. La solución integra múltiples algoritmos de ordenamiento para ofrecer una visión integral y estructurada del estado del inventario, lo que facilita la toma de decisiones para reabastecimiento y promociones.
 
 ## Funcionalidad

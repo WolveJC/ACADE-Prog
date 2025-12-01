@@ -2,6 +2,9 @@
 
 ![C++ Badge](https://img.shields.io/badge/Language-C++-blue.svg)
 ![Structure](https://img.shields.io/badge/Data_Structure-Stack_(LIFO)-purple.svg)
+![Status](https://img.shields.io/badge/Status-Educational-green.svg)
+![Platform](https://img.shields.io/badge/Platform-Console-lightgrey.svg)
+![Purpose](https://img.shields.io/badge/Purpose-Course%20Management-orange.svg)
 
 Este proyecto implementa una estructura de datos de tipo **Pila (Stack)** utilizando punteros y memoria dinámica para gestionar registros de estudiantes y cálculos de tiempo.
 

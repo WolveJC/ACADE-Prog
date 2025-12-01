@@ -1,0 +1,34 @@
+name: PR Management
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  label:
+    name: Labeler
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/labeler@v4
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+
+  conventional-title:
+    name: Conventional Pull Request Title
+    runs-on: ubuntu-latest
+    steps:
+      - uses: overtrue/conventional-pr-title@v1
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          model: 'google/gemini-2.0-flash-lite'   # modelo específico
+          mode: 'auto'                            # renombra automáticamente
+          custom-prompt: 'Generate a conventional commit title that emphasizes the business impact of this change.'
+          allowed-types: 'feat,fix,docs,refactor'
+          include-scope: 'true'
+          max-length: '100'
+          debug: 'true'

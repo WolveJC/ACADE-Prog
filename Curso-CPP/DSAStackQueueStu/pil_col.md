@@ -1,5 +1,10 @@
 # Proyecto: Gestión de Estudiantes con Pila y Cola 🎓
 
+![C++ Badge](https://img.shields.io/badge/Language-C++-blue.svg)
+![Status](https://img.shields.io/badge/Status-Educational-green.svg)
+![Platform](https://img.shields.io/badge/Platform-Console-lightgrey.svg)
+![Purpose](https://img.shields.io/badge/Purpose-Data%20Structures-orange.svg)
+
 ## 📌 Descripción
 Este programa en C++ permite registrar estudiantes y almacenarlos en dos estructuras:
 - **Pila (stack)** → último en entrar, primero en salir.

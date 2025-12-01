@@ -12,7 +12,7 @@ struct Cont {
 // Punteros globales para pila y cola
 Cont* phill = nullptr;   // pila
 Cont* front = nullptr;   // cola inicio
-Cont* end = nullptr;     // cola fin
+Cont* rear = nullptr;    // cola fin (antes era "end")
 
 // Crear pila
 void sozoPhill(Cont*& phill, int dato) {
@@ -38,25 +38,25 @@ bool VoidCoil(Cont* front) {
 }
 
 // Crear cola
-void sozoCoil(Cont*& front, Cont*& end, int dato) {
+void sozoCoil(Cont*& front, Cont*& rear, int dato) {
     Cont* novo_dono = new Cont();
     novo_dono->dat = dato;
     novo_dono->foll = nullptr;
     if (VoidCoil(front)) {
         front = novo_dono;
     } else {
-        end->foll = novo_dono;
+        rear->foll = novo_dono;
     }
-    end = novo_dono;
+    rear = novo_dono;
 }
 
 // Sacar cola
-void hakaiCoil(Cont*& front, Cont*& end) {
+void hakaiCoil(Cont*& front, Cont*& rear) {
     while (!VoidCoil(front)) {
         cout << "Dato cola: " << front->dat << endl;
         Cont* axil = front;
         front = front->foll;
-        if (front == nullptr) end = nullptr;
+        if (front == nullptr) rear = nullptr;
         delete axil;
     }
 }
@@ -195,9 +195,9 @@ int main() {
                 hakaiPhill(phill);
                 break;
             case 2:
-                sozoCoil(front, end, 30);
-                sozoCoil(front, end, 40);
-                hakaiCoil(front, end);
+                sozoCoil(front, rear, 30);
+                sozoCoil(front, rear, 40);
+                hakaiCoil(front, rear);
                 break;
             case 3:
                 save_arch();

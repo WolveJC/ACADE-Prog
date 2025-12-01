@@ -17,18 +17,18 @@ public:
 
     void fibonacci(int n) {
         if (n < 0) {
-            cout << "Número no válido." << endl;
+            cout << "Numero no valido." << endl;
             return;
         }
-        long long a = 0, b = 1;
+        int a = 0, b = 1;
         cout << "Serie Fibonacci hasta " << n << ": ";
         for (int i = 0; i < n; ++i) {
             cout << a << " ";
-            long long next = a + b;
+            int next = a + b;
             a = b;
             b = next;
         }
-        cout << endl;
+        return serie;
     }
 
     bool numeroMagico(int n) {
@@ -47,6 +47,7 @@ public:
 struct Usuario {
     string name;
     int numero;
+    string resultado; // Nuevo campo para guardar el resultado
 };
 
 int main() {
@@ -59,11 +60,11 @@ int main() {
     cin >> usu;
 
     do {
-        cout << "\n--- MENU ---\n";
-        cout << "1. Calcular factorial\n";
-        cout << "2. Mostrar serie Fibonacci\n";
-        cout << "3. Verificar número mágico\n";
-        cout << "4. Mostrar números guardados\n";
+        cout << "\n--- Menu ---\n";
+        cout << "1. Calcular factorial de un numero\n";
+        cout << "2. Mostrar la serie Fibonacci hasta un numero\n";
+        cout << "3. Verificar si un numero es magico\n";
+        cout << "4. Mostrar numeros guardados\n";
         cout << "5. Salir\n";
         cout << "Seleccione una opción: ";
         cin >> op;
@@ -73,49 +74,45 @@ int main() {
 
         switch (op) {
             case 1:
-                cout << "Ingrese un número: ";
+                cout << "Ingresa un numero: " << endl;
                 cin >> cu.numero;
-                {
-                    long long fact = cal.factorial(cu.numero);
-                    if (fact != -1)
-                        cout << "El factorial de " << cu.numero << " es " << fact << endl;
-                    else
-                        cout << "El factorial no está definido para números negativos." << endl;
+                long long fact = cal.factorial(cu.numero);
+                if (fact != -1) {
+                    cout << "El factorial de " << cu.numero << " es " << fact << endl;
+                } else {
+                    cout << "El factorial no esta definido para estos numeros negativos" << endl;
                 }
                 historial.push(cu);
                 break;
-
             case 2:
-                cout << "Ingrese un número: ";
+                cout << "Ingrese un numero: " << endl;
                 cin >> cu.numero;
                 cal.fibonacci(cu.numero);
-                historial.push(cu);
+                in.push(cu);
                 break;
-
             case 3:
-                cout << "Ingrese un número: ";
+                cout << "Ingrese un numero:" << endl;
                 cin >> cu.numero;
-                if (cal.numeroMagico(cu.numero))
-                    cout << cu.numero << " es un número mágico." << endl;
-                else
-                    cout << cu.numero << " no es un número mágico." << endl;
-                historial.push(cu);
+                if (cal.numeromagico(cu.numero)) {
+                    cout << cu.numero << " es un numero magico." << endl;
+                } else {
+                    cout << cu.numero << " no es un numero magico." << endl;
+                }
+                in.push(cu);
                 break;
-
             case 4:
-                cout << "Historial de números:\n";
-                if (historial.empty()) {
-                    cout << "No hay números guardados.\n";
+                cout << "Numeros guardados: " << endl;
+                if (in.empty()) {
+                    cout << "No hay nada" << endl;
                 } else {
                     stack<Usuario> temp = historial;
                     while (!temp.empty()) {
                         Usuario u = temp.top();
-                        cout << "Usuario: " << u.name << ", Número: " << u.numero << endl;
+                        cout << "Usuario: " << u.name << ", Numero: " << u.numero << endl;
                         temp.pop();
                     }
                 }
                 break;
-
             case 5:
                 cout << "Saliendo...\n";
                 break;

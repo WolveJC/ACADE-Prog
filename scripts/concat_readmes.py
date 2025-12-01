@@ -1,56 +1,51 @@
 """
-Script para concatenar todos los archivos README.md encontrados en los
-subdirectorios del repositorio en un único archivo GLOBAL.md.
+Script para concatenar todos los archivos .md encontrados en el repositorio
+en un único archivo GLOBAL.md.
 
 Esto facilita la visualización o el procesamiento del contenido completo.
 """
 
 import os
 
-# C0103: Las variables que actúan como constantes (no cambian durante la ejecución)
-# deben nombrarse en MAYÚSCULAS_CON_GUION_BAJO (UPPER_CASE).
+# Ruta base del repositorio (un nivel arriba de la carpeta scripts)
+REPO_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+OUTPUT_FILE = os.path.join(REPO_PATH, "GLOBAL.md")
 
-# Ruta base del repositorio (punto actual)
-REPO_PATH = "."
+md_files_found = []
 
-# Archivo de salida
-OUTPUT_FILE = "GLOBAL.md"
+# Recolectar todos los archivos .md
+for root, dirs, files in os.walk(REPO_PATH):
+    # Ignorar carpetas ocultas y .git
+    if any(part.startswith(".") for part in root.split(os.sep)):
+        continue
+
+    for file in files:
+        if file.lower().endswith(".md"):
+            md_files_found.append(os.path.join(root, file))
+
+# Ordenar para que primero vaya el README de la raíz si existe
+md_files_found.sort()
 
 try:
     with open(OUTPUT_FILE, "w", encoding="utf-8") as global_file:
-        # os.walk busca archivos recursivamente
-        for root, dirs, files in os.walk(REPO_PATH):
-            # Ignorar carpetas ocultas y la carpeta .git (mejora de la condición original)
-            if any(part.startswith(".") for part in root.split(os.sep)):
-                continue
+        for md_path in md_files_found:
+            PROJECT_NAME = os.path.basename(os.path.dirname(md_path))
+            if PROJECT_NAME in ("", "."):
+                PROJECT_NAME = "REPOSITORIO PRINCIPAL"
 
-            # Si existe un README.md en la carpeta, lo añadimos
-            if "README.md" in files:
-                # El nombre del proyecto es el nombre del directorio actual
-                PROJECT_NAME = os.path.basename(root)
+            # Escribir título del archivo
+            global_file.write(f"# {PROJECT_NAME} - {os.path.basename(md_path)}\n\n")
 
-                # Manejar el caso de la raíz (donde project_name puede ser vacío o ".")
-                if PROJECT_NAME in ("", "."):
-                    PROJECT_NAME = "REPOSITORIO PRINCIPAL"
+            try:
+                with open(md_path, encoding="utf-8") as md_file:
+                    global_file.write(md_file.read())
+                    global_file.write("\n\n")
+            except IOError as e:
+                global_file.write(f"ERROR: No se pudo leer {md_path}. {e}\n\n")
 
-                # Escribir título del proyecto
-                global_file.write(f"# {PROJECT_NAME}\n\n")
+            global_file.write("---\n\n")
 
-                # Escribir contenido del README
-                readme_path = os.path.join(root, "README.md")
-
-                try:
-                    with open(readme_path, encoding="utf-8") as readme_file:
-                        global_file.write(readme_file.read())
-                        global_file.write("\n\n")
-                except IOError as e:
-                    # Manejo específico de error si un README no se puede abrir
-                    global_file.write(f"ERROR: No se pudo leer {readme_path}. {e}\n\n")
-
-                # Separador entre proyectos
-                global_file.write("---\n\n")
-
-    print(f"Archivo {OUTPUT_FILE} generado con todos los README.md")
+    print(f"Archivo {OUTPUT_FILE} generado con {len(md_files_found)} archivos .md concatenados")
 
 except IOError as e:
-    print(f"Error al intentar escribir el archivo global {OUTPUT_FILE}: {e}")
+    print(f"Error al escribir {OUTPUT_FILE}: {e}")

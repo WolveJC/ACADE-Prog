@@ -1,5 +1,10 @@
 # Proyecto: Registro de Vuelos ✈️
 
+![C++ Badge](https://img.shields.io/badge/Language-C++-blue.svg)
+![Status](https://img.shields.io/badge/Status-Educational-green.svg)
+![Platform](https://img.shields.io/badge/Platform-Console-lightgrey.svg)
+![Purpose](https://img.shields.io/badge/Purpose-Flight%20Records-orange.svg)
+
 ## 📌 Descripción
 Este programa en C++ permite registrar información de varios vuelos (código, kilómetros recorridos y número de pasajeros).  
 Luego determina:

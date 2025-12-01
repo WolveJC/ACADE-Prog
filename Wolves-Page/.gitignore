@@ -1,6 +1,7 @@
 .vercel
 # dependencies
 /node_modules
+/.venv
 /.pnp
 .pnp.js
 /.npmrc

@@ -67,7 +67,7 @@ body {
 /* 8. Estilo "Libro Antiguo" para el visor PDF */
 .libro-antiguo {
   @apply bg-pan-tostado text-cafe-oscuro font-serif shadow-lg;
-  background-image: url("/texture/paper.webp");
+  background-image: url("/textures/paper.webp");
   background-size: cover;
   background-repeat: repeat;
 }

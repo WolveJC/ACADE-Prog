@@ -1,7 +1,6 @@
 .vercel
 # dependencies
 /node_modules
-/.venv
 /.pnp
 .pnp.js
 /.npmrc
@@ -10,6 +9,11 @@
 /build 
 /dist
 # o /dist si usas Vite o una configuración diferente
+
+# entornos virtuales de Python
+.venv/
+venv/
+env/
 
 # logs
 npm-debug.log*

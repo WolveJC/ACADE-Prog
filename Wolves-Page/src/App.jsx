@@ -12,6 +12,7 @@ import Sidebar from "./components/Layout/Sidebar.jsx";
 import MainContent from "./components/Layout/MainContent.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
 import CafePage from "./pages/CafePage.jsx";
+import ProjectDocumentationViewer from "./pages/ProjectDocumentationViewer.jsx";
 import TransitionOverlay from "./components/Layout/TransitionOverlay";
 
 // Componentes y Contextos
@@ -19,9 +20,6 @@ import CustomCursor from "./components/Cursor/CustomCursor.js";
 import { CarouselProvider } from "./context/GlobalCarousel.jsx";
 import { TransitionProvider } from "./context/TransitionContext";
 import { NutritionProvider } from "./context/NutritionContext";
-
-// Nuevo: Visor de Documentación
-import ProjectDocumentationViewer from "./pages/ProjectDocumentationViewer.jsx";
 
 // --------------------------------------------------------
 const LayoutWrapper = () => {

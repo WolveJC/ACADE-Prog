@@ -28,7 +28,7 @@ module.exports = {
         use: ["style-loader", "css-loader", "postcss-loader"],
       },
       {
-        test: /\.(png|jpe?g|gif|svg)$/i, // imágenes
+        test: /\.(png|jpe?g|gif|svg|webp)$/i, // imágenes (incluye webp)
         type: "asset/resource",
       },
     ],

@@ -12,7 +12,7 @@ import {
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 // Ruta del PDF que se DEBE GENERAR PRIMERO
-const DOCUMENT_PATH = "/docs/doc_proj.pdf";
+const DOCUMENT_PATH = "../../public/docs/doc_proj.pdf";
 const PAGE_WIDTH = 700; // Ancho base para la página PDF
 
 const ProjectDocumentationViewer = () => {

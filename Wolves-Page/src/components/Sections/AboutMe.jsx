@@ -1,6 +1,6 @@
 import React from "react";
 // Importar tu foto peronal
-import profilePic from "../../assets/profile-pic.png";
+import profilePic from "../../assets/profile-pic.webp";
 
 const AboutMe = () => {
   return (

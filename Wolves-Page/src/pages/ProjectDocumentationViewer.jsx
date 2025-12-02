@@ -8,8 +8,9 @@ import {
   FaDownload,
 } from "react-icons/fa";
 
-// Configurar el worker de pdf.js
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+import workerSrc from "pdfjs-dist/build/pdf.worker.min.js?url";
+
+pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
 // Ruta del PDF que se DEBE GENERAR PRIMERO
 const DOCUMENT_PATH = "../../public/docs/doc_proj.pdf";

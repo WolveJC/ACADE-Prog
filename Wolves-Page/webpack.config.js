@@ -1,4 +1,3 @@
-// webpack.config.js
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
@@ -29,6 +28,10 @@ module.exports = {
       },
       {
         test: /\.(png|jpe?g|gif|svg|webp)$/i, // imágenes (incluye webp)
+        type: "asset/resource",
+      },
+      {
+        test: /pdf\.worker\.min\.js$/, // worker de PDF.js
         type: "asset/resource",
       },
     ],

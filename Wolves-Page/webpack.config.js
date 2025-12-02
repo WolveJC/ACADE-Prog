@@ -31,7 +31,7 @@ module.exports = {
         type: "asset/resource",
       },
       {
-        test: /pdf\.worker\.min\.js$/, // worker de PDF.js
+        test: /pdf\.worker\.min\.mjs$/, // worker de PDF.js
         type: "asset/resource",
       },
     ],

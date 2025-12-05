@@ -1,0 +1,58 @@
+# Etiquetas automáticas según rutas de archivos modificados en el PR
+
+# --- Código fuente ---
+frontend:
+  - "src/frontend/**"
+  - "client/**"
+backend:
+  - "src/backend/**"
+  - "server/**"
+api:
+  - "src/api/**"
+
+# --- Infraestructura / DevOps ---
+ci-cd:
+  - ".github/workflows/**"
+  - "ci/**"
+infra:
+  - "infra/**"
+  - "docker/**"
+  - "k8s/**"
+
+# --- Documentación ---
+docs:
+  - "docs/**"
+  - "*.md"
+
+# --- Configuración ---
+config:
+  - "*.yml"
+  - "*.yaml"
+  - "*.json"
+  - "config/**"
+
+# --- Tests ---
+tests:
+  - "tests/**"
+  - "**/*test.py"
+  - "**/*spec.js"
+
+# --- Seguridad ---
+security:
+  - "security/**"
+  - "scripts/audit/**"
+
+# --- Dependencias ---
+dependencies:
+  - "requirements.txt"
+  - "package.json"
+  - "pnpm-lock.yaml"
+  - "yarn.lock"
+  - "Cargo.toml"
+  - "go.mod"
+
+# --- Misc ---
+assets:
+  - "assets/**"
+styles:
+  - "styles/**"

@@ -20,7 +20,7 @@ jobs:
     name: Conventional Pull Request Title
     runs-on: ubuntu-latest
     steps:
-      - uses: overtrue/conventional-pr-title@v1
+      - uses: aslafy-z/conventional-pr-title-action@v3
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         with:

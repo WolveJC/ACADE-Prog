@@ -3,7 +3,7 @@
 
   <!-- Página principal: Bosque -->
   <url>
-    <loc>https://wolves-page.vercel.app/</loc>
+    <loc>https://wolvespage.vercel.app/</loc>
     <lastmod>2025-12-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -11,7 +11,7 @@
 
   <!-- Sección de Proyectos (parte del carrusel principal) -->
   <url>
-    <loc>https://wolves-page.vercel.app/#projects</loc>
+    <loc>https://wolvespage.vercel.app/#projects</loc>
     <lastmod>2025-12-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -19,7 +19,7 @@
 
   <!-- Página Café -->
   <url>
-    <loc>https://wolves-page.vercel.app/cafe</loc>
+    <loc>https://wolvespage.vercel.app/cafe</loc>
     <lastmod>2025-12-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -27,7 +27,7 @@
 
   <!-- Página de Contacto -->
   <url>
-    <loc>https://wolves-page.vercel.app/contact</loc>
+    <loc>https://wolvespage.vercel.app/contact</loc>
     <lastmod>2025-12-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

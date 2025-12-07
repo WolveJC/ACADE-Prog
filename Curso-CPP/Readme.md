@@ -1,8 +1,4 @@
-Perfecto ⚔️, lo que propones es un currículo escalonado, donde cada unidad introduce un concepto nuevo pero se apoya en todo lo anterior. Así el aprendizaje no queda aislado, sino que se construye como un sistema modular y acumulativo. Te diseño un plan extendido con unidades únicas que complementan el curso original y lo actualizan a C++ moderno:
-
----
-
-📚 Programa extendido de Lenguajes de Programación I (versión escalable)
+📚 Cronograma de Lenguajes de Programación I (Curso C++)
 
 🔹 Unidad 1 – Apuntadores y memoria dinámica
 - Punteros crudos (*, &, new, delete).  

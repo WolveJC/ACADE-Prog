@@ -1,3 +1,17 @@
-# https://www.robotstxt.org/robotstxt.html
+# Wolves-Page robots.txt
+# Más info: https://www.robotstxt.org/robotstxt.html
+
 User-agent: *
-Disallow:
+# Bloquear rutas internas o sensibles
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+Disallow: /context/
+Disallow: /static/js/
+Disallow: /static/css/
+
+# Permitir indexación de las páginas principales
+Allow: /
+
+# Señalar sitemap (mejorar indexación)
+Sitemap: https://wolves-page.vercel.app/sitemap.xml

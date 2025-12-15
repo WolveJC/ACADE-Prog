@@ -27,7 +27,6 @@ const LayoutWrapper = () => {
   const isCafePage = location.pathname === "/cafe";
   const isDocPage = location.pathname === "/documentacion";
 
-  // Fondo dinámico
   const bgClasses = isCafePage
     ? "bg-leche-crema text-cafe-oscuro"
     : "bg-linear-to-b from-forest-start via-forest-mid to-forest-end text-white";
@@ -42,7 +41,6 @@ const LayoutWrapper = () => {
     >
       <Header />
 
-      {/* Sidebar condicional */}
       {!isCafePage && !isDocPage && <Sidebar />}
 
       <main>
@@ -50,10 +48,7 @@ const LayoutWrapper = () => {
           <Route path="/" element={<MainContent />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/cafe" element={<CafePage />} />
-          <Route
-            path="/documentacion"
-            element={<ProjectDocumentationViewer />}
-          />
+          <Route path="/documentacion" element={<ProjectDocumentationViewer />} />
         </Routes>
       </main>
 
@@ -66,14 +61,18 @@ const LayoutWrapper = () => {
 function App() {
   return (
     <Router>
-      <CustomCursor />
-      <TransitionProvider>
-        <NutritionProvider>
-          <CarouselProvider>
-            <LayoutWrapper />
-          </CarouselProvider>
-        </NutritionProvider>
-      </TransitionProvider>
+      {/* Cursor personalizado SIEMPRE visible */}
+      <div className="cursor-none">
+        <CustomCursor />
+
+        <TransitionProvider>
+          <NutritionProvider>
+            <CarouselProvider>
+              <LayoutWrapper />
+            </CarouselProvider>
+          </NutritionProvider>
+        </TransitionProvider>
+      </div>
     </Router>
   );
 }

@@ -7,13 +7,14 @@ import FlatPython from "./python.png"
 import FlatJava from "./java.png" 
 
 // 2. CREACIÓN DE COMPONENTES CONTENEDORES
-const PythonIcon = ({ className }) => (
-    <img src={FlatPython} alt="Python Logo" className={className} />
+const PythonIcon = ({ className, style }) => (
+    <img src={FlatPython} alt="Python Logo" className={className} style={style} />
 );
 
-const JavaIcon = ({ className }) => (
-    <img src={FlatJava} alt="Java Logo" className={className} />
+const JavaIcon = ({ className, style }) => (
+    <img src={FlatJava} alt="Java Logo" className={className} style={style} />
 );
+
 
 
 // Definimos la información completa de la habilidad

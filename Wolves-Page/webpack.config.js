@@ -49,7 +49,7 @@ module.exports = {
     static: path.resolve(__dirname, "public"),
     hot: true,
     port: 3000,
-    historyApiFallback: true, // soporte para react-router-dom
+    historyApiFallback: true,
     allowedHosts: "all",
   },
 };

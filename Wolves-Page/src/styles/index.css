@@ -39,10 +39,21 @@ html {
   scroll-behavior: smooth;
 }
 
-/* 5. Cursor personalizado */
+/* ------------------------------------------------------------- */
+/* ✅ 5. CURSOR PERSONALIZADO — versión corregida */
+/* ------------------------------------------------------------- */
+
+/* Oculta el cursor nativo en TODA la app */
+#root,
+#root * {
+  cursor: none !important;
+}
+
+/* Tus clases personalizadas siguen funcionando */
 .cursor-none {
   cursor: none !important;
 }
+
 .leaf-trigger,
 .flower-trigger,
 a,
@@ -50,24 +61,72 @@ button {
   cursor: none !important;
 }
 
-/* 6. Restaurar cursor por defecto en body */
+/* ------------------------------------------------------------- */
+/* 6. Restaurar cursor por defecto en body (no afecta al hook) */
+/* ------------------------------------------------------------- */
+
 body {
-  /* Si CustomCursor.js añade .cursor-none al body, esta regla no lo impide */
+  /* vacío a propósito */
 }
 
+/* ------------------------------------------------------------- */
 /* 7. Scrollbar oculto cross-browser */
+/* ------------------------------------------------------------- */
+
 .scrollbar-none::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }
 .scrollbar-none {
-  -ms-overflow-style: none; /* IE/Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
+/* ------------------------------------------------------------- */
 /* 8. Estilo "Libro Antiguo" para el visor PDF */
+/* ------------------------------------------------------------- */
+
 .libro-antiguo {
   @apply bg-pan-tostado text-cafe-oscuro font-serif shadow-lg;
   background-image: url("../../public/textures/paper.webp");
   background-size: cover;
   background-repeat: repeat;
+}
+
+/* ------------------------------------------------------------- */
+/* 9. EFECTO DE PASAR PÁGINA */
+/* ------------------------------------------------------------- */
+
+.page-flip {
+  transform-origin: center center;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.page-flip:hover {
+  transform: scale(1.01);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.45);
+}
+
+/* ------------------------------------------------------------- */
+/* 10. TEXTURA SOBRE EL PDF */
+/* ------------------------------------------------------------- */
+
+.pdf-texture {
+  position: relative;
+  box-shadow:
+    0 0 35px rgba(0, 0, 0, 0.45),
+    inset 0 -8px 20px rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+}
+
+.pdf-texture::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("../../public/textures/paper.webp");
+  background-size: cover;
+  background-repeat: repeat;
+  opacity: 0.22;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  border-radius: inherit;
 }

@@ -1,147 +1,133 @@
 import React, { useRef, useState, useEffect } from 'react';
 
-// Constantes de Magnificación (lógica de la lupa)
-const INFLUENCE_RADIUS = 120; // Radio en píxeles donde el ratón afecta al ícono
-const MAX_SCALE = 1.5; // Escala máxima: 150%
+const INFLUENCE_RADIUS = 120;
+const MAX_SCALE = 1.5;
 
-// Función para determinar el color de la barra según el porcentaje
 const getBarColor = (percentage) => {
-    if (percentage >= 70) return 'bg-green-500'; // Verde (70-100%)
-    if (percentage >= 50) return 'bg-yellow-500'; // Amarillo (50-69%)
-    if (percentage >= 20) return 'bg-orange-500'; // Naranja (20-49%)
-    return 'bg-red-600'; // Rojo (0-19%)
+    if (percentage >= 70) return 'bg-green-500';
+    if (percentage >= 50) return 'bg-yellow-500';
+    if (percentage >= 20) return 'bg-orange-500';
+    return 'bg-red-600';
 };
-
 
 const SkillIcon = ({ skill, mousePosition, sidebarRef, isSidebarHovering }) => {
     const iconRef = useRef(null);
-    const [isFocused, setIsFocused] = useState(false); // Estado para el hover en el ícono
-    const [animatedPercentage, setAnimatedPercentage] = useState(0); // Estado para el conteo animado
-    const { name, Icon, percentage, iconColor } = skill; 
 
-    let scale = 1;
+    const [isFocused, setIsFocused] = useState(false);
+    const [animatedPercentage, setAnimatedPercentage] = useState(0);
+    const [scale, setScale] = useState(1);
 
-    // --- 1. CÁLCULO DE LA ESCALA (LUPA) ---
-    // Este cálculo define el valor de 'scale' basado en la distancia del ratón
-    if (iconRef.current && sidebarRef.current && mousePosition) {
+    const { name, Icon, percentage, iconColor } = skill;
+
+    // 1. Cálculo optimizado de escala
+    useEffect(() => {
+        if (!iconRef.current || !mousePosition) return;
+
         const rect = iconRef.current.getBoundingClientRect();
-        
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
 
         const distance = Math.sqrt(
-            Math.pow(centerX - mousePosition.x, 2) + Math.pow(centerY - mousePosition.y, 2)
+            Math.pow(centerX - mousePosition.x, 2) +
+            Math.pow(centerY - mousePosition.y, 2)
         );
-        
+
         if (distance < INFLUENCE_RADIUS) {
             const influenceFactor = 1 - distance / INFLUENCE_RADIUS;
-            scale = 1 + (MAX_SCALE - 1) * influenceFactor;
+            const newScale = 1 + (MAX_SCALE - 1) * influenceFactor;
+            setScale(newScale);
+        } else {
+            setScale(1);
         }
-    }
+    }, [mousePosition]);
 
-    // La barra de experiencia se muestra si el mouse está sobre el Sidebar Y el ícono está enfocado
+    // 2. Animación suave de la barra
     const showExperienceBar = isFocused && isSidebarHovering;
 
-
-    // --- 2. LÓGICA DE ANIMACIÓN DE CONTEO Y LLENADO DE BARRA ---
     useEffect(() => {
-        if (showExperienceBar) {
-            let start = null;
-            const duration = 800; // Duración total de la animación de llenado (0.8s)
-
-            const step = (timestamp) => {
-                if (!start) start = timestamp;
-                const progress = timestamp - start;
-                
-                // Calcula el valor actual que avanza de 0 hasta el porcentaje real
-                const current = Math.min(percentage, (progress / duration) * percentage);
-                setAnimatedPercentage(Math.round(current));
-                
-                // Continúa la animación hasta alcanzar la duración
-                if (progress < duration) {
-                    requestAnimationFrame(step);
-                }
-            };
-
-            // Inicia la animación de conteo
-            requestAnimationFrame(step);
-        } else {
-            // Reinicia la barra a 0 al salir del hover
-            setAnimatedPercentage(0); 
+        if (!showExperienceBar) {
+            setAnimatedPercentage(0);
+            return;
         }
-    }, [showExperienceBar, percentage]); // Depende del estado del hover y del porcentaje final
 
-    // El color actual de la barra se determina dinámicamente
-    const currentBarColor = getBarColor(animatedPercentage); 
+        let start = null;
+        const duration = 800;
 
-    // DETERMINAR SI EL ÍCONO ES UN COMPONENTE O UNA RUTA DE IMAGEN
-    const isImage = typeof Icon === 'string';
-    const IconComponent = isImage ? 'img' : Icon; // Si es string, renderiza <img>
+        const step = (timestamp) => {
+            if (!start) start = timestamp;
+            const progress = timestamp - start;
 
-    // LÓGICA DE RENDERIZADO DEL ÍCONO
+            const current = Math.min(
+                percentage,
+                (progress / duration) * percentage
+            );
+
+            setAnimatedPercentage(Math.round(current));
+
+            if (progress < duration) {
+                requestAnimationFrame(step);
+            }
+        };
+
+        requestAnimationFrame(step);
+    }, [showExperienceBar, percentage]);
+
+    const currentBarColor = getBarColor(animatedPercentage);
+
+    // 3. Renderizado simplificado
+    const isImage = typeof Icon === "string";
+
     const renderIcon = () => {
         if (isImage) {
-            // Caso 1: Imagen (PNG) - Aplicamos la escala directamente al <img>
             return (
-                <img 
-                    src={Icon} // Usamos 'Icon' como la ruta de la imagen
-                    alt={name}
+                <Icon
                     className={`w-8 h-8 object-contain ${iconColor} transition-all duration-100 ease-out`}
-                    style={{ transform: `scale(${scale})` }} 
-                />
-            );
-        } else {
-            // Caso 2: Componente React (SVG) - Aplicamos la escala al componente
-            return (
-                <Icon 
-                    className={`w-8 h-8 ${iconColor} transition-all duration-100 ease-out`}
-                    style={{ transform: `scale(${scale})` }} 
+                    style={{ transform: `scale(${scale})` }}
                 />
             );
         }
-    }
+        
+
+        return (
+            <Icon
+                className={`w-8 h-8 ${iconColor} transition-all duration-100 ease-out`}
+                style={{ transform: `scale(${scale})` }}
+            />
+        );
+    };
 
     return (
-        <div 
-            key={name} 
-            className="relative w-full flex items-center justify-center h-10 transition-transform duration-100 ease-out" 
+        <div
+            key={name}
+            className="relative w-full flex items-center justify-center h-10 transition-transform duration-100 ease-out flower-trigger"
             onMouseEnter={() => setIsFocused(true)}
             onMouseLeave={() => setIsFocused(false)}
         >
-            {/* Contenedor del Ícono (Referencia para el cálculo de posición de la lupa) */}
             <div ref={iconRef} className="flex justify-center items-center">
-                {renderIcon()} 
+                {renderIcon()}
             </div>
-            
-            {/* BARRA DE EXPERIENCIA FLOTANTE (Animada y Sincronizada) */}
+
             {showExperienceBar && (
-                <div 
-                    // Posicionamiento correcto a la DERECHA del sidebar (left-full)
+                <div
                     className={`
                         absolute left-full top-1/2 -translate-y-1/2 ml-4 flex items-center w-48 z-50 bg-gray-900/95 p-2 rounded-md shadow-xl
-                        transition-opacity duration-300 ease-in-out 
-                        ${showExperienceBar ? 'opacity-100' : 'opacity-0'}
+                        transition-opacity duration-300 ease-in-out opacity-100
                     `}
                 >
-                    {/* 1. Nombre de la Skill */}
                     <span className="text-sm font-semibold text-white mr-2 whitespace-nowrap">
                         {name}:
                     </span>
 
-                    {/* 2. Barra de Progreso Interna (ANIMADA) */}
                     <div className="relative w-full h-2 bg-gray-700 rounded-full overflow-hidden">
-                        <div 
-                            // Aplica el color y el ancho dinámicos basados en la animación
+                        <div
                             className={`${currentBarColor} h-full rounded-full transition-all duration-300`}
                             style={{ width: `${animatedPercentage}%` }}
                         ></div>
                     </div>
-                    
-                    {/* 3. Porcentaje Numérico (ANIMADO) */}
-                    <span className={`text-xs ml-2 font-bold text-gray-300 whitespace-nowrap`}>
+
+                    <span className="text-xs ml-2 font-bold text-gray-300 whitespace-nowrap">
                         {animatedPercentage}%
                     </span>
-         
                 </div>
             )}
         </div>

@@ -38,6 +38,6 @@
   "gemcommit.apiKey": "AIzaSyBTGyvkcpxpKk2cWFUVVm7s6UIRC7wSKJk",
   "git.mergeEditor": true,
   "gemcommit.promptBeforeInsert":true,
-  "files.autoSave": "onWindowChange"
+  "files.autoSave": "onFocusChange"
   
 }

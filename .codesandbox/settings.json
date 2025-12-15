@@ -1,35 +1,43 @@
 {
   "workbench.iconTheme": "vscode-icons",
   "codesandbox.preinstalledExtensions": [
-      "esbenp.prettier-vscode",
-      "GitHub.vscode-pull-request-github",
-      "njqdev.vscode-python-typehint",
-      "ms-python.python",
-      "ms-python.vscode-pylance",
-      "ms-python.debugpy",
-      "njpwerner.autodocstring",
-      "batisteo.vscode-django",
-      "kevinrose.vsc-python-indent",
-      "wholroyd.jinja",
-      "donjayamanne.python-extension-pack",
-      "ms-python.black-formatter",
-      "ms-python.isort",
-      "ms-python.flake8",
-      "ms-python.autopep8",
-      "ms-python.pylint",
-      "ms-python.python-test-snippets",
-      "ms-python.vscode-flask",
-      "ms-python.mypy-type-checker",
-      "nur-srijan.markdown-rich-preview",
-      "vscode-icons-team.vscode-icons"
+    "esbenp.prettier-vscode",
+    "GitHub.vscode-pull-request-github",
+    "bernabe.gemcommit",
+    "esbenp.prettier-vscode",
+    "GitHub.vscode-pull-request-github",
+    "njqdev.vscode-python-typehint",
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-python.debugpy",
+    "njpwerner.autodocstring",
+    "batisteo.vscode-django",
+    "kevinrose.vsc-python-indent",
+    "wholroyd.jinja",
+    "donjayamanne.python-extension-pack",
+    "ms-python.black-formatter",
+    "ms-python.isort",
+    "ms-python.flake8",
+    "ms-python.autopep8",
+    "ms-python.pylint",
+    "ms-python.python-test-snippets",
+    "ms-python.vscode-flask",
+    "ms-python.mypy-type-checker",
+    "nur-srijan.markdown-rich-preview",
+    "vscode-icons-team.vscode-icons"
   ],
   "git.confirmSync": false,
   "pylint.args": [
-    "--max-line-length=100" 
+    "--max-line-length=120" 
   ],
   "flake8.args":[
-    "--max-line-length=100"
-  ],
-  "files.autoSave": "off"
+    "--max-line-length=120"
+  ],  
+  "gemcommit.commitLanguage": "spanish",
+  "gemcommit.model": "gemini-2.5-flash",
+  "gemcommit.apiKey": "AIzaSyBTGyvkcpxpKk2cWFUVVm7s6UIRC7wSKJk",
+  "git.mergeEditor": true,
+  "gemcommit.promptBeforeInsert":true,
+  "files.autoSave": "onWindowChange"
   
 }

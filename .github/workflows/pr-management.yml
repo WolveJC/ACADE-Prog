@@ -12,17 +12,18 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/labeler@v4
+      - uses: actions/labeler@v6 
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          configuration-path: .github/labeler.yml 
 
   conventional-title:
     name: Conventional Pull Request Title
     runs-on: ubuntu-latest
     steps:
-      - uses: overtrue/conventional-pr-title@v1
+      - uses: overtrue/conventional-pr-title@v1.0.0
         env:
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+    GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLEAPIKEY }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           model: 'google/gemini-2.0-flash-lite'   # modelo específico

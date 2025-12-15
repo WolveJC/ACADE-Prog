@@ -19,7 +19,7 @@ export const projectsData = [
   },
   {
     id: "mX4&Z1@rL8^y",
-    title: "StructBank",
+    title: "Struct Bank",
     imageUrl: structbankImg.default || structbankImg,
     description:
       "Programa en C++ que simula un sistema bancario usando estructuras de datos.",
@@ -56,7 +56,7 @@ export const projectsData = [
   },
   {
     id: "q8@H2#vM9!tY",
-    title: "PyKitchenSort",
+    title: "Py Kitchen Sort",
     imageUrl: pykitchensortImg.default || pykitchensortImg,
     description:
       "Práctica de manejo de archivos y algoritmos de ordenamiento para un stock de cocina usando Python.",

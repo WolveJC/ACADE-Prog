@@ -19,7 +19,7 @@ const SkillIcon = ({ skill, mousePosition, sidebarRef, isSidebarHovering }) => {
 
     const { name, Icon, percentage, iconColor } = skill;
 
-    // 1. Cálculo optimizado de escala
+    // Escala responsiva sin romper layout
     useEffect(() => {
         if (!iconRef.current || !mousePosition) return;
 
@@ -41,7 +41,7 @@ const SkillIcon = ({ skill, mousePosition, sidebarRef, isSidebarHovering }) => {
         }
     }, [mousePosition]);
 
-    // 2. Animación suave de la barra
+    //  Animación de la barra
     const showExperienceBar = isFocused && isSidebarHovering;
 
     useEffect(() => {
@@ -74,23 +74,22 @@ const SkillIcon = ({ skill, mousePosition, sidebarRef, isSidebarHovering }) => {
 
     const currentBarColor = getBarColor(animatedPercentage);
 
-    // 3. Renderizado simplificado
-    const isImage = typeof Icon === "string";
-
+    // Renderizado del ícono (imagen o componente)
     const renderIcon = () => {
-        if (isImage) {
+        if (typeof Icon === "string") {
             return (
-                <Icon
-                    className={`w-8 h-8 object-contain ${iconColor} transition-all duration-100 ease-out`}
+                <img
+                    src={Icon}
+                    alt={name}
+                    className={`w-8 h-8 sm:w-9 sm:h-9 object-contain ${iconColor} transition-all duration-100 ease-out`}
                     style={{ transform: `scale(${scale})` }}
                 />
             );
         }
-        
 
         return (
             <Icon
-                className={`w-8 h-8 ${iconColor} transition-all duration-100 ease-out`}
+                className={`w-8 h-8 sm:w-9 sm:h-9 ${iconColor} transition-all duration-100 ease-out`}
                 style={{ transform: `scale(${scale})` }}
             />
         );
@@ -99,22 +98,50 @@ const SkillIcon = ({ skill, mousePosition, sidebarRef, isSidebarHovering }) => {
     return (
         <div
             key={name}
-            className="relative w-full flex items-center justify-center h-10 transition-transform duration-100 ease-out flower-trigger"
+            className="
+                relative 
+                w-full 
+                flex 
+                items-center 
+                justify-center 
+                h-10 sm:h-12 
+                transition-transform 
+                duration-100 
+                ease-out 
+                flower-trigger
+            "
             onMouseEnter={() => setIsFocused(true)}
             onMouseLeave={() => setIsFocused(false)}
         >
-            <div ref={iconRef} className="flex justify-center items-center">
+            {/* Contenedor fijo para evitar saltos */}
+            <div ref={iconRef} className="flex justify-center items-center w-10 h-10 sm:w-12 sm:h-12">
                 {renderIcon()}
             </div>
 
+            {/* Barra responsive */}
             {showExperienceBar && (
                 <div
                     className={`
-                        absolute left-full top-1/2 -translate-y-1/2 ml-4 flex items-center w-48 z-50 bg-gray-900/95 p-2 rounded-md shadow-xl
-                        transition-opacity duration-300 ease-in-out opacity-100
+                        absolute 
+                        left-full 
+                        top-1/2 
+                        -translate-y-1/2 
+                        ml-3 
+                        flex 
+                        items-center 
+                        w-40 sm:w-48 md:w-56 
+                        z-50 
+                        bg-gray-900/95 
+                        p-2 
+                        rounded-md 
+                        shadow-xl
+                        transition-opacity 
+                        duration-300 
+                        ease-in-out 
+                        opacity-100
                     `}
                 >
-                    <span className="text-sm font-semibold text-white mr-2 whitespace-nowrap">
+                    <span className="text-xs sm:text-sm font-semibold text-white mr-2 whitespace-nowrap">
                         {name}:
                     </span>
 

@@ -48,7 +48,10 @@ const LayoutWrapper = () => {
           <Route path="/" element={<MainContent />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/cafe" element={<CafePage />} />
-          <Route path="/documentacion" element={<ProjectDocumentationViewer />} />
+          <Route
+            path="/documentacion"
+            element={<ProjectDocumentationViewer />}
+          />
         </Routes>
       </main>
 

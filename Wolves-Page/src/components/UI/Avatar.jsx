@@ -1,30 +1,40 @@
 import React from "react";
-// Importar la imagen del avatar
 import avatarImg from "../../assets/avatar.webp";
 
-const Avatar = ({ size = "large" }) => {
-  // Definir las clases de tamaño con Tailwind
+const Avatar = ({ size = "large", className = "" }) => {
+  // Tamaños fluidos y responsivos
   const sizeClasses = {
-    // Usado en el Header
-    small: "w-10 h-10 md:w-12 md:h-12",
-    // Usado en la sección Welcome
-    large: "w-32 h-32 md:w-48 md:h-48",
+    small: `
+      w-10 h-10 
+      sm:w-12 sm:h-12 
+      md:w-14 md:h-14
+    `,
+    large: `
+      w-28 h-28 
+      sm:w-32 sm:h-32 
+      md:w-44 md:h-44 
+      lg:w-52 lg:h-52
+    `,
   };
+
+  // Hover más suave en modo small (para no romper el header)
+  const hoverEffect =
+    size === "small" ? "hover:scale-[1.03]" : "hover:scale-105";
 
   return (
     <img
       src={avatarImg}
       alt="Avatar de Portafolio"
-      // Clases de Tailwind: circular, borde y sombra
       className={`
-                ${sizeClasses[size]} 
-                rounded-full 
-                object-cover 
-                shadow-2xl 
-                border-4 border-green-300 
-                transition-transform 
-                hover:scale-105
-            `}
+        ${sizeClasses[size]}
+        rounded-full 
+        object-cover 
+        shadow-2xl 
+        border-2 sm:border-4 border-green-300 
+        transition-transform duration-300
+        ${hoverEffect}
+        ${className}
+      `}
     />
   );
 };

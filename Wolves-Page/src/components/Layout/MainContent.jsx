@@ -3,16 +3,30 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import usePageTitle from "../../hooks/usePageTitle";
 import { useCarouselContext } from "../../context/GlobalCarousel";
 
-// Importar secciones
+// Secciones fijas
 import Welcome from "../Sections/Welcome";
-import Projects from "../Sections/Projects";
 import AboutMe from "../Sections/AboutMe";
 
-// Importar el nuevo SectionWrapper
+// Importar ProjectCard y datos
+import Projects from "../Sections/Projects"; // ahora genera páginas dinámicas
+import { projectsData } from "../../data/projects";
+
+// Importar SectionWrapper
 import SectionWrapper from "./SectionWrapper.jsx";
 
 const FLOWER_CLASS = "flower-trigger";
 const HOVER_ZONE_WIDTH = "80px";
+
+// -------------------------------------------------------------
+// Utilidad interna: dividir proyectos en páginas de 10
+// -------------------------------------------------------------
+const chunkProjects = (arr, size = 10) => {
+  const chunks = [];
+  for (let i = 0; i < arr.length; i += size) {
+    chunks.push(arr.slice(i, i + size));
+  }
+  return chunks;
+};
 
 const MainContent = () => {
   usePageTitle("WolveJC | Portafolio y Proyectos");
@@ -28,13 +42,30 @@ const MainContent = () => {
 
   const SIDEBAR_WIDTH = "64px";
   const HEADER_HEIGHT = "64px";
-
   const isAccelerating = Math.abs(currentSpeed) > 5.5;
+
+  // -------------------------------------------------------------
+  // Generar páginas dinámicas de proyectos
+  // -------------------------------------------------------------
+  const projectPages = chunkProjects(projectsData, 10);
+
+  // -------------------------------------------------------------
+  // Construir TODAS las secciones del carrusel
+  // -------------------------------------------------------------
+  const sections = [
+    { component: <Welcome />, mode: "center" },
+    ...projectPages.map((page, i) => ({
+      component: <Projects pageIndex={i} />, // Projects.jsx ya sabe renderizar la página correcta
+      mode: "panel",
+    })),
+    { component: <AboutMe />, mode: "default" },
+  ];
 
   return (
     <>
       {/* Contenedor principal del carrusel */}
       <div className="relative w-full h-[calc(100dvh-64px)] overflow-hidden">
+        
         {/* Carrusel */}
         <div
           ref={carouselRef}
@@ -42,30 +73,18 @@ const MainContent = () => {
           onClick={togglePause}
         >
           {/* === COPIA 1 === */}
-          <SectionWrapper mode="center">
-            <Welcome />
-          </SectionWrapper>
+          {sections.map((sec, index) => (
+            <SectionWrapper key={index} mode={sec.mode}>
+              {sec.component}
+            </SectionWrapper>
+          ))}
 
-          <SectionWrapper mode="panel">
-            <Projects />
-          </SectionWrapper>
-
-          <SectionWrapper mode="default">
-            <AboutMe />
-          </SectionWrapper>
-
-          {/* === COPIA 2 (loop) === */}
-          <SectionWrapper mode="center">
-            <Welcome />
-          </SectionWrapper>
-
-          <SectionWrapper mode="panel">
-            <Projects />
-          </SectionWrapper>
-
-          <SectionWrapper mode="default">
-            <AboutMe />
-          </SectionWrapper>
+          {/* === COPIA 2 (loop infinito) === */}
+          {sections.map((sec, index) => (
+            <SectionWrapper key={`copy-${index}`} mode={sec.mode}>
+              {sec.component}
+            </SectionWrapper>
+          ))}
         </div>
 
         {/* Flecha IZQUIERDA */}
@@ -87,7 +106,7 @@ const MainContent = () => {
         />
       </div>
 
-      {/* ✅ Indicador fuera del stacking context, pero dentro del componente */}
+      {/* Indicador de velocidad / pausa */}
       {(isPaused || isAccelerating) && (
         <div
           className="

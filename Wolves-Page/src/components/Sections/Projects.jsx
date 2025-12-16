@@ -3,8 +3,72 @@ import ProjectCard from "../UI/ProjectCard";
 import { projectsData } from "../../data/projects";
 import { useCarouselContext } from "../../context/GlobalCarousel";
 
+/* -------------------------------------------------------------
+   UTILIDAD INTERNA: Dividir proyectos en páginas de 10 (5×2)
+   -------------------------------------------------------------
+   Esta función toma el array completo de proyectos y lo divide 
+   en grupos de 10 elementos. Cada grupo representa una "página"
+   del portafolio, ideal para el grid fijo 5×2.
+------------------------------------------------------------- */
+const chunkProjects = (arr, size = 10) => {
+  const chunks = [];
+  for (let i = 0; i < arr.length; i += size) {
+    chunks.push(arr.slice(i, i + size));
+  }
+  return chunks;
+};
+
+/* -------------------------------------------------------------
+   COMPONENTE INTERNO: ProjectsPage
+   -------------------------------------------------------------
+   Renderiza UNA sola página de proyectos (máximo 10 tarjetas).
+   - Siempre mantiene un grid 5×2 fijo.
+   - Si hay menos de 10 proyectos, rellena con placeholders invisibles.
+   - No empuja el layout hacia abajo.
+------------------------------------------------------------- */
+const ProjectsPage = ({ projects, isPaused }) => {
+  return (
+    <div
+      className="
+        grid
+        grid-cols-5 
+        grid-rows-2 
+        gap-6
+      "
+    >
+      {projects.map((project) => (
+        <ProjectCard
+          key={project.id}
+          title={project.title}
+          imageUrl={project.imageUrl}
+          repoLink={project.repoLink}
+          description={project.description}
+          isPaused={isPaused}
+        />
+      ))}
+
+      {/* Relleno si hay menos de 10 proyectos */}
+      {Array.from({ length: 10 - projects.length }).map((_, i) => (
+        <div key={`empty-${i}`} className="opacity-0 pointer-events-none" />
+      ))}
+    </div>
+  );
+};
+
+/* -------------------------------------------------------------
+   COMPONENTE PRINCIPAL: Projects
+   -------------------------------------------------------------
+   - Divide los proyectos en páginas de 10.
+   - Renderiza cada página como una sección independiente.
+   - Este componente será consumido por MainContent.jsx, que 
+     insertará cada página dentro del carrusel infinito.
+------------------------------------------------------------- */
 const Projects = () => {
   const { isPaused } = useCarouselContext();
+
+  // Dividir proyectos en páginas de 10
+  const pages = chunkProjects(projectsData, 10);
+
   return (
     <div
       className="
@@ -49,34 +113,10 @@ const Projects = () => {
         tarjeta para acceder al repositorio y explorar el código.
       </p>
 
-      {/* === Grid 3×3 con altura fija === */}
-      <div
-        className="
-          grid
-          grid 
-          grid-cols-5 
-          grid-rows-2 
-          gap-6
-          "
-      >
-        {projectsData.map((project) => (
-          <ProjectCard
-            key={project.id}
-            title={project.title}
-            imageUrl={project.imageUrl}
-            repoLink={project.repoLink}
-            description={project.description}
-            isPaused={isPaused}
-          />
-        ))}
-
-        {/* === Espacios vacíos para completar 3×3 si hay menos de 9 === */}
-        {Array.from({ length: Math.max(0, 9 - projectsData.length) }).map(
-          (_, i) => (
-            <div key={`empty-${i}`} className="opacity-0 pointer-events-none" />
-          )
-        )}
-      </div>
+      {/* === Render dinámico de páginas === */}
+      {pages.map((page, index) => (
+        <ProjectsPage key={index} projects={page} isPaused={isPaused} />
+      ))}
     </div>
   );
 };

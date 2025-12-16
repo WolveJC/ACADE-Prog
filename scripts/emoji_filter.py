@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # pylint: disable=import-error
-
 """
 Filtro Pandoc para reemplazar emojis por imágenes Twemoji.
 Descarga automáticamente los SVG desde el CDN oficial y los inserta en el PDF.

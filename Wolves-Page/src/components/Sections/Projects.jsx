@@ -2,28 +2,16 @@ import React from "react";
 import ProjectCard from "../UI/ProjectCard";
 import { projectsData } from "../../data/projects";
 import { useCarouselContext } from "../../context/GlobalCarousel";
-
-/* -------------------------------------------------------------
-   UTILIDAD INTERNA: Dividir proyectos en páginas de 10 (5×2)
-   -------------------------------------------------------------
-   Esta función toma el array completo de proyectos y lo divide 
-   en grupos de 10 elementos. Cada grupo representa una "página"
-   del portafolio, ideal para el grid fijo 5×2.
-------------------------------------------------------------- */
-const chunkProjects = (arr, size = 10) => {
-  const chunks = [];
-  for (let i = 0; i < arr.length; i += size) {
-    chunks.push(arr.slice(i, i + size));
-  }
-  return chunks;
-};
+import { chunkProjects, PROJECTS_PAGE_SIZE } from "../../utils/chunkProjects";
 
 /* -------------------------------------------------------------
    COMPONENTE INTERNO: ProjectsPage
    -------------------------------------------------------------
-   Renderiza UNA sola página de proyectos (máximo 10 tarjetas).
+   Renderiza UNA sola página de proyectos (máximo PROJECTS_PAGE_SIZE
+   tarjetas).
    - Siempre mantiene un grid 5×2 fijo.
-   - Si hay menos de 10 proyectos, rellena con placeholders invisibles.
+   - Si hay menos de PROJECTS_PAGE_SIZE proyectos, rellena con
+     placeholders invisibles.
    - No empuja el layout hacia abajo.
 ------------------------------------------------------------- */
 const ProjectsPage = ({ projects, isPaused }) => {
@@ -47,10 +35,12 @@ const ProjectsPage = ({ projects, isPaused }) => {
         />
       ))}
 
-      {/* Relleno si hay menos de 10 proyectos */}
-      {Array.from({ length: 10 - projects.length }).map((_, i) => (
-        <div key={`empty-${i}`} className="opacity-0 pointer-events-none" />
-      ))}
+      {/* Relleno si hay menos de PROJECTS_PAGE_SIZE proyectos */}
+      {Array.from({ length: PROJECTS_PAGE_SIZE - projects.length }).map(
+        (_, i) => (
+          <div key={`empty-${i}`} className="opacity-0 pointer-events-none" />
+        )
+      )}
     </div>
   );
 };
@@ -58,16 +48,33 @@ const ProjectsPage = ({ projects, isPaused }) => {
 /* -------------------------------------------------------------
    COMPONENTE PRINCIPAL: Projects
    -------------------------------------------------------------
-   - Divide los proyectos en páginas de 10.
-   - Renderiza cada página como una sección independiente.
-   - Este componente será consumido por MainContent.jsx, que 
-     insertará cada página dentro del carrusel infinito.
+   - Recibe `pageIndex`: la página que le corresponde renderizar
+     dentro del carrusel (asignada por MainContent.jsx).
+   - Ya NO renderiza todas las páginas: solo la que le toca.
+   - Si `pageIndex` viene fuera de rango (bug de sincronización
+     con MainContent.jsx), avisa en consola en vez de fallar en
+     silencio o duplicar contenido.
 ------------------------------------------------------------- */
-const Projects = () => {
+const Projects = ({ pageIndex = 0 }) => {
   const { isPaused } = useCarouselContext();
 
-  // Dividir proyectos en páginas de 10
-  const pages = chunkProjects(projectsData, 10);
+  // Dividir proyectos en páginas (mismo tamaño que usa MainContent.jsx)
+  const pages = chunkProjects(projectsData, PROJECTS_PAGE_SIZE);
+
+  const currentPageProjects = pages[pageIndex];
+
+  if (!currentPageProjects) {
+    console.warn(
+      `[Projects] pageIndex=${pageIndex} fuera de rango (hay ${pages.length} página(s)). ` +
+        `Revisa que MainContent.jsx esté generando las secciones con el mismo tamaño de página.`
+    );
+  }
+
+  // El título/subtítulo son la "portada" del portafolio: deben verse
+  // una sola vez. Si se repitieran en cada página, el usuario podría
+  // pensar que está entrando a una sección nueva en vez de ver la
+  // continuación del mismo portafolio.
+  const isFirstPage = pageIndex === 0;
 
   return (
     <div
@@ -81,42 +88,48 @@ const Projects = () => {
         md:py-6
       "
     >
-      {/* === Título === */}
-      <h2
-        className="
-          text-center 
-          font-extrabold 
-          tracking-wide 
-          text-white 
-          mb-6
-          text-3xl 
-          sm:text-4xl 
-          md:text-5xl
-        "
-      >
-        Mi <span className="text-green-300">Portafolio</span>
-      </h2>
+      {isFirstPage && (
+        <>
+          {/* === Título === */}
+          <h2
+            className="
+              text-center 
+              font-extrabold 
+              tracking-wide 
+              text-white 
+              mb-6
+              text-3xl 
+              sm:text-4xl 
+              md:text-5xl
+            "
+          >
+            Mi <span className="text-green-300">Portafolio</span>
+          </h2>
 
-      {/* === Subtítulo === */}
-      <p
-        className="
-          text-center 
-          text-gray-300 
-          mx-auto 
-          max-w-3xl 
-          mb-8
-          text-sm
-          sm:text-base
-        "
-      >
-        Una colección de mis trabajos más representativos. Haz clic en cualquier
-        tarjeta para acceder al repositorio y explorar el código.
-      </p>
+          {/* === Subtítulo === */}
+          <p
+            className="
+              text-center 
+              text-gray-300 
+              mx-auto 
+              max-w-3xl 
+              mb-8
+              text-sm
+              sm:text-base
+            "
+          >
+            Una colección de mis trabajos más representativos. Haz clic en
+            cualquier tarjeta para acceder al repositorio y explorar el
+            código.
+          </p>
+        </>
+      )}
 
-      {/* === Render dinámico de páginas === */}
-      {pages.map((page, index) => (
-        <ProjectsPage key={index} projects={page} isPaused={isPaused} />
-      ))}
+      {/* === Render de SOLO la página que corresponde a esta instancia === */}
+      <ProjectsPage
+        projects={currentPageProjects || []}
+        isPaused={isPaused}
+      />
     </div>
   );
 };

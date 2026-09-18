@@ -2,6 +2,7 @@ import React from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import usePageTitle from "../../hooks/usePageTitle";
 import { useCarouselContext } from "../../context/GlobalCarousel";
+import { chunkProjects, PROJECTS_PAGE_SIZE } from "../../utils/chunkProjects";
 
 // Secciones fijas
 import Welcome from "../Sections/Welcome";
@@ -16,17 +17,6 @@ import SectionWrapper from "./SectionWrapper.jsx";
 
 const FLOWER_CLASS = "flower-trigger";
 const HOVER_ZONE_WIDTH = "80px";
-
-// -------------------------------------------------------------
-// Utilidad interna: dividir proyectos en páginas de 10
-// -------------------------------------------------------------
-const chunkProjects = (arr, size = 10) => {
-  const chunks = [];
-  for (let i = 0; i < arr.length; i += size) {
-    chunks.push(arr.slice(i, i + size));
-  }
-  return chunks;
-};
 
 const MainContent = () => {
   usePageTitle("WolveJC | Portafolio y Proyectos");
@@ -47,7 +37,7 @@ const MainContent = () => {
   // -------------------------------------------------------------
   // Generar páginas dinámicas de proyectos
   // -------------------------------------------------------------
-  const projectPages = chunkProjects(projectsData, 10);
+  const projectPages = chunkProjects(projectsData, PROJECTS_PAGE_SIZE);
 
   // -------------------------------------------------------------
   // Construir TODAS las secciones del carrusel

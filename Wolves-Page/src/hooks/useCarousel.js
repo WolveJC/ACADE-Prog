@@ -5,7 +5,11 @@ import useScrollPosition from "./useScrollPosition";
 const BASE_SPEED = 3;
 const ACCEL_SPEED = 15; // Velocidad base de aceleración con flechas
 
-const useCarousel = (baseScrollSpeed = BASE_SPEED, intervalTime = 40) => {
+const useCarousel = (
+  baseScrollSpeed = BASE_SPEED,
+  intervalTime = 40,
+  totalUniqueSlides = 3 // Fallback de seguridad si algún consumidor olvida pasarlo
+) => {
   const carouselRef = useRef(null);
 
   // Estados de Interacción (Pausa/Aceleración)
@@ -96,9 +100,13 @@ const useCarousel = (baseScrollSpeed = BASE_SPEED, intervalTime = 40) => {
       const scrollLeft = carousel.scrollLeft;
 
       // Para asegurar que el índice cambie justo al centro de la diapositiva,
-      // se añade la mitad del ancho de la diapositiva al cálculo
-      // Luego el % 3 (total de secciones únicas: Welcome, Projects, AboutMe)
-      const index = Math.floor((scrollLeft + slideWidth / 2) / slideWidth) % 3;
+      // se añade la mitad del ancho de la diapositiva al cálculo.
+      // El módulo ya NO está hardcodeado: usa totalUniqueSlides, que viene
+      // de getUniqueSectionsCount() (utils/chunkProjects.js) a través de
+      // GlobalCarousel.jsx. Math.max(1, ...) evita división por cero si
+      // algún consumidor pasara 0 por error.
+      const safeTotal = Math.max(1, totalUniqueSlides);
+      const index = Math.floor((scrollLeft + slideWidth / 2) / slideWidth) % safeTotal;
 
       if (index !== currentSlideIndex) {
         setCurrentSlideIndex(index);
@@ -110,7 +118,7 @@ const useCarousel = (baseScrollSpeed = BASE_SPEED, intervalTime = 40) => {
     return () => {
       carousel.removeEventListener("scroll", handleScroll);
     };
-  }, [currentSlideIndex]);
+  }, [currentSlideIndex, totalUniqueSlides]);
 
   // --- 5. HANDLERS PARA EL CONSUMIDOR ---
   const togglePause = () => {

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"; 
+import React, { useCallback, useMemo } from "react"; 
 import { Link, useLocation } from "react-router-dom";
 import { FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa";
 import { HiOutlineMail } from "react-icons/hi";
@@ -6,12 +6,13 @@ import Avatar from "../UI/Avatar";
 import { useCarouselContext } from '../../context/GlobalCarousel';
 import useScrollPosition from "../../hooks/useScrollPosition";
 import { useTransitionContext } from '../../context/TransitionContext'; 
+import { getSectionBackgroundColor } from "../../utils/sectionColor";
 
 const Header = () => {
     const location = useLocation();
     const isCafePage = location.pathname === '/cafe';
 
-    const { currentSlideIndex } = useCarouselContext(); 
+    const { currentSlideIndex, totalUniqueSlides } = useCarouselContext(); 
     const scrollY = useScrollPosition();
     const { startTransition } = useTransitionContext(); 
 
@@ -21,24 +22,31 @@ const Header = () => {
         { Icon: FaInstagram, href: "https://www.instagram.com/wolvejc05?igsh=bTFqem5scnU1cGh4", name: "Instagram" },
     ];
 
-    const COLOR_MAP = {
-        0: 'bg-forest-start', 
-        1: 'bg-forest-mid',   
-        2: 'bg-forest-end',   
-    };
-
     const opacityClass = scrollY > 50 
         ? "opacity-100" 
         : "opacity-90 backdrop-blur-xs"; 
 
-    let finalBgClass, finalBorderClass;
+    // El color del Bosque ya no sale de un mapa fijo de 3 entradas:
+    // se interpola en tiempo real según la posición de la sección
+    // actual dentro del total REAL de secciones (totalUniqueSlides),
+    // que crece o se achica según cuántas páginas de proyectos haya.
+    // En la página del Café seguimos usando una clase Tailwind fija,
+    // porque ahí no hay recorrido/transición que interpolar.
+    const bosqueBgColor = useMemo(
+        () => getSectionBackgroundColor(currentSlideIndex, totalUniqueSlides),
+        [currentSlideIndex, totalUniqueSlides]
+    );
+
+    let finalBgClass, finalBorderClass, finalBgStyle;
 
     if (isCafePage) {
         finalBgClass = 'bg-cafe-oscuro'; 
         finalBorderClass = 'border-b border-pan-tostado'; 
+        finalBgStyle = undefined;
     } else {
-        finalBgClass = COLOR_MAP[currentSlideIndex] || 'bg-forest-start';
+        finalBgClass = ''; // el color ahora se aplica por style, no por clase
         finalBorderClass = 'border-b border-gray-700/50';
+        finalBgStyle = { backgroundColor: bosqueBgColor };
     }
 
     const buttonText = isCafePage ? 'Volver al Bosque' : 'Ir al Café ☕';
@@ -68,6 +76,7 @@ const Header = () => {
                 transition-all duration-1000 ease-in-out 
                 ${isCafePage ? 'backdrop-blur-none' : 'backdrop-blur-xs'}
             `}
+            style={finalBgStyle}
         >
             <nav className="flex items-center justify-between max-w-7xl mx-auto">
                 

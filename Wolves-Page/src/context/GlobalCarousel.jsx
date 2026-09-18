@@ -17,14 +17,18 @@ export const useCarouselContext = () => {
 };
 
 // 3. El Provider (El envoltorio que gestiona y proporciona los valores)
-// totalSlides = 3 secciones únicas * 2 copias = 6. totalUniqueSlides = 3.
+// totalUniqueSlides debe reflejar el número REAL de secciones que arma
+// MainContent.jsx (Welcome + páginas de proyectos + AboutMe). App.jsx lo
+// calcula con getUniqueSectionsCount() y lo pasa aquí; los defaults (6/3)
+// solo son un respaldo por si algún día el Provider se usa sin ese prop.
 export const CarouselProvider = ({
   children,
   totalSlides = 6,
   totalUniqueSlides = 3,
 }) => {
-  // Ejecutar el hook de lógica, obteniendo TODOS los estados y handlers
-  const carouselData = useCarousel(5, 40);
+  // Antes: useCarousel(5, 40) ignoraba totalUniqueSlides por completo,
+  // por eso el hook seguía con su propio "% 3" hardcodeado internamente.
+  const carouselData = useCarousel(5, 40, totalUniqueSlides);
   const // Retornar todos los datos y funciones para que puedan ser consumidos globalmente
     value = {
       ...carouselData,

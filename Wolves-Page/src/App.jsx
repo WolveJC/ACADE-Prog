@@ -21,6 +21,11 @@ import { CarouselProvider } from "./context/GlobalCarousel.jsx";
 import { TransitionProvider } from "./context/TransitionContext";
 import { NutritionProvider } from "./context/NutritionContext";
 
+// Fuente única de verdad del número real de secciones del carrusel
+// (Welcome + páginas de proyectos + AboutMe). Ver utils/chunkProjects.js.
+import { projectsData } from "./data/projects";
+import { getUniqueSectionsCount } from "./utils/chunkProjects";
+
 // --------------------------------------------------------
 const LayoutWrapper = () => {
   const location = useLocation();
@@ -62,6 +67,12 @@ const LayoutWrapper = () => {
 
 // --------------------------------------------------------
 function App() {
+  // Se calcula UNA vez, a partir de la misma data que usa MainContent.jsx
+  // para construir `sections`. Si projectsData crece y suma una página más,
+  // este número crece automáticamente con ella.
+  const totalUniqueSlides = getUniqueSectionsCount(projectsData);
+  const totalSlides = totalUniqueSlides * 2; // *2 por la copia del loop infinito
+
   return (
     <Router>
       {/* Cursor personalizado SIEMPRE visible */}
@@ -70,7 +81,10 @@ function App() {
 
         <TransitionProvider>
           <NutritionProvider>
-            <CarouselProvider>
+            <CarouselProvider
+              totalUniqueSlides={totalUniqueSlides}
+              totalSlides={totalSlides}
+            >
               <LayoutWrapper />
             </CarouselProvider>
           </NutritionProvider>

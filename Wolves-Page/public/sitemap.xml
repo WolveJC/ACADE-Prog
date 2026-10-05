@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Página principal: Bosque (incluye el portafolio, parte del mismo carrusel) -->
+  <url>
+    <loc>https://wolvespage.vercel.app/</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Página Café -->
+  <url>
+    <loc>https://wolvespage.vercel.app/cafe</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Página de Contacto -->
+  <url>
+    <loc>https://wolvespage.vercel.app/contact</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Página de Documentación - PDF Viewer -->
+  <url>
+    <loc>https://wolvespage.vercel.app/documentacion</loc>
+    <lastmod>2026-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+</urlset>

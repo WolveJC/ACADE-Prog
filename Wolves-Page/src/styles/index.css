@@ -1,0 +1,138 @@
+/* 1. Directivas BASE, COMPONENTS y UTILITIES de Tailwind CSS */
+@import "tailwindcss";
+
+/* 2. Definición de tema con variables de color */
+@theme {
+  --color-forest-start: #1b4d3e;
+  --color-forest-mid: #4b3621;
+  --color-forest-end: #2c2016;
+  --color-cafe-oscuro: #4b3621;
+  --color-moca: #795548;
+  --color-leche-crema: #f5f5dc;
+  --color-pan-tostado: #eedcb3;
+  --color-bosque-verde: #385635;
+}
+
+/* 3. Ajuste global de border-color */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+
+  /* Tipografía base para títulos y párrafos */
+  h1,
+  h2,
+  h3 {
+    @apply font-serif tracking-wide;
+  }
+  p {
+    @apply leading-relaxed;
+  }
+}
+
+/* 4. Scroll suave */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ------------------------------------------------------------- */
+/* ✅ 5. CURSOR PERSONALIZADO — versión corregida */
+/* ------------------------------------------------------------- */
+
+/* Oculta el cursor nativo en TODA la app.
+   INVARIANTE: esta regla asume que CustomCursor.js SIEMPRE renderiza
+   un reemplazo, en cualquier ruta (no depende de una lista de rutas
+   "permitidas" — ver components/Cursor/CustomCursor.js). Si algún día
+   CustomCursor.js vuelve a tener una condición que pueda devolver
+   null, esta regla queda insegura y hay que revisar ambos archivos
+   juntos. */
+#root,
+#root * {
+  cursor: none !important;
+}
+
+/* Tus clases personalizadas siguen funcionando */
+.cursor-none {
+  cursor: none !important;
+}
+
+.leaf-trigger,
+.flower-trigger,
+a,
+button {
+  cursor: none !important;
+}
+
+/* ------------------------------------------------------------- */
+/* 6. Restaurar cursor por defecto en body (no afecta al hook) */
+/* ------------------------------------------------------------- */
+
+body {
+  /* vacío a propósito */
+}
+
+/* ------------------------------------------------------------- */
+/* 7. Scrollbar oculto cross-browser */
+/* ------------------------------------------------------------- */
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ------------------------------------------------------------- */
+/* 8. Estilo "Libro Antiguo" para el visor PDF */
+/* ------------------------------------------------------------- */
+
+.libro-antiguo {
+  @apply bg-pan-tostado text-cafe-oscuro font-serif shadow-lg;
+  background-image: url("../../public/textures/paper.webp");
+  background-size: cover;
+  background-repeat: repeat;
+}
+
+/* ------------------------------------------------------------- */
+/* 9. EFECTO DE PASAR PÁGINA */
+/* ------------------------------------------------------------- */
+
+.page-flip {
+  transform-origin: center center;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.page-flip:hover {
+  transform: scale(1.01);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.45);
+}
+
+/* ------------------------------------------------------------- */
+/* 10. TEXTURA SOBRE EL PDF */
+/* ------------------------------------------------------------- */
+
+.pdf-texture {
+  position: relative;
+  box-shadow:
+    0 0 35px rgba(0, 0, 0, 0.45),
+    inset 0 -8px 20px rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+}
+
+.pdf-texture::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("../../public/textures/paper.webp");
+  background-size: cover;
+  background-repeat: repeat;
+  opacity: 0.22;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  border-radius: inherit;
+}

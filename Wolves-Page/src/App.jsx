@@ -11,7 +11,10 @@ import Header from "./components/Layout/Header.jsx";
 import Sidebar from "./components/Layout/Sidebar.jsx";
 import MainContent from "./components/Layout/MainContent.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
-import CafePage from "./pages/CafePage.jsx";
+// CafeLayout envuelve CafePage con su propio NutritionProvider,
+// escopado solo a /cafe (antes el Provider vivía en la raíz de
+// toda la app, sin que nadie fuera de /cafe lo necesitara).
+import CafeLayout from "./components/Layout/CafeLayout.jsx";
 import ProjectDocumentationViewer from "./pages/ProjectDocumentationViewer.jsx";
 import TransitionOverlay from "./components/Layout/TransitionOverlay";
 
@@ -19,7 +22,6 @@ import TransitionOverlay from "./components/Layout/TransitionOverlay";
 import CustomCursor from "./components/Cursor/CustomCursor.js";
 import { CarouselProvider } from "./context/GlobalCarousel.jsx";
 import { TransitionProvider } from "./context/TransitionContext";
-import { NutritionProvider } from "./context/NutritionContext";
 
 // Fuente única de verdad del número real de secciones del carrusel
 // (Welcome + páginas de proyectos + AboutMe). Ver utils/chunkProjects.js.
@@ -52,7 +54,7 @@ const LayoutWrapper = () => {
         <Routes>
           <Route path="/" element={<MainContent />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/cafe" element={<CafePage />} />
+          <Route path="/cafe" element={<CafeLayout />} />
           <Route
             path="/documentacion"
             element={<ProjectDocumentationViewer />}
@@ -80,14 +82,12 @@ function App() {
         <CustomCursor />
 
         <TransitionProvider>
-          <NutritionProvider>
-            <CarouselProvider
-              totalUniqueSlides={totalUniqueSlides}
-              totalSlides={totalSlides}
-            >
-              <LayoutWrapper />
-            </CarouselProvider>
-          </NutritionProvider>
+          <CarouselProvider
+            totalUniqueSlides={totalUniqueSlides}
+            totalSlides={totalSlides}
+          >
+            <LayoutWrapper />
+          </CarouselProvider>
         </TransitionProvider>
       </div>
     </Router>

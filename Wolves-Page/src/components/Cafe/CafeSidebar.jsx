@@ -1,11 +1,36 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useNutritionContext } from "../../context/NutritionContext";
 import { nutritionData as staticNutritionData } from "../../data/nutrition"; // Datos estáticos
+import NutritionBar from "./NutritionBar";
 
 const CafeSidebar = () => {
   const { nutritionData, isNutritionLoading, nutritionError } =
     useNutritionContext();
   const sidebarRef = useRef(null);
+
+  // Mismo patrón de tracking de mouse que Sidebar.jsx (Bosque) usa para
+  // Skill-Icon.jsx: NutritionBar es su "gemelo" y necesita exactamente
+  // estos dos datos (posición del mouse + si el sidebar está en hover)
+  // para el efecto de lupa.
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isSidebarHovering, setIsSidebarHovering] = useState(false);
+
+  useEffect(() => {
+    let frameId = null;
+
+    const handleMouseMove = (e) => {
+      if (frameId) cancelAnimationFrame(frameId);
+      frameId = requestAnimationFrame(() => {
+        setMousePosition({ x: e.clientX, y: e.clientY });
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      if (frameId) cancelAnimationFrame(frameId);
+    };
+  }, []);
 
   // Renderiza el contenido dinámico del sidebar
   const renderContent = () => {
@@ -36,51 +61,44 @@ const CafeSidebar = () => {
       );
     }
 
-    // Si hay datos, renderizar la lista de nutrientes
+    // Si hay datos, renderizar un NutritionBar por cada nutriente
+    // (el gemelo de SkillIcon: ícono con lupa + barra animada al pasar
+    // el mouse, en vez de una lista plana de texto).
+    const CORE_MACROS = ["Calorías", "Proteínas", "Carbohidratos", "Grasas Totales"];
+
     return (
-      <ul className="space-y-3">
-        {staticNutritionData.map((item, index) => {
+      <div className="space-y-1">
+        {staticNutritionData.map((item) => {
           const nutrientKey = item.name.replace(/\s+/g, ""); // Ej: 'Calorías' -> 'Calorias'
           // Encuentra el valor del nutriente en el data de Edamam
           const nutrientInfo = nutritionData.totalNutrients[nutrientKey];
-          let displayValue = null;
-          if (nutrientInfo && typeof nutrientInfo.quantity === "number") {
-            displayValue = nutrientInfo.quantity.toFixed(0); // Redondea para mejor lectura
-          }
+          const isCoreMacro = CORE_MACROS.includes(item.name);
 
-          // Si no encontramos un valor específico de Edamam, usa el valor estático o null
-          // Para el ejercicio, solo mostraremos los que vienen de Edamam
-          if (
-            displayValue === null &&
-            item.name !== "Calorías" &&
-            item.name !== "Proteínas" &&
-            item.name !== "Carbohidratos" &&
-            item.name !== "Grasas Totales"
-          ) {
-            return null; // O puedes mostrar 0 o N/A, dependiendo de tu UX
-          }
+          // Si no encontramos un valor específico de Edamam Y no es uno
+          // de los 4 macros núcleo, no se muestra (igual que antes, para
+          // no listar 20 barras en 0 cuando el dato simplemente no vino).
+          if (!nutrientInfo && !isCoreMacro) return null;
 
-          // Asegurarse de que el color del ícono se aplique correctamente
-          const IconComponent = item.Icon;
+          const apiData = {
+            quantity:
+              nutrientInfo && typeof nutrientInfo.quantity === "number"
+                ? nutrientInfo.quantity
+                : 0,
+            unit: (nutrientInfo && nutrientInfo.unit) || item.unit,
+          };
 
           return (
-            <li
-              key={index}
-              className="flex items-center space-x-2 text-white/90"
-            >
-              <IconComponent
-                className={`${item.iconColor} text-lg md:text-xl shrink-0`}
-              />
-              <span className="font-semibold text-sm grow">
-                {item.name}
-              </span>
-              <span className="text-xs font-normal text-white/70">
-                {displayValue !== null ? `${displayValue}${item.unit}` : "N/A"}
-              </span>
-            </li>
+            <NutritionBar
+              key={item.name}
+              staticData={item}
+              apiData={apiData}
+              mousePosition={mousePosition}
+              sidebarRef={sidebarRef}
+              isSidebarHovering={isSidebarHovering}
+            />
           );
         })}
-      </ul>
+      </div>
     );
   };
 
@@ -93,6 +111,8 @@ const CafeSidebar = () => {
                 transition-all duration-300 ease-in-out
                 flex flex-col
             "
+      onMouseEnter={() => setIsSidebarHovering(true)}
+      onMouseLeave={() => setIsSidebarHovering(false)}
     >
       <h3 className="text-xl font-serif font-bold text-pan-tostado mb-4 text-center">
         Nutrición

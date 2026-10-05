@@ -56,7 +56,7 @@ const ContactPage = () => {
                     className="w-full p-3 rounded-sm bg-gray-800 border border-gray-700 text-white focus:outline-hidden focus:ring-2 focus:ring-green-500"
                 />
                 
-                <input type="hidden" name="_subject" value="Buy Me A Coffee!" />
+                <input type="hidden" name="_subject" value="Nuevo mensaje desde Wolves-Page" />
                 
                 <textarea 
                     name="message" 

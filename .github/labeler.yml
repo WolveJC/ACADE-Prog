@@ -1,0 +1,85 @@
+# Etiquetas automáticas según cambios en archivos o ramas
+
+# --- Cambios en la raíz del repo ---
+root:
+  - changed-files:
+      - any-glob-to-any-file: '*'
+
+# --- Cualquier cambio en el repo ---
+AnyChange:
+  - changed-files:
+      - any-glob-to-any-file: '**'
+
+# --- Documentación ---
+Documentation:
+  - changed-files:
+      - any-glob-to-any-file: docs/**
+  - changed-files:
+      - any-glob-to-any-file: guides/**
+  - changed-files:
+      - any-glob-to-any-file: '**/*.md'
+
+# --- Código fuente ---
+frontend:
+  - changed-files:
+      - any-glob-to-any-file: src/frontend/**
+backend:
+  - changed-files:
+      - any-glob-to-any-file: src/backend/**
+api:
+  - changed-files:
+      - any-glob-to-any-file: src/api/**
+
+# --- Tests ---
+tests:
+  - changed-files:
+      - any-glob-to-any-file: tests/**
+  - changed-files:
+      - any-glob-to-any-file: '**/*test.py'
+  - changed-files:
+      - any-glob-to-any-file: '**/*spec.js'
+
+# --- Infraestructura / DevOps ---
+ci-cd:
+  - changed-files:
+      - any-glob-to-any-file: .github/workflows/**
+infra:
+  - changed-files:
+      - any-glob-to-any-file: infra/**
+  - changed-files:
+      - any-glob-to-any-file: docker/**
+  - changed-files:
+      - any-glob-to-any-file: k8s/**
+
+# --- Configuración ---
+config:
+  - changed-files:
+      - any-glob-to-any-file: '*.yml'
+      - any-glob-to-any-file: '*.yaml'
+      - any-glob-to-any-file: '*.json'
+      - any-glob-to-any-file: config/**
+
+# --- Seguridad ---
+security:
+  - changed-files:
+      - any-glob-to-any-file: security/**
+  - changed-files:
+      - any-glob-to-any-file: scripts/audit/**
+
+# --- Dependencias ---
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file: requirements.txt
+      - any-glob-to-any-file: package.json
+      - any-glob-to-any-file: pnpm-lock.yaml
+      - any-glob-to-any-file: yarn.lock
+      - any-glob-to-any-file: Cargo.toml
+      - any-glob-to-any-file: go.mod
+
+# --- Assets y estilos ---
+assets:
+  - changed-files:
+      - any-glob-to-any-file: assets/**
+styles:
+  - changed-files:
+      - any-glob-to-any-file: styles/**

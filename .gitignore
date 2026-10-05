@@ -1,0 +1,21 @@
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Dependencias
+node_modules/
+
+# Archivos de compilación
+dist/
+build/
+
+# Logs
+*.log
+
+# Temporales
+*.tmp
+*.swp
+
+# Python: ignorar todos los pycache y archivos compilados
+**/__pycache__/
+*.pyc

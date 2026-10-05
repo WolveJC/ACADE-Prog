@@ -1,0 +1,71 @@
+name: "CodeQL Advanced"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '16 4 * * 1'
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ c-cpp, java-kotlin, csharp, javascript-typescript, python, actions ]
+
+    permissions:
+      security-events: write
+      packages: read
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Setup entornos condicionales
+      - name: Setup Java Environment
+        if: matrix.language == 'java-kotlin'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup .NET Environment
+        if: matrix.language == 'csharp'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # Inicialización de CodeQL
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+
+      # Compilación condicional
+      - name: Build C/C++
+        if: matrix.language == 'c-cpp'
+        run: |
+          if [ -f "Makefile" ]; then
+            make codeql_all
+          else
+            echo "✅ No se encontró Makefile. Saltando compilación C/C++."
+          fi
+
+      - name: Build Java/Kotlin
+        if: matrix.language == 'java-kotlin'
+        run: bash ./build_java.sh
+
+      - name: Build C#
+        if: matrix.language == 'csharp'
+        run: bash ./build_csharp.sh
+
+      # Análisis final
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        # Ignoramos errores solo en lenguajes opcionales
+        continue-on-error: ${{ matrix.language == 'java-kotlin' || matrix.language == 'csharp' }}

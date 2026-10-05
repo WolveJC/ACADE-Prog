@@ -1,0 +1,15 @@
+# Variables de entorno reales -- NUNCA subir esto
+.env
+
+# Entorno virtual de Python
+venv/
+.venv/
+env/
+
+# Cachés de Python
+__pycache__/
+*.pyc
+
+# Editor
+.vscode/
+.idea/

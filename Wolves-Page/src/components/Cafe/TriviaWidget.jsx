@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 
 // Paleta de Colores: Pan Tostado/Dorado: #EEDCB3, Café Oscuro: #4B3621
 
-//  ATENCIÓN: REEMPLAZAR ESTE VALOR con la API key de Spoonacular
-const SPOONACULAR_API_KEY = '4e2e88d3f42a4fd4b626ae8dc0eb1e49'; 
+// Antes: la API key de Spoonacular vivía aquí mismo, en texto plano,
+// visible para cualquiera que abriera las DevTools. Ahora la key vive
+// solo en el servidor (Wolves-Page-Backend); el navegador nunca la ve.
+const BACKEND_URL = process.env.BACKEND_URL;
 
 const TriviaWidget = () => {
     const [trivia, setTrivia] = useState('');
@@ -13,9 +15,15 @@ const TriviaWidget = () => {
         const fetchTrivia = async () => {
             setIsLoading(true);
             try {
-                // API Spoonacular: Obtener una trivia aleatoria de comida
-                const response = await fetch(`https://api.spoonacular.com/food/trivia/random?apiKey=${SPOONACULAR_API_KEY}`);
-                
+                // Antes: fetch directo a Spoonacular con la key en la URL.
+                // Ahora pasa por nuestro backend, que guarda la key y
+                // aplica el límite de cuota.
+                const response = await fetch(`${BACKEND_URL}/api/trivia`);
+
+                if (response.status === 429) {
+                    setTrivia('Ya usaste tu curiosidad del día. Vuelve más tarde.');
+                    return;
+                }
                 if (!response.ok) {
                     throw new Error('Error al cargar la trivia.');
                 }
@@ -30,12 +38,7 @@ const TriviaWidget = () => {
             }
         };
 
-        if (SPOONACULAR_API_KEY !== 'YOUR_SPOONACULAR_API_KEY') {
-            fetchTrivia();
-        } else {
-            setTrivia('Por favor, ingresa tu clave de Spoonacular API para activar la trivia.');
-            setIsLoading(false);
-        }
+        fetchTrivia();
     }, []);
 
     return (

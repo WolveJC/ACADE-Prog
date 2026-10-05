@@ -1,0 +1,7 @@
+# Copia este archivo a ".env" en la raíz de Wolves-Page (junto a package.json).
+# El ".env" real NUNCA se sube al repositorio.
+
+# URL del backend (Wolves-Page-Backend). En local, el puerto que uses
+# con "python app.py" (5000 por defecto). En producción, la URL real
+# donde quede desplegado (Render/Railway/etc.).
+BACKEND_URL=http://localhost:5000

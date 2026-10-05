@@ -1,4 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react'; 
+
+// Antes: fetch directo a TheMealDB desde el navegador. Ahora pasa por
+// nuestro propio backend (Wolves-Page-Backend), que además aplica el
+// límite de cuota por visitante.
+const BACKEND_URL = process.env.BACKEND_URL;
+
 // CRÍTICO: Recibe onRecipeLoaded como prop
 const RecipeCard = ({ onRecipeLoaded }) => {
     const [recipe, setRecipe] = useState(null);
@@ -20,8 +26,12 @@ const RecipeCard = ({ onRecipeLoaded }) => {
             setError(null);
 
             try {
-                // 1. Fetch de TheMealDB
-                const response = await fetch('https://www.themealdb.com/api/json/v1/1/random.php');
+                // 1. Fetch a través de nuestro backend (ya no directo a TheMealDB)
+                const response = await fetch(`${BACKEND_URL}/api/receta`);
+
+                if (response.status === 429) {
+                    throw new Error('Ya usaste tu receta del día. Vuelve más tarde.');
+                }
                 if (!response.ok) {
                     throw new Error('No se pudo cargar la receta del día (MealDB).');
                 }

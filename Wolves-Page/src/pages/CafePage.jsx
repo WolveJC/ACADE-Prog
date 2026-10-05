@@ -5,61 +5,14 @@ import TriviaWidget from '../components/Cafe/TriviaWidget';
 import CafeSidebar from '../components/Cafe/CafeSidebar';
 import { useNutritionContext } from '../context/NutritionContext';
 
-// Constantes de la API de Edamam
-const RAPIDAPI_KEY = 'ea40e1fb71msh1630c71aa1e941dp15b910jsndb8283303c08'; 
-const RAPIDAPI_HOST = 'edamam-edamam-nutrition-analysis.p.rapidapi.com';
-
-// Función para normalizar medida + ingrediente
-const normalizeIngredient = (measure, ingredient) => {
-  let m = (measure || "").trim().toLowerCase();
-  let ing = (ingredient || "").trim().toLowerCase();
-
-  // Correcciones comunes de unidades
-  m = m
-    .replace(/\btbs\b/g, "tbsp")
-    .replace(/\btbls\b/g, "tbsp")
-    .replace(/\btsp\b/g, "tsp")
-    .replace(/\bml\b/g, " ml")
-    .replace(/\bg\b/g, " g")
-    .replace(/\bkg\b/g, " kg")
-    .replace(/\bl\b/g, " l")
-    .replace(/\bpinch\b/g, "1 pinch")
-    .replace(/\bdash\b/g, "1 dash")
-    .replace(/\bto taste\b/g, "")
-    .replace(/\bas needed\b/g, "");
-
-  // Correcciones de ingredientes
-  ing = ing
-    .replace(/free[- ]?range/gi, "") // quita "free-range"
-    .replace(/beaten/gi, "")         // quita "beaten"
-    .replace(/pinkling/gi, "pickling")
-    .replace(/sea salt/gi, "salt")
-    .replace(/black pepper/gi, "pepper")
-    .replace(/clove[s]? garlic/gi, "garlic")
-    .replace(/egg[s]?/gi, "egg");
-
-  // Reconstruir string limpio
-  let formatted = `${m} ${ing}`.trim();
-
-  // Si no hay medida, al menos devolver el ingrediente
-  if (!m) formatted = ing;
-
-  return formatted;
-};
-
-// 🛠️ Función para formatear ingredientes de MealDB para Edamam
-const formatIngredientsForEdamam = (recipe) => {
-  let queryParts = [];
-  for (let i = 1; i <= 20; i++) {
-    const ingredient = recipe[`strIngredient${i}`];
-    const measure = recipe[`strMeasure${i}`];
-    if (ingredient && ingredient.trim() !== "") {
-      const normalized = normalizeIngredient(measure, ingredient);
-      queryParts.push(`ingr=${encodeURIComponent(normalized)}`);
-    }
-  }
-  return queryParts.join("&");
-};
+// Antes: la key de RapidAPI vivía aquí en texto plano, y este mismo
+// archivo normalizaba los ingredientes (normalizeIngredient /
+// formatIngredientsForEdamam) antes de llamar a RapidAPI directo.
+// Ahora todo eso se mudó a Wolves-Page-Backend: el cliente solo manda
+// la receta completa (tal cual la devuelve MealDB) y el backend hace
+// la normalización + la llamada a RapidAPI con su key, que el
+// navegador nunca ve.
+const BACKEND_URL = process.env.BACKEND_URL;
 
 const CafePage = () => {
   usePageTitle("WolveJC | El Café de las APIs");
@@ -83,10 +36,15 @@ const CafePage = () => {
     // 1. Validaciones iniciales
     if (!recipeData || hasFetchedNutrition) return; 
 
-    const ingredientQuery = formatIngredientsForEdamam(recipeData);
-    if (!ingredientQuery) {
+    // Validación rápida en el cliente: si la receta no trae ni un
+    // ingrediente, ni vale la pena llamar al backend. La normalización
+    // real (y la llamada a RapidAPI) ya vive del lado del servidor.
+    const hasAnyIngredient = Array.from({ length: 20 }, (_, i) => i + 1).some(
+      (i) => recipeData[`strIngredient${i}`]?.trim()
+    );
+    if (!hasAnyIngredient) {
       setEdamamData(null, "No se encontraron ingredientes para el análisis nutricional.");
-      setHasFetchedNutrition(true); // Si no hay query, marcamos como fetch terminada
+      setHasFetchedNutrition(true); // Si no hay ingredientes, marcamos como fetch terminada
       return;
     }
 
@@ -94,37 +52,20 @@ const CafePage = () => {
     // Esto asegura que la segunda pasada del Strict Mode se detenga en la validación inicial.
     setHasFetchedNutrition(true); 
 
-    // Debug: mostrar ingredientes normalizados (Solo se ejecutará una vez)
-    const ingredientList = [];
-    for (let i = 1; i <= 20; i++) {
-      const ingredient = recipeData[`strIngredient${i}`];
-      const measure = recipeData[`strMeasure${i}`];
-      if (ingredient && ingredient.trim() !== "") {
-        ingredientList.push(normalizeIngredient(measure, ingredient));
-      }
-    }
-
-    const apiUrlBase = `https://${RAPIDAPI_HOST}/api/nutrition-data?nutrition-type=cooking&`;
-
-    console.log("=====================================================");
-    console.log("🍽️ DEBUG: INGREDIENTES NORMALIZADOS PARA EDAMAM (Receta):", recipeData.strMeal);
-    console.log("-----------------------------------------------------");
-    console.log("INGREDIENTES LISTA (Normalizados):", ingredientList); 
-    console.log("URL de Query FINAL:", `${apiUrlBase}${ingredientQuery}`);
-    console.log("=====================================================");
-
     setIsNutritionLoading(true);
-    const apiUrl = `${apiUrlBase}${ingredientQuery}`;
 
     let userErrorMessage = "Error desconocido. Vuelve a intentarlo más tarde.";
 
     try {
-      const response = await fetch(apiUrl, {
-        method: 'GET',
+      // Mandamos la receta completa (tal cual la devolvió MealDB) al
+      // backend; él normaliza los ingredientes y llama a RapidAPI con
+      // su key, que el navegador nunca ve.
+      const response = await fetch(`${BACKEND_URL}/api/nutricion`, {
+        method: 'POST',
         headers: {
-          'x-rapidapi-key': RAPIDAPI_KEY,
-          'x-rapidapi-host': RAPIDAPI_HOST
-        }
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ recipe: recipeData }),
       });
 
       if (!response.ok) {
@@ -145,7 +86,7 @@ const CafePage = () => {
         } catch {
           developerMessage += ` Detalle: ${response.statusText}`;
         }
-        console.error("❌ Error de Edamam:", developerMessage);
+        console.error("❌ Error del backend de nutrición:", developerMessage);
 
         // Si hay error, queremos que el usuario pueda reintentar, por lo que NO restablecemos hasFetchedNutrition.
         throw new Error(userErrorMessage); 

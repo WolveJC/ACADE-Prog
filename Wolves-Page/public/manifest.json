@@ -1,0 +1,26 @@
+{
+  "short_name": "WolveJC",
+  "name": "WolveJC Personal Portfolio Website",
+  "description": "Portafolio de WolveJC, con diseño personalizado.",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#F5F5DC",
+  "theme_color": "#1B4D3E"
+}

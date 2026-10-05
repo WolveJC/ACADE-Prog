@@ -1,0 +1,42 @@
+import React, { createContext, useContext, useState, useCallback } from 'react';
+
+const TransitionContext = createContext();
+
+export const useTransitionContext = () => useContext(TransitionContext);
+
+export const TransitionProvider = ({ children }) => {
+    // true: Inicia la animación de salida (cubrir la pantalla)
+    const [isTransitioning, setIsTransitioning] = useState(false);
+    // string: Almacena la ruta de destino para que el componente de transición la sepa
+    const [destinationPath, setDestinationPath] = useState('/');
+
+    /**
+     * Inicia la secuencia de transición.
+     * @param {string} path - La ruta a la que se navegará después de la animación.
+     */
+    const startTransition = useCallback((path) => {
+        setIsTransitioning(true);
+        setDestinationPath(path);
+        // La navegación real se ejecutará dentro de TransitionOverlay
+    }, []);
+
+    /**
+     * Completa la transición y prepara el componente para la siguiente.
+     */
+    const endTransition = useCallback(() => {
+        setIsTransitioning(false);
+    }, []);
+
+    return (
+        <TransitionContext.Provider 
+            value={{ 
+                isTransitioning, 
+                destinationPath, 
+                startTransition, 
+                endTransition 
+            }}
+        >
+            {children}
+        </TransitionContext.Provider>
+    );
+};

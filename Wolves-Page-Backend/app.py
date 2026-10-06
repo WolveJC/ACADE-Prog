@@ -32,7 +32,8 @@ app = Flask(__name__)
 # En local, FRONTEND_ORIGIN apunta a localhost:3000 (tu npm start).
 # -----------------------------------------------------------------
 FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "http://localhost:3000")
-CORS(app, resources={r"/api/*": {"origins": FRONTEND_ORIGIN}})
+ALLOWED_ORIGINS = [origin.strip() for origin in FRONTEND_ORIGIN.split(",") if origin.strip()]
+CORS(app, resources={r"/api/*": {"origins": ALLOWED_ORIGINS}})
 
 # -----------------------------------------------------------------
 # Límite de cuota. Por defecto usa memoria (storage_uri="memory://"),

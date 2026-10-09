@@ -190,11 +190,11 @@ def post_nutricion():
 # Endpoint 4: Proxy de imagenes (evita bloqueos CORP / CORS)
 # ===================================================================
 @app.route("/api/proxy-imagen", methods=["GET"])
-@limiter.limit("30 per minute")  # Limite adecuado para carga de imagenes
+@limiter.limit("60 per minute")
 def proxy_imagen():
     image_url = request.args.get("url")
-    
-    # Validar que la URL venga de un origen permitido para evitar Server-Side Request Forgery (SSRF)
+
+    # Validacion basica de origen por seguridad (SSRF protection)
     if not image_url or not image_url.startswith("https://www.themealdb.com/"):
         return jsonify({"error": "Origen de imagen no permitido."}), 400
 
@@ -202,10 +202,17 @@ def proxy_imagen():
         resp = requests.get(image_url, timeout=10)
         resp.raise_for_status()
         
-        # Devolver la imagen retransmitiendo su tipo de contenido (image/jpeg, etc.)
         content_type = resp.headers.get("Content-Type", "image/jpeg")
-        return resp.content, 200, {"Content-Type": content_type}
         
+        # Inyectamos cabeceras explicitas para evitar el bloqueo CORP/CORS del navegador
+        headers = {
+            "Content-Type": content_type,
+            "Access-Control-Allow-Origin": "*",
+            "Cross-Origin-Resource-Policy": "cross-origin",
+            "Cache-Control": "public, max-age=86400"  # Opcional: Cache por 1 dia para acelerar la app
+        }
+        
+        return resp.content, 200, headers
     except requests.RequestException:
         return jsonify({"error": "No se pudo obtener la imagen."}), 502
 

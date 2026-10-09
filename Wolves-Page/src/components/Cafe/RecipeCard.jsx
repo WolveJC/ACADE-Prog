@@ -102,13 +102,15 @@ const RecipeCard = ({ onRecipeLoaded }) => {
                 </h3>
 
                 <div className="md:flex md:space-x-8">
-                    {/* Sección Izquierda: Imagen */}
+                    {/* Sección Izquierda: Imagen servida mediante el Proxy */}
                     <div className="md:w-1/3 mb-6 md:mb-0 shrink-0">
-                        <img 
-                            src={recipe.strMealThumb} 
-                            alt={`Imagen de ${recipe.strMeal}`} 
-                            className="w-full h-auto rounded-lg shadow-lg border-2 border-pan-tostado"
-                        />
+                        {recipe.strMealThumb && (
+                            <img 
+                                src={`${BACKEND_URL}/api/proxy-imagen?url=${encodeURIComponent(recipe.strMealThumb)}`} 
+                                alt={`Imagen de ${recipe.strMeal}`} 
+                                className="w-full h-auto rounded-lg shadow-lg border-2 border-pan-tostado"
+                            />
+                        )}
                     </div>
 
                     {/* Sección Derecha: Ingredientes y Pasos */}

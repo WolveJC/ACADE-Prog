@@ -31,8 +31,12 @@ app = Flask(__name__)
 # CORS: solo el dominio real del frontend puede llamar a esta API.
 # En local, FRONTEND_ORIGIN apunta a localhost:3000 (tu npm start).
 # -----------------------------------------------------------------
-FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "http://localhost:3000")
-ALLOWED_ORIGINS = [origin.strip() for origin in FRONTEND_ORIGIN.split(",") if origin.strip()]
+FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "http://localhost:3000,https://dev-wolvespage.vercel.app")
+ALLOWED_ORIGINS = [
+   origin.strip().rstrip("/")
+   for origin in FRONTEND_ORIGIN.split(",") 
+   if origin.strip()
+]
 CORS(app, resources={r"/api/*": {"origins": ALLOWED_ORIGINS}})
 
 # -----------------------------------------------------------------

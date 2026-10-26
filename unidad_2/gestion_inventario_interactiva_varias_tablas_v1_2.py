@@ -84,7 +84,8 @@ def ingresar_productos(lista_inventario: list):
         if (
             demanda is None
             or demanda < 1
-            or demanda > 10):
+            or demanda > 10
+        ):
             print("La demanda debe ser un número entre 1 y 10.")
             continue
 
@@ -123,7 +124,6 @@ def ingresar_productos(lista_inventario: list):
 # ------------------------------------------
 # 2. Funciones de ordenamiento
 # ------------------------------------------
-# ... (Funciones de ordenamiento sin cambios) ...
 
 def insertion_sort(lista: list, key: callable, descending: bool = False) -> list:
     """
@@ -137,7 +137,9 @@ def insertion_sort(lista: list, key: callable, descending: bool = False) -> list
         while j >= 0:
             # Lógica de comparación
             comparacion = (
-                (key(lista[j]) < key(actual)) if descending else (key(lista[j]) > key(actual))
+                (key(lista[j]) < key(actual))
+                if descending
+                else (key(lista[j]) > key(actual))
             )
 
             if comparacion:
@@ -199,7 +201,11 @@ def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
         candidato = temp[0]
         indice_candidato = 0
         for i, item in enumerate(temp):
-            comparacion = (key(item) > key(candidato)) if reverse else (key(item) < key(candidato))
+            comparacion = (
+                (key(item) > key(candidato))
+                if reverse
+                else (key(item) < key(candidato))
+            )
 
             if comparacion:
                 candidato = item
@@ -241,7 +247,13 @@ def generar_inventarios_ordenados(datos_originales: list) -> dict:
 # ------------------------------------------
 
 
-def _generate_visual_table(data_matrix: List[List[Any]], title: str, headers: list, query_date: str, algorithm_key: str):
+def _generate_visual_table(
+    data_matrix: List[List[Any]],
+    title: str,
+    headers: list,
+    query_date: str,
+    algorithm_key: str,
+):
     """Genera la tabla visual con Matplotlib y la guarda."""
     fig, ax = plt.subplots(figsize=(10, len(data_matrix) * 0.6 + 2))
     ax.axis("off")
@@ -266,11 +278,17 @@ def _generate_visual_table(data_matrix: List[List[Any]], title: str, headers: li
     return image_filename
 
 
-def _generate_csv_log(data_matrix: List[List[Any]], _: str, headers: list, query_date: str, algorithm_key: str):
+def _generate_csv_log(
+    data_matrix: List[List[Any]],
+    _: str,
+    headers: list,
+    query_date: str,
+    algorithm_key: str,
+):
     """Guarda el registro de datos en un archivo CSV."""
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     csv_filename = f"registro_{algorithm_key}_{timestamp}.csv"
-    
+
     try:
         with open(csv_filename, mode="w", newline="", encoding="utf-8") as csvfile:
             writer = csv.writer(csvfile)
@@ -279,13 +297,17 @@ def _generate_csv_log(data_matrix: List[List[Any]], _: str, headers: list, query
                 writer.writerow([query_date] + row)
     except IOError as e:
         print(f"Error al escribir el archivo CSV {csv_filename}: {e}")
-        return None # Devuelve None en caso de fallo
+        return None  # Devuelve None en caso de fallo
 
     return csv_filename
 
 
 def generate_table_and_csv(
-    sorted_data: list, title: str, headers: list, query_date: str, algorithm_key: str # <--- R0913 Corregido (5/5 argumentos)
+    sorted_data: list,
+    title: str,
+    headers: list,
+    query_date: str,
+    algorithm_key: str,
 ):
     """
     Genera una tabla visual con Matplotlib, guarda la imagen PNG y un CSV de registro.
@@ -297,8 +319,6 @@ def generate_table_and_csv(
         query_date: Fecha y hora de la consulta (timestamp).
         algorithm_key: Clave del algoritmo (usada para nombrar archivos).
     """
-    # R0914 Corregido: La complejidad de variables se movió a las funciones auxiliares.
-    
     # Preparar la matriz de datos para la tabla
     data_matrix = []
     for item in sorted_data:
@@ -313,9 +333,12 @@ def generate_table_and_csv(
         data_matrix.append(row)
 
     # Llama a las funciones auxiliares
-    image_filename = _generate_visual_table(data_matrix, title, headers, query_date, algorithm_key)
-    csv_filename = _generate_csv_log(data_matrix, title, headers, query_date, algorithm_key)
-
+    image_filename = _generate_visual_table(
+        data_matrix, title, headers, query_date, algorithm_key
+    )
+    csv_filename = _generate_csv_log(
+        data_matrix, title, headers, query_date, algorithm_key
+    )
 
     print(f"\n {title} - Archivos generados:")
     # Solo imprime si la generación fue exitosa
@@ -341,7 +364,14 @@ if __name__ == "__main__":
     inventarios_ordenados = generar_inventarios_ordenados(inventario)
 
     # Definición de variables locales para los encabezados
-    headers_all = ["Código", "Nombre", "Demanda", "Tiempo entrega", "Fecha límite", "Cantidad"]
+    headers_all = [
+        "Código",
+        "Nombre",
+        "Demanda",
+        "Tiempo entrega",
+        "Fecha límite",
+        "Cantidad",
+    ]
 
     fecha_consulta = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -372,7 +402,7 @@ if __name__ == "__main__":
         generate_table_and_csv(
             sorted_data=orden["data"],
             title=orden["title"],
-            headers=headers_all, # <--- headers_visual y headers_csv agrupados
+            headers=headers_all,
             query_date=fecha_consulta,
             algorithm_key=orden["algorithm_key"],
         )

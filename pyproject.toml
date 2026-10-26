@@ -1,17 +1,15 @@
 [tool.ruff]
-# El piso técnico: compatible con la oficina, sin romper la casa (3.8 a 3.14)
 target-version = "py38"
 line-length = 100
 
 [tool.ruff.lint]
 select = [
     "E",  # pycodestyle errores
-    "F",  # Pyflakes (variables no definidas, imports muertos)
+    "F",  # Pyflakes
     "I",  # isort (orden de imports)
-    "B",  # flake8-bugbear (prevención de bugs reales)
+    "B",  # flake8-bugbear
 ]
 
 [tool.ruff.format]
-# Configuración idéntica a Black para que no notes cambios visuales
 quote-style = "double"
 indent-style = "space"

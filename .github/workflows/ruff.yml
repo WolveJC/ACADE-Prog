@@ -36,7 +36,7 @@ jobs:
       - name: Ejecutar Ruff (Linter y Formato)
         uses: astral-sh/ruff-action@v3
         with:
-          args: "check --no-fix"
+          args: "check --fix"
 
       - name: Verificar formato con Ruff (Sustituto ultrarrápido de Black)
         uses: astral-sh/ruff-action@v3

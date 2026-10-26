@@ -13,7 +13,7 @@ import json
 REPO_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 PROJECTS = []
 
-for root, dirs, files in os.walk(REPO_PATH):
+for root, _dirs, files in os.walk(REPO_PATH):
     # Ignorar carpetas ocultas y la carpeta .git
     if any(part.startswith(".") for part in root.split(os.sep)):
         continue

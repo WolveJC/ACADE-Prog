@@ -1,13 +1,13 @@
 # pylint: disable=R0801
 """
-Servicio de Gestión de Inventario. 
+Servicio de Gestión de Inventario.
 Define la clase Inventario, que maneja la colección de objetos Producto
 y las operaciones de persistencia de datos (JSON) para mantener el stock
 """
 
-import os
 import json
-from typing import Union 
+import os
+from typing import Union
 
 from ..models.productos import Producto
 

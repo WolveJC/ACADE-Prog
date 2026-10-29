@@ -6,8 +6,8 @@ El script genera un archivo `projects.json` con metadatos de cada proyecto,
 incluyendo el nombre, la ruta de los .md y la ruta de un posible icono.
 """
 
-import os
 import json
+import os
 
 # Ruta base del repositorio (un nivel arriba de la carpeta scripts)
 REPO_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))

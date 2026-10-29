@@ -7,7 +7,8 @@ propiedades (getters y setters).
 """
 
 import sys
-# from typing import Union 
+
+# from typing import Union
 
 # ====================================================================
 # CLASE PRODUCTO (Modelo)
@@ -167,9 +168,7 @@ class Inventario:
             print(resultado_producto)
             print("--------------------------\n")
         else:
-            print(
-                f"Error: El producto con el código {id_search} no se encuentra en el inventario."
-            )
+            print(f"Error: El producto con el código {id_search} no se encuentra en el inventario.")
 
     def actualizar_cantidad(self):
         """Solicita un código y actualiza la cantidad de ese producto."""
@@ -190,9 +189,7 @@ class Inventario:
                 new_cantidad = int(new_cantidad_str)
 
                 if new_cantidad < 0:
-                    print(
-                        "Error: La cantidad no puede ser un número negativo. Inténtalo de nuevo."
-                    )
+                    print("Error: La cantidad no puede ser un número negativo. Inténtalo de nuevo.")
                     continue
 
                 break
@@ -249,9 +246,7 @@ def obtener_datos_producto():
         return Producto(nombre, precio, cantidad, codigo)
 
     except ValueError as e:
-        print(
-            f"Error de entrada de datos: {e}. Asegúrate de ingresar tipos y valores correctos."
-        )
+        print(f"Error de entrada de datos: {e}. Asegúrate de ingresar tipos y valores correctos.")
         return None
     except TypeError as e:
         print(f"Error de tipo de dato: {e}")

@@ -6,6 +6,7 @@ atributos de un artículo de inventario y aplica validaciones estrictas
 mediante el uso de propiedades (getters y setters).
 """
 
+
 # pylint: disable=R0902
 class Producto:
     """
@@ -39,8 +40,8 @@ class Producto:
         self.codigo = codigo
 
     def __del__(self):
-        """Método de finalización que se llama 
-        cuando el objeto es destruido 
+        """Método de finalización que se llama
+        cuando el objeto es destruido
         (garbage collection)."""
         print(f"Objeto {self.codigo} - {self.nombre} eliminado")
 
@@ -65,7 +66,7 @@ class Producto:
         return self.codigo == otro.codigo
 
     # --- Propiedades (Getters y Setters con validación) ---
-    # R0902 Corregido: Usamos _atributo en lugar de __atributo para 
+    # R0902 Corregido: Usamos _atributo en lugar de __atributo para
     # evitar que Pylint cuente atributos duplicados.
 
     @property

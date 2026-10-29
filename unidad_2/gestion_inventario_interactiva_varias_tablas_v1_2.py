@@ -13,7 +13,7 @@ import datetime
 import random
 import string
 import sys
-from typing import Union, List, Any
+from typing import Any, List, Union
 
 # Third-party libraries
 import matplotlib.pyplot as plt
@@ -81,11 +81,7 @@ def ingresar_productos(lista_inventario: list):
 
         # 2. Demanda
         demanda = _obtener_entero_valido("Demanda (valor entre 1-10): ")
-        if (
-            demanda is None
-            or demanda < 1
-            or demanda > 10
-        ):
+        if demanda is None or demanda < 1 or demanda > 10:
             print("La demanda debe ser un número entre 1 y 10.")
             continue
 
@@ -125,6 +121,7 @@ def ingresar_productos(lista_inventario: list):
 # 2. Funciones de ordenamiento
 # ------------------------------------------
 
+
 def insertion_sort(lista: list, key: callable, descending: bool = False) -> list:
     """
     Implementa el Insertion Sort, adaptable para orden ascendente o descendente.
@@ -137,9 +134,7 @@ def insertion_sort(lista: list, key: callable, descending: bool = False) -> list
         while j >= 0:
             # Lógica de comparación
             comparacion = (
-                (key(lista[j]) < key(actual))
-                if descending
-                else (key(lista[j]) > key(actual))
+                (key(lista[j]) < key(actual)) if descending else (key(lista[j]) > key(actual))
             )
 
             if comparacion:
@@ -201,11 +196,7 @@ def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
         candidato = temp[0]
         indice_candidato = 0
         for i, item in enumerate(temp):
-            comparacion = (
-                (key(item) > key(candidato))
-                if reverse
-                else (key(item) < key(candidato))
-            )
+            comparacion = (key(item) > key(candidato)) if reverse else (key(item) < key(candidato))
 
             if comparacion:
                 candidato = item
@@ -235,9 +226,7 @@ def generar_inventarios_ordenados(datos_originales: list) -> dict:
             key=lambda x: datetime.datetime.strptime(x["fecha_limite"], "%Y-%m-%d"),
         ),
         "demanda": selection_sort(
-            datos_originales.copy(), 
-            key=lambda x: x["demanda"],
-            reverse=True
+            datos_originales.copy(), key=lambda x: x["demanda"], reverse=True
         ),
     }
 
@@ -333,12 +322,8 @@ def generate_table_and_csv(
         data_matrix.append(row)
 
     # Llama a las funciones auxiliares
-    image_filename = _generate_visual_table(
-        data_matrix, title, headers, query_date, algorithm_key
-    )
-    csv_filename = _generate_csv_log(
-        data_matrix, title, headers, query_date, algorithm_key
-    )
+    image_filename = _generate_visual_table(data_matrix, title, headers, query_date, algorithm_key)
+    csv_filename = _generate_csv_log(data_matrix, title, headers, query_date, algorithm_key)
 
     print(f"\n {title} - Archivos generados:")
     # Solo imprime si la generación fue exitosa

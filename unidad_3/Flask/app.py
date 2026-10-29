@@ -14,24 +14,24 @@ import os
 import random
 import string
 import time
-from typing import List, Tuple, Dict
+from typing import Dict, List, Tuple
+
+import pandas as pd
 
 # Third-party libraries
 from flask import (
     Flask,
+    flash,
+    jsonify,
+    redirect,
     render_template,
     request,
-    redirect,
-    url_for,
-    flash,
-    session,
-    jsonify,
     send_file,
+    session,
+    url_for,
 )
 from fpdf import FPDF
-import pandas as pd
 from pandas.errors import EmptyDataError, ParserError
-
 
 # Configuración básica de Flask
 app = Flask(__name__)
@@ -278,7 +278,7 @@ def _procesar_formulario_stock(form_data: dict) -> Dict[str, int]:
     pedido_stock = {}
     for key, value in form_data.items():
         if key.startswith("pedido_stock[") and key.endswith("]"):
-            codigo_limpio = key[len("pedido_stock["): -1]
+            codigo_limpio = key[len("pedido_stock[") : -1]
             try:
                 cantidad_pedida = int(value)
                 if cantidad_pedida > 0:
@@ -393,7 +393,7 @@ def _obtener_y_validar_pedido(productos: list, form_data: dict) -> Tuple[List, L
     codigos_pedidos = set()
     for key in form_data.keys():
         if key.startswith("pedido_proveedor[") and key.endswith("]"):
-            codigos_pedidos.add(key[len("pedido_proveedor["): -1])
+            codigos_pedidos.add(key[len("pedido_proveedor[") : -1])
 
     for codigo in codigos_pedidos:
         cantidad_str = form_data.get(f"pedido_proveedor[{codigo}]")

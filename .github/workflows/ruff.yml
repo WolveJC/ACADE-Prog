@@ -9,9 +9,7 @@ on:
 jobs:
   test-and-lint:
     runs-on: ubuntu-latest
-    
-    # Mantener una matriz solo para las pruebas de pytest es razonable,
-    # pero el linter se ejecuta una sola vez de forma blindada.
+
     strategy:
       matrix:
         python-version: [ "3.8", "3.11", "3.14" ] # Un rango representativo sin exagerar
@@ -32,13 +30,16 @@ jobs:
           if [ -f unidad_7/pystock_management/requisitos.txt ]; then pip install -r unidad_7/pystock_management/requisitos.txt; fi
           pip install pytest pytest-cov
 
-      # --- AQUÍ ENTRA RUFF (Reemplaza a Pylint, Flake8 y Black de golpe) ---
-      - name: Ejecutar Ruff (Linter y Formato)
+      - name: Ejecutar Ruff Check (Linter)
+        id: ruff_check
+        continue-on-error: true
         uses: astral-sh/ruff-action@v3
         with:
           args: "check --fix"
 
       - name: Verificar formato con Ruff (Sustituto ultrarrápido de Black)
+        id: ruff_format
+        continue-on-error: true
         uses: astral-sh/ruff-action@v3
         with:
           args: "format --check"
@@ -48,3 +49,9 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}/unidad_7/pystock_management:${{ github.workspace }}
         run: |
           pytest tests/ --cov=unidad_1 --cov-report=term-missing
+
+      - name: Evaluar resultados finales de linter y formato
+        if: steps.ruff_check.outcome == 'failure' || steps.ruff_format.outcome == 'failure'
+        run: |
+          echo " Se encontraron errores de linter o formato en esta ejecución."
+          exit 1

@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [ "3.8", "3.11", "3.14" ] # Un rango representativo sin exagerar
+        python-version: [ "3.8", "3.11", "3.14" ]
 
     steps:
       - name: Checkout del código
@@ -30,28 +30,39 @@ jobs:
           if [ -f unidad_7/pystock_management/requisitos.txt ]; then pip install -r unidad_7/pystock_management/requisitos.txt; fi
           pip install pytest pytest-cov
 
-      - name: Ejecutar Ruff Check (Linter)
+      # --- LINTER (Corrige y reporta errores de código) ---
+      - name: Ejecutar Ruff Check
         id: ruff_check
         continue-on-error: true
         uses: astral-sh/ruff-action@v3
         with:
           args: "check --fix"
 
-      - name: Verificar formato con Ruff (Sustituto ultrarrápido de Black)
-        id: ruff_format
-        continue-on-error: true
+      # --- FORMATO (Aplica el formato automáticamente) ---
+      - name: Ejecutar Ruff Format 
         uses: astral-sh/ruff-action@v3
         with:
-          args: "format --check"
+          args: "format"
 
+      # --- TESTS ---
       - name: Ejecutar Tests con Pytest
         env:
           PYTHONPATH: ${{ github.workspace }}/unidad_7/pystock_management:${{ github.workspace }}
         run: |
           pytest tests/ --cov=unidad_1 --cov-report=term-missing
 
-      - name: Evaluar resultados finales de linter y formato
-        if: steps.ruff_check.outcome == 'failure' || steps.ruff_format.outcome == 'failure'
+      - name: Evaluar resultados del Linter
+        if: steps.ruff_check.outcome == 'failure'
         run: |
-          echo " Se encontraron errores de linter o formato en esta ejecución."
+          echo "Se encontraron errores de linter no corregibles automáticamente."
           exit 1
+
+      # Auto-commit si el formateador ajustó algo en la rama main
+      - name: Commit formatted changes
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "style: auto-format python files via Ruff [CI]" || echo "No changes to format"
+          git push

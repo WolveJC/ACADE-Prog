@@ -67,4 +67,5 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add -u
           git commit -m "style: auto-format python files via Ruff [CI]" || echo "No changes to format"
-          git push
+          git pull --rebase origin main || echo "No remote changes to pull"
+          git push || echo "Push skipped due to concurrent updates"

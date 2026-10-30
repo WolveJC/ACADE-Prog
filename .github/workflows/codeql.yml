@@ -26,46 +26,74 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Setup entornos condicionales
+      # 1. Comprobación inteligente: Validar si existen archivos del lenguaje antes de seguir
+      - name: Check if source code exists for language
+        id: check-source
+        shell: bash
+        run: |
+          LANG="${{ matrix.language }}"
+          FOUND="true"
+          
+          if [ "$LANG" = "java-kotlin" ]; then
+            # Busca archivos .java, .kt o un pom.xml/build.gradle
+            if ! find . -name "*.java" -o -name "*.kt" -o -name "pom.xml" -o -name "build.gradle" | grep -q .; then
+              echo "No se encontraron archivos de Java/Kotlin. Se omitirá este análisis."
+              FOUND="false"
+            fi
+          elif [ "$LANG" = "csharp" ]; then
+            # Busca archivos .cs o proyectos de C#
+            if ! find . -name "*.cs" -o -name "*.csproj" -o -name "*.sln" | grep -q .; then
+              echo "No se encontraron archivos de C#. Se omitirá este análisis."
+              FOUND="false"
+            fi
+          elif [ "$LANG" = "c-cpp" ]; then
+            if ! find . -name "*.cpp" -o -name "*.c" -o -name "*.h" -o -name "*.hpp" | grep -q .; then
+              FOUND="false"
+            fi
+          fi
+          
+          echo "has_source=$FOUND" >> $GITHUB_OUTPUT
+
+      # Setup entornos condicionales (Solo si hay código)
       - name: Setup Java Environment
-        if: matrix.language == 'java-kotlin'
+        if: matrix.language == 'java-kotlin' && steps.check-source.outputs.has_source == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
       - name: Setup .NET Environment
-        if: matrix.language == 'csharp'
+        if: matrix.language == 'csharp' && steps.check-source.outputs.has_source == 'true'
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
-      # Inicialización de CodeQL
+      # Inicialización de CodeQL (Solo si hay código)
       - name: Initialize CodeQL
+        if: steps.check-source.outputs.has_source == 'true'
         uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
 
       # Compilación condicional
       - name: Build C/C++
-        if: matrix.language == 'c-cpp'
+        if: matrix.language == 'c-cpp' && steps.check-source.outputs.has_source == 'true'
         run: |
           if [ -f "Makefile" ]; then
             make codeql_all
           else
-            echo "✅ No se encontró Makefile. Saltando compilación C/C++."
+            echo "No se encontró Makefile. Saltando compilación C/C++."
           fi
 
       - name: Build Java/Kotlin
-        if: matrix.language == 'java-kotlin'
+        if: matrix.language == 'java-kotlin' && steps.check-source.outputs.has_source == 'true'
         run: bash ./build_java.sh
 
       - name: Build C#
-        if: matrix.language == 'csharp'
+        if: matrix.language == 'csharp' && steps.check-source.outputs.has_source == 'true'
         run: bash ./build_csharp.sh
 
-      # Análisis final
+      # Análisis final (Solo si se inicializó con código)
       - name: Perform CodeQL Analysis
+        if: steps.check-source.outputs.has_source == 'true'
         uses: github/codeql-action/analyze@v4
-        # Ignoramos errores solo en lenguajes opcionales
-        continue-on-error: ${{ matrix.language == 'java-kotlin' || matrix.language == 'csharp' }}

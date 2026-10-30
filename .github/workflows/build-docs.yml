@@ -1,20 +1,44 @@
 name: Build Docs
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_run:
+    workflows: ["Ruff Lint Format & Test"]
+    types:
+      - completed #Solo se ejecuta si Ruff termino (exit 0)
   workflow_dispatch:
 
 permissions:
-  contents: write   # habilita escritura en el repo con GITHUB_TOKEN
+  contents: write
 
 jobs:
+  # --- 1. JOB DE FILTRADO ---
+  check-changes:
+    runs-on: ubuntu-latest
+    # Si se lanzó a mano, forzamos que diga que sí hay cambios
+    outputs:
+      should_run: ${{ steps.filter.outputs.changes || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      # Usamos dorny/paths-filter para detectar archivos .md
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            changes:
+              - '**/*.md'
+
+  # --- 2. JOB DE CONSTRUCCIÓN (Solo corre si el anterior detectó .md) ---
   docs:
+    needs: check-changes
+    if: needs.check-changes.outputs.should_run == 'true' && (github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -31,17 +55,11 @@ jobs:
       - name: Generate GLOBAL.md
         run: python scripts/concat_readmes.py
 
-      - name: Install Pandoc
-        run: sudo apt-get update && sudo apt-get install -y pandoc
-
-      - name: Install LaTeX engine and fonts
-        run: sudo apt-get install -y texlive texlive-xetex texlive-fonts-recommended texlive-latex-extra
-
-      - name: Install SVG support
-        run: sudo apt-get install -y librsvg2-bin
-
-      - name: Install DejaVu fonts
-        run: sudo apt-get install -y fonts-dejavu
+      - name: Install Pandoc & LaTeX
+        run: |
+          sudo apt-get update && sudo apt-get install -y pandoc
+          sudo apt-get install -y texlive texlive-xetex texlive-fonts-recommended texlive-latex-extra
+          sudo apt-get install -y librsvg2-bin fonts-dejavu
 
       - name: Prepare font header
         run: |
@@ -68,6 +86,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add Wolves-Page/public/docs/doc_proj.pdf Wolves-Page/src/data/projects_list.json
           git commit -m "Update docs and projects list [CI]" || echo "No changes to commit"
+          git pull --rebase origin main || echo "No remote changes to pull"
           git push
 
       - name: Prepare Pages content

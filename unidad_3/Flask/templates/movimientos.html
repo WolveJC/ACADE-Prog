@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% from "_alertas.html" import estado, consumo %}
+
+{% block content %}
+<h1 class="h3 mb-1">Demanda e historial</h1>
+<p class="text-body-secondary">
+    Qué productos se retiran, cuánto y cómo cambia. Todo se calcula con las retiradas que se registran en «Pedido de stock».
+</p>
+
+{% if not analisis.suficiente %}
+<div class="alert alert-info" role="status">
+    <strong>Historial insuficiente:</strong> hay {{ analisis.historial_dias }} de los {{ min_historial }} días necesarios
+    ({{ total_salidas }} retiradas registradas). Hasta entonces no se calcula el consumo, para no inventar cifras.
+    Registra retiradas en «Pedido de stock» o importa un historial más abajo.
+</div>
+{% else %}
+<p class="small text-body-secondary">
+    Historial de {{ analisis.historial_dias }} días · {{ total_salidas }} retiradas
+    ({{ total_eventos }} de eventos) · {{ total_entradas }} entradas · {{ total_mermas }} mermas. Consumo promedio de los últimos {{ analisis.ventana }} días, sin contar eventos.
+</p>
+{% endif %}
+
+<div class="table-responsive mb-4">
+    <table id="tabla-demanda" class="table table-striped table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th class="text-center" title="Posición por unidades retiradas en la ventana">N.º</th>
+                <th>Producto</th>
+                <th class="text-center">Stock</th>
+                <th class="text-center">Retirado ({{ analisis.ventana or ventana }} d)</th>
+                <th class="text-center">Consumo/día</th>
+                <th>Tendencia</th>
+                <th class="text-center" title="Unidades retiradas para eventos en la ventana (no cuentan para el consumo)">En eventos</th>
+                <th class="text-center" title="Unidades descartadas en la ventana (vencidas, dañadas...). No son demanda">Mermas</th>
+                <th>Última retirada</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for f in filas %}
+            {% set s = f.stats %}
+            <tr>
+                <td class="text-center">{{ s.ranking or '—' }}</td>
+                <td>{{ f.nombre }}</td>
+                <td class="text-center">{{ f.stock }}</td>
+                <td class="text-center">{{ s.total_ventana if analisis.suficiente else '—' }}</td>
+                <td class="text-center">{{ consumo(f.alerta) }}</td>
+                <td>
+                    {%- if s.tendencia == 'alza' %}
+                    <span class="badge text-bg-success">↑ {{ '+' ~ (s.variacion * 100)|round|int ~ ' %' if s.variacion is not none else 'nuevo' }}</span>
+                    {%- elif s.tendencia == 'baja' %}
+                    <span class="badge text-bg-secondary">↓ {{ (s.variacion * 100)|round|int }} %</span>
+                    {%- elif s.tendencia == 'estable' %}
+                    <span class="text-body-secondary">→ estable</span>
+                    {%- else %}
+                    <span class="text-body-secondary" title="Se necesita una ventana completa de historial y un volumen mínimo de retiradas.">—</span>
+                    {%- endif %}
+                </td>
+                <td class="text-center">{{ s.unidades_evento if analisis.suficiente and s.unidades_evento else '—' }}</td>
+                <td class="text-center">{{ s.unidades_merma or '—' }}</td>
+                <td class="text-nowrap">{{ s.ultima_salida.isoformat() if s.ultima_salida else '—' }}</td>
+                <td>{{ estado(f.alerta) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <h2 class="h5">Últimos movimientos</h2>
+        {% if recientes %}
+        <div class="table-responsive">
+            <table class="table table-sm table-striped align-middle">
+                <thead class="table-light">
+                    <tr><th>Fecha</th><th>Producto</th><th class="text-center">Cantidad</th><th>Tipo</th></tr>
+                </thead>
+                <tbody>
+                    {% for m in recientes %}
+                    <tr>
+                        <td class="text-nowrap">{{ m.fecha.isoformat() }}</td>
+                        <td>{{ m.nombre }}</td>
+                        <td class="text-center">{{ m.cantidad }}</td>
+                        <td>
+                            {%- if m.tipo == 'merma' %}<span class="badge text-bg-danger">Merma · {{ etiquetas[m.motivo] }}</span>
+                            {%- elif m.tipo == 'entrada' %}<span class="badge text-bg-success">Entrada</span>
+                            {%- elif m.evento %}<span class="badge text-bg-secondary">Evento</span>
+                            {%- else %}<span class="text-body-secondary">Retirada</span>{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-body-secondary">Todavía no hay movimientos registrados.</p>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-5">
+        <h2 class="h5">Importar historial</h2>
+        <p class="small text-body-secondary mb-2">
+            Para cargar movimientos anteriores (retiradas, entradas y mermas). Las columnas <code>tipo</code>, <code>evento</code> y <code>motivo</code> son opcionales. <strong>Reemplaza el historial actual</strong>; si quieres añadir filas,
+            exporta primero, completa el archivo e impórtalo. No modifica el stock.
+        </p>
+        <form method="POST" action="{{ url_for('movimientos.importar') }}" enctype="multipart/form-data" class="mb-2">
+            <div class="input-group">
+                <input type="file" class="form-control" name="file" accept=".csv" required aria-label="Archivo CSV del historial">
+                <button type="submit" class="btn btn-primary">Importar</button>
+            </div>
+        </form>
+        <pre class="small bg-body border rounded p-2 mb-3">fecha,codigo,cantidad,tipo,evento,motivo
+2026-06-01,1,4,salida,0,
+2026-06-02,1,30,salida,1,    &lt;- evento especial
+2026-06-03,1,50,entrada,0,   &lt;- llegó mercancía
+2026-06-04,1,6,merma,0,vencido  &lt;- descarte</pre>
+        <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-outline-primary" href="{{ url_for('movimientos.export_movimientos') }}">Exportar historial (CSV)</a>
+            <form method="POST" action="{{ url_for('movimientos.borrar') }}"
+                  onsubmit="return confirm('¿Borrar todo el historial de movimientos? Esta acción no se puede deshacer.');">
+                <button type="submit" class="btn btn-outline-danger">Borrar historial</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

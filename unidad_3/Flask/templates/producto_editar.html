@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "_producto_form.html" import campos, errores_lista %}
+
+{% block content %}
+<h1 class="h3 mb-1">Editar producto</h1>
+<p class="text-body-secondary">Cambia los datos de este producto y sus lotes. El resto del inventario no se modifica.</p>
+
+{{ errores_lista(errores) }}
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('productos.editar', codigo=codigo) }}">
+            {{ campos(valores, editar=True) }}
+
+            <h2 class="h6 mt-4 mb-1">Lotes</h2>
+            <p class="small text-body-secondary mb-2">
+                Un lote son las unidades que comparten la misma fecha de caducidad. Corrige la cantidad o la fecha de un lote,
+                o usa una fila en blanco para añadir otro. Los lotes con la misma fecha se suman y los de 0 unidades desaparecen.
+                La fecha puede quedar vacía, pero el sistema te seguirá avisando de que falta.
+            </p>
+            <div class="table-responsive">
+                <table id="tabla-lotes" class="table table-sm align-middle" style="max-width: 32rem">
+                    <thead class="table-light">
+                        <tr><th>Fecha límite</th><th>Unidades</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for fecha, cantidad in lotes_filas %}
+                        <tr>
+                            <td><input type="date" class="form-control form-control-sm" name="lote_fecha" value="{{ fecha }}"
+                                       aria-label="Fecha límite del lote {{ loop.index }}"></td>
+                            <td><input type="number" class="form-control form-control-sm input-cantidad" name="lote_cantidad"
+                                       value="{{ cantidad }}" min="0" step="1" placeholder="0"
+                                       aria-label="Unidades del lote {{ loop.index }}"></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mt-3">
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                <a class="btn btn-outline-secondary" href="{{ url_for('productos.productos') }}">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+<p class="small text-body-secondary">
+    Cambiar los lotes aquí <strong>no registra un movimiento</strong> (sirve para corregir un conteo o una fecha). Para retiradas,
+    mercancía que llega o descartes usa «Pedido de stock», «Recepción» y «Mermas»: así quedan en el historial.
+</p>
+{% endblock %}

@@ -1,47 +1,98 @@
 {# Nombre del archivo: templates/subir_csv.html #}
 {% extends "base.html" %}
+{% from "_alertas.html" import resumen_alertas %}
 
 {% block content %}
-<h2>Subir Archivo de Inventario</h2>
-<p>Arrastra y suelta un archivo CSV o haz clic en la zona para seleccionarlo.</p>
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <h1 class="h3">Subir archivo de inventario</h1>
+        <p class="text-body-secondary">Arrastra y suelta un archivo CSV o haz clic en la zona para seleccionarlo.</p>
 
-<form id="form-subir-csv" method="POST" enctype="multipart/form-data" novalidate> {# novalidate para priorizar validación JS #}
+        {% if hay_inventario %}
+        <div class="alert alert-warning" role="status">
+            Ya hay un inventario cargado: <strong>subir un CSV lo reemplaza</strong> (el historial de movimientos se conserva).
+            Para agregar, editar o quitar productos sin perder nada, usa
+            <a href="{{ url_for('productos.productos') }}" class="alert-link">Productos</a>.
+        </div>
+        {% endif %}
 
-    {# Zona de Arrastrar y Soltar #}
-    <div id="drop-zone" class="drop-zone">
-        <p class="drop-zone-text">Arrastra y suelta el archivo CSV aquí</p>
-        <p>o</p>
-        <label for="file" class="drop-zone-label-button">Seleccionar archivo</label>
-        {# Input oculto pero funcional #}
-        <input type="file" id="file" name="file" accept=".csv" class="visually-hidden">
-        {# Span para mostrar nombre de archivo #}
-        <span id="drop-zone-filename" class="drop-zone-filename"></span>
-        {# Span para errores específicos del input (aunque oculto, JS lo usa) #}
-        <span class="error-message" data-for="file"></span>
+        <form id="form-subir-csv" method="POST" enctype="multipart/form-data" novalidate> {# novalidate para priorizar validación JS #}
+
+            {# Zona de arrastrar y soltar #}
+            <div id="drop-zone" class="drop-zone text-center p-4 mb-3 rounded-3">
+                <p class="fs-5 fw-semibold mb-1">Arrastra y suelta el archivo CSV aquí</p>
+                <p class="text-body-secondary mb-2">o</p>
+                <label for="file" class="btn btn-outline-primary">Seleccionar archivo</label>
+                {# Input oculto pero funcional #}
+                <input type="file" id="file" name="file" accept=".csv" class="visually-hidden">
+                {# Nombre del archivo seleccionado #}
+                <span id="drop-zone-filename" class="d-block mt-3 fw-semibold text-break"></span>
+                {# Errores específicos del input (aunque oculto, el JS lo usa) #}
+                <span class="error-message invalid-feedback" data-for="file"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Subir inventario CSV</button>
+        </form>
+
+        <p class="text-body-secondary small mt-3 mb-0">
+            Columnas requeridas: <code>Código</code>, <code>Nombre</code>, <code>Cantidad</code>,
+            <code>Tiempo entrega(Días)</code> y <code>Fecha límite</code> (YYYY-MM-DD, el último día para vender; si falta,
+            el producto se carga igual pero el sistema te lo avisará). Si un producto tiene unidades con fechas distintas,
+            repite su código en varias filas: cada fecha es un lote.
+            Es solo la plantilla inicial: después el stock se actualiza desde «Pedido de stock», «Recepción» y «Productos».
+        </p>
+
+        <hr class="my-4">
+        <p class="mb-2">¿No tienes un archivo CSV?</p>
+        <a class="btn btn-outline-secondary" href="{{ url_for('productos.productos') }}">Gestionar productos manualmente</a>
     </div>
-    {# Fin de la Zona #}
+</div>
 
-    <button type="submit">Subir Inventario CSV</button>
-</form>
-
-<hr>
-<p>¿No tienes un archivo CSV?</p>
-<p><a href="{{ url_for('crear_inventario') }}">Crear inventario manualmente</a></p>
-
-{% if session.get('productos') %}
-    <hr>
-    <h2>Realizar Pedidos</h2>
-    <p>Selecciona el tipo de pedido que deseas realizar:</p>
-    <ul>
-        <li><a href="{{ url_for('pedir_stock') }}">Pedido de Stock Interno</a></li>
-        <li><a href="{{ url_for('pedir_proveedor') }}">Pedido al Proveedor</a></li>
-    </ul>
-    <hr>
-    <h2>Exportar Inventario Actual</h2>
-    <ul>
-        <li><a href="{{ url_for('export_json') }}" target="_blank">Exportar a JSON</a></li>
-        <li><a href="{{ url_for('export_csv') }}">Exportar a CSV</a></li>
-    </ul>
+{% if hay_inventario %}
+<hr class="my-4">
+<h2 class="h4 mb-3">Inventario cargado</h2>
+{{ resumen_alertas(resumen) }}
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+                <h3 class="h6 card-title">Pedido de stock interno</h3>
+                <p class="card-text text-body-secondary">Registra una retirada: descuenta existencias y alimenta el historial de demanda.</p>
+                <a class="btn btn-primary mt-auto" href="{{ url_for('pedidos.pedir_stock') }}">Realizar pedido</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+                <h3 class="h6 card-title">Pedido al proveedor</h3>
+                <p class="card-text text-body-secondary">Prepara el pedido y descarga el PDF para imprimirlo.</p>
+                <a class="btn btn-primary mt-auto" href="{{ url_for('pedidos.pedir_proveedor') }}">Realizar pedido</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+                <h3 class="h6 card-title">Recepción de mercancía</h3>
+                <p class="card-text text-body-secondary">Registra lo que llega: suma al stock y queda en el historial.</p>
+                <a class="btn btn-primary mt-auto" href="{{ url_for('recepcion.recepcion') }}">Registrar recepción</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+                <h3 class="h6 card-title">Exportar inventario actual</h3>
+                <p class="card-text text-body-secondary">Descarga el estado actual del inventario.</p>
+                <div class="d-flex gap-2 mt-auto">
+                    <a class="btn btn-outline-primary" href="{{ url_for('exportar.export_json') }}" target="_blank" rel="noopener">JSON</a>
+                    <a class="btn btn-outline-primary" href="{{ url_for('exportar.export_csv') }}">CSV</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endif %}
 
 {% endblock %}

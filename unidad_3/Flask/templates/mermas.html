@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="h3 mb-1">Mermas</h1>
+<p class="text-body-secondary">
+    Da de baja la mercancía que no se vendió: rota, dañada u otra pérdida. Baja el stock del lote y queda en el historial,
+    pero <strong>no cuenta como demanda</strong>, porque nadie la compró. Los lotes que llegan a su fecha límite los
+    descarta el propio sistema.
+</p>
+
+{% if lineas %}
+    {% if unidades_vencidas and not preparar %}
+    <div class="alert alert-warning d-flex flex-wrap align-items-center justify-content-between gap-2" role="status">
+        <span><strong>Atención:</strong> hay {{ unidades_vencidas }} unidad(es) en lotes vencidos.</span>
+        <a class="btn btn-sm btn-outline-dark" href="{{ url_for('mermas.mermas', preparar='vencidos') }}">Preparar el descarte de lo vencido</a>
+    </div>
+    {% elif preparar %}
+    <div class="alert alert-info" role="status">
+        Se rellenó el descarte de todos los lotes vencidos. Revisa las cantidades y pulsa «Registrar mermas».
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('mermas.mermas') }}">
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-sm-5 col-md-3">
+                        <label for="fecha_movimiento" class="form-label">Fecha de la baja</label>
+                        <input type="date" class="form-control" id="fecha_movimiento" name="fecha_movimiento"
+                               value="{{ hoy }}" max="{{ hoy }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive mb-3">
+            <table id="tabla-mermas" class="table table-striped table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Código</th>
+                        <th>Producto</th>
+                        <th>Lote (fecha límite)</th>
+                        <th class="text-center">Unidades del lote</th>
+                        <th>Estado</th>
+                        <th>Cantidad a descartar</th>
+                        <th>Motivo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for l in lineas %}
+                    {% set p = l.producto %}
+                    <tr class="{{ 'table-danger' if l.vencido else ('table-warning' if l.por_vencer) }}">
+                        <td>{{ p['Código'] }}</td>
+                        <td>{{ p['Nombre'] }}</td>
+                        <td class="text-nowrap">{{ l.lote['Fecha límite'] or '—' }}</td>
+                        <td class="text-center">{{ l.lote['Cantidad'] }}</td>
+                        <td>
+                            {%- if l.vencido %}<span class="badge text-bg-danger">Vencido hace {{ -l.dias }} d</span>
+                            {%- elif l.por_vencer %}<span class="badge text-bg-warning">{{ 'Vence hoy' if l.dias == 0 else 'Vence en ' ~ l.dias ~ ' d' }}</span>
+                            {%- elif l.dias is none %}<span class="badge text-bg-secondary">Sin fecha</span>
+                            {%- else %}<span class="text-body-secondary">OK</span>{% endif %}
+                        </td>
+                        <td>
+                            <input type="number" class="form-control form-control-sm input-cantidad"
+                                   name="merma_cantidad[{{ l.clave }}]" id="merma_cantidad_{{ loop.index }}"
+                                   min="0" max="{{ l.lote['Cantidad'] }}" step="1" placeholder="0"
+                                   value="{{ l.lote['Cantidad'] if preparar and l.vencido }}"
+                                   aria-label="Cantidad a descartar de {{ p['Nombre'] }}, lote {{ l.lote['Fecha límite'] or 'sin fecha' }}">
+                        </td>
+                        <td>
+                            <select class="form-select form-select-sm" style="min-width: 9.5rem"
+                                    name="merma_motivo[{{ l.clave }}]" id="merma_motivo_{{ loop.index }}"
+                                    aria-label="Motivo del descarte de {{ p['Nombre'] }}, lote {{ l.lote['Fecha límite'] or 'sin fecha' }}">
+                                {% for valor, nombre in etiquetas.items() %}
+                                <option value="{{ valor }}" {{ 'selected' if valor == ('vencido' if l.vencido else 'danado') }}>{{ nombre|capitalize }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <p class="small text-body-secondary">
+            Cada fila es un lote: unidades que comparten la misma fecha de caducidad. Elige de cuál se descarta.
+        </p>
+        <button type="submit" class="btn btn-primary">Registrar mermas</button>
+    </form>
+{% else %}
+    <div class="alert alert-info">No hay mercancía en el inventario para descartar.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,46 @@
+{# Campos del formulario de producto, compartidos por «Agregar» (productos.html) y «Editar» (producto_editar.html). #}
+{# `v` son los valores a mostrar (vacíos, los del producto o lo que se escribió si hubo errores). #}
+{% macro campos(v, editar=False) -%}
+<div class="row g-3">
+    <div class="col-md-4">
+        <label for="codigo" class="form-label">Código</label>
+        <input type="text" class="form-control" id="codigo" name="codigo" value="{{ v.codigo }}" maxlength="30"
+               {% if editar %}readonly aria-describedby="ayuda-codigo"{% else %}placeholder="Vacío = se genera solo" aria-describedby="ayuda-codigo"{% endif %}>
+        <div id="ayuda-codigo" class="form-text">
+            {% if editar %}No se puede cambiar: enlaza el producto con su historial.
+            {% else %}Letras, números, punto y guion.{% endif %}
+        </div>
+    </div>
+    <div class="col-md-8">
+        <label for="nombre" class="form-label">Nombre del producto</label>
+        <input type="text" class="form-control" id="nombre" name="nombre" value="{{ v.nombre }}" maxlength="80" required>
+    </div>
+    {% if not editar %}
+    <div class="col-md-4">
+        <label for="cantidad" class="form-label">Cantidad en inventario</label>
+        <input type="number" class="form-control" id="cantidad" name="cantidad" value="{{ v.cantidad }}" min="0" step="1" required>
+    </div>
+    {% endif %}
+    <div class="col-md-4">
+        <label for="tiempo_entrega" class="form-label">Tiempo de entrega (días)</label>
+        <input type="number" class="form-control" id="tiempo_entrega" name="tiempo_entrega" value="{{ v.tiempo_entrega }}" min="0" step="1" required>
+    </div>
+    {% if not editar %}
+    <div class="col-md-4">
+        <label for="fecha_limite" class="form-label">Fecha límite de venta</label>
+        <input type="date" class="form-control" id="fecha_limite" name="fecha_limite" value="{{ v.fecha_limite }}" aria-describedby="ayuda-fecha">
+        <div id="ayuda-fecha" class="form-text">El último día para vender. Si la dejas vacía se registra igual, pero el sistema te avisará que falta.</div>
+    </div>
+    {% endif %}
+</div>
+{%- endmacro %}
+
+{# Lista de errores de validación del servidor. #}
+{% macro errores_lista(errores) -%}
+{% if errores %}
+<div class="alert alert-danger" role="alert">
+    <strong>No se pudo guardar:</strong>
+    <ul class="mb-0">{% for e in errores %}<li>{{ e }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+{%- endmacro %}

@@ -1,85 +1,134 @@
 # Etiquetas automáticas según cambios en archivos o ramas
 
-# --- Cambios en la raíz del repo ---
-root:
+# ==============================================================================
+# 1. ETIQUETAS POR LENGUAJE Y TECNOLOGÍA (lang:)
+# ==============================================================================
+"lang:cpp":
   - changed-files:
-      - any-glob-to-any-file: '*'
+      - any-glob-to-any-file: "Curso-CPP/**"
 
-# --- Cualquier cambio en el repo ---
-AnyChange:
+"lang:python":
   - changed-files:
-      - any-glob-to-any-file: '**'
+      - any-glob-to-any-file:
+          - "**/*.py"
+          - "pyproject.toml"
 
-# --- Documentación ---
-Documentation:
+"lang:react":
   - changed-files:
-      - any-glob-to-any-file: docs/**
-  - changed-files:
-      - any-glob-to-any-file: guides/**
-  - changed-files:
-      - any-glob-to-any-file: '**/*.md'
+      - any-glob-to-any-file: "Wolves-Page/**"
 
-# --- Código fuente ---
-frontend:
+"lang:flask":
   - changed-files:
-      - any-glob-to-any-file: src/frontend/**
-backend:
-  - changed-files:
-      - any-glob-to-any-file: src/backend/**
-api:
-  - changed-files:
-      - any-glob-to-any-file: src/api/**
+      - any-glob-to-any-file: "unidad_3/Flask/**"
 
-# --- Tests ---
-tests:
+"lang:web-backend":
   - changed-files:
-      - any-glob-to-any-file: tests/**
-  - changed-files:
-      - any-glob-to-any-file: '**/*test.py'
-  - changed-files:
-      - any-glob-to-any-file: '**/*spec.js'
+      - any-glob-to-any-file:
+          - "Wolves-Page-Backend/**"
+          - "unidad_3/Flask/**"
 
-# --- Infraestructura / DevOps ---
-ci-cd:
+# ==============================================================================
+# 2. ETIQUETAS POR MÓDULOS Y UNIDADES ACADÉMICAS (unidad: / curso:)
+# ==============================================================================
+"curso:cpp":
   - changed-files:
-      - any-glob-to-any-file: .github/workflows/**
-infra:
-  - changed-files:
-      - any-glob-to-any-file: infra/**
-  - changed-files:
-      - any-glob-to-any-file: docker/**
-  - changed-files:
-      - any-glob-to-any-file: k8s/**
+      - any-glob-to-any-file: "Curso-CPP/**"
 
-# --- Configuración ---
-config:
+"unidad:1":
   - changed-files:
-      - any-glob-to-any-file: '*.yml'
-      - any-glob-to-any-file: '*.yaml'
-      - any-glob-to-any-file: '*.json'
-      - any-glob-to-any-file: config/**
+      - any-glob-to-any-file: "unidad_1/**"
 
-# --- Seguridad ---
-security:
+"unidad:2":
   - changed-files:
-      - any-glob-to-any-file: security/**
-  - changed-files:
-      - any-glob-to-any-file: scripts/audit/**
+      - any-glob-to-any-file: "unidad_2/**"
 
-# --- Dependencias ---
-dependencies:
+"unidad:3":
   - changed-files:
-      - any-glob-to-any-file: requirements.txt
-      - any-glob-to-any-file: package.json
-      - any-glob-to-any-file: pnpm-lock.yaml
-      - any-glob-to-any-file: yarn.lock
-      - any-glob-to-any-file: Cargo.toml
-      - any-glob-to-any-file: go.mod
+      - any-glob-to-any-file: "unidad_3/**"
 
-# --- Assets y estilos ---
-assets:
+"unidad:7":
   - changed-files:
-      - any-glob-to-any-file: assets/**
-styles:
+      - any-glob-to-any-file: "unidad_7/**"
+
+# ==============================================================================
+# 3. ETIQUETAS POR COMPONENTES Y ÁREAS (project: / area:)
+# ==============================================================================
+"project:wolves-page":
   - changed-files:
-      - any-glob-to-any-file: styles/**
+      - any-glob-to-any-file: "Wolves-Page/**"
+
+"project:wolves-backend":
+  - changed-files:
+      - any-glob-to-any-file: "Wolves-Page-Backend/**"
+
+"area:scripts":
+  - changed-files:
+      - any-glob-to-any-file: "scripts/**"
+
+"area:tests":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "tests/**"
+          - "**/tests/**"
+
+"area:styles":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/styles/**"
+          - "**/*.css"
+          - "**/*.scss"
+          - "**/*.sass"
+
+# ==============================================================================
+# 4. CI/CD, AUTOMATIZACIÓN Y SEGURIDAD (ci: / security)
+# ==============================================================================
+"ci:github-actions":
+  - changed-files:
+      - any-glob-to-any-file: ".github/workflows/**"
+
+"ci:codeql":
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/workflows/codeql*"
+          - ".github/codeql/**"
+
+"ci:deploy":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "Wolves-Page/vercel.json"
+          - "**/Dockerfile"
+
+"security":
+  - changed-files:
+      - any-glob-to-any-file: "SECURITY.md"
+
+# ==============================================================================
+# 5. DEPENDENCIAS Y ENTORNO (deps:)
+# ==============================================================================
+"deps:python":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/requirements*.txt"
+          - "**/requisitos*.txt"
+          - "pyproject.toml"
+
+"deps:node":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/package.json"
+          - "**/package-lock.json"
+
+"deps:cpp":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "Makefile"
+          - "build_*.sh"
+
+# ==============================================================================
+# 6. TIPO DE RECURSO / DOCUMENTACIÓN (documentation)
+# ==============================================================================
+"documentation":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.md"
+          - "**/*.pdf"

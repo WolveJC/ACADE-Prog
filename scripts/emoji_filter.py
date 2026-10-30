@@ -6,9 +6,10 @@ Descarga automáticamente los SVG desde el CDN oficial y los inserta en el PDF.
 """
 
 import os
-import requests
+
 import emoji
-from pandocfilters import toJSONFilter, Image
+import requests
+from pandocfilters import Image, toJSONFilter
 
 # Carpeta donde se guardarán los SVG de Twemoji
 EMOJI_DIR = "emojis"

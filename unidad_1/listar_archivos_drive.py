@@ -7,10 +7,10 @@ como Google Drive (vía DIRUTH).
 import os
 import time
 import unittest
-from unittest.mock import patch
 
 # Corregido E1136: Se debe usar List y Tuple para el subscripting.
-from typing import Union, List, Tuple
+from typing import List, Tuple, Union
+from unittest.mock import patch
 
 # Definir el directorio
 DIRUTH = "/content/drive/My Drive/"

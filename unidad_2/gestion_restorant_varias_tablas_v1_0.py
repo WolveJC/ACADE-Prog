@@ -9,7 +9,7 @@ genera una visualización tabular con Matplotlib y un archivo de registro CSV.
 # Standard library
 import csv
 import datetime
-from typing import List, Any, Callable, Dict, Union
+from typing import Any, List  # Añadida importación para anotación de tipo
 
 # Third-party libraries
 import matplotlib.pyplot as plt
@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 # =======================================
 # Inventario de Ejemplo
 # =======================================
-INVENTARIO: List[Dict[str, Any]] = [
+INVENTARIO = [
     {
         "codigo": 1,
         "nombre": "Manzana",
@@ -57,7 +57,7 @@ INVENTARIO: List[Dict[str, Any]] = [
 # =======================================
 
 
-def insertion_sort(lista: List[Dict[str, Any]], key: Callable) -> List[Dict[str, Any]]:
+def insertion_sort(lista: list, key: callable) -> list:
     """Implementa el algoritmo Insertion Sort (orden ascendente)."""
     for i in range(1, len(lista)):
         actual = lista[i]
@@ -69,9 +69,7 @@ def insertion_sort(lista: List[Dict[str, Any]], key: Callable) -> List[Dict[str,
     return lista
 
 
-def bubble_sort(
-    lista: List[Dict[str, Any]], key: Callable, descending: bool = False
-) -> List[Dict[str, Any]]:
+def bubble_sort(lista: list, key: callable, descending: bool = False) -> list:
     """Implementa el algoritmo Bubble Sort."""
     n = len(lista)
     swapped = True
@@ -91,7 +89,7 @@ def bubble_sort(
     return lista
 
 
-def quick_sort(lista: List[Dict[str, Any]], key: Callable) -> List[Dict[str, Any]]:
+def quick_sort(lista: list, key: callable) -> list:
     """Implementa el algoritmo Quick Sort recursivo (orden ascendente)."""
     if len(lista) <= 1:
         return lista
@@ -104,9 +102,7 @@ def quick_sort(lista: List[Dict[str, Any]], key: Callable) -> List[Dict[str, Any
     return quick_sort(menos, key) + iguales + quick_sort(mayor, key)
 
 
-def selection_sort(
-    lista: List[Dict[str, Any]], key: Callable, reverse: bool = False
-) -> List[Dict[str, Any]]:
+def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
     """Implementa el algoritmo Selection Sort."""
     n = len(lista)
     for i in range(n):
@@ -148,13 +144,13 @@ INVENTARIO_POR_DEMANDA = selection_sort(INVENTARIO.copy(), key=lambda x: x["dema
 
 
 # =======================================
-# Funciones auxiliares
+# Funciones auxiliares (para eliminar R0914)
 # =======================================
 
 
 def _generate_visual_table(
-    data_rows: List[List[Any]], title: str, headers: List[str], query_date: str, algorithm_key: str
-) -> Union[str, None]:
+    data_rows: List[List[Any]], title: str, headers: list, query_date: str, algorithm_key: str
+) -> str:
     """Genera la tabla visual con Matplotlib y la guarda."""
     fig, ax = plt.subplots(figsize=(10, len(data_rows) * 0.6 + 2))
     ax.axis("off")
@@ -168,7 +164,7 @@ def _generate_visual_table(
     plt.figtext(0.5, 0.01, f"Consulta generada: {query_date}", ha="center", fontsize=8)
 
     time_stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    image_filename: Union[str, None] = f"inventario_{algorithm_key}_{time_stamp}.png"
+    image_filename = f"inventario_{algorithm_key}_{time_stamp}.png"
 
     try:
         plt.savefig(image_filename, bbox_inches="tight")
@@ -182,24 +178,20 @@ def _generate_visual_table(
 
 
 def _generate_csv_log(
-    data_rows: List[List[Any]], headers: List[str], query_date: str, algorithm_key: str
-) -> Union[str, None]:
+    data_rows: List[List[Any]], headers: list, query_date: str, algorithm_key: str
+) -> str:
     """Genera y guarda el registro de datos en un archivo CSV."""
     time_stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    csv_filename: Union[str, None] = f"registro_{algorithm_key}_{time_stamp}.csv"
-
-    # ¡CORRECCIÓN 1: Usar una guardia de tipo para el argumento 'open'!
-    if csv_filename is not None:
-        try:
-            # MyPy ahora sabe que csv_filename es str aquí
-            with open(csv_filename, mode="w", newline="", encoding="utf-8") as csvfile:
-                writer = csv.writer(csvfile)
-                writer.writerow(["Fecha Consulta"] + headers)
-                for row in data_rows:
-                    writer.writerow([query_date] + row)
-        except IOError as e:
-            print(f"Error al escribir el archivo CSV {csv_filename}: {e}")
-            csv_filename = None
+    csv_filename = f"registro_{algorithm_key}_{time_stamp}.csv"
+    try:
+        with open(csv_filename, mode="w", newline="", encoding="utf-8") as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(["Fecha Consulta"] + headers)
+            for row in data_rows:
+                writer.writerow([query_date] + row)
+    except IOError as e:
+        print(f"Error al escribir el archivo CSV {csv_filename}: {e}")
+        csv_filename = None
 
     return csv_filename
 
@@ -210,17 +202,16 @@ def _generate_csv_log(
 
 
 def generate_table_and_csv(
-    sorted_data: List[Dict[str, Any]],
-    title: str,
-    table_headers: List[str],
-    query_date: str,
-    algorithm_key: str,
+    sorted_data: list, title: str, table_headers: list, query_date: str, algorithm_key: str
 ):
     """
     Genera una tabla visual de los datos ordenados usando Matplotlib, guarda
     una imagen PNG y un archivo CSV de registro.
+
+    R0914 Corregido: La complejidad de variables locales se ha movido
+    a las funciones auxiliares.
     """
-    # 1. Crear una matriz con los datos ordenados
+    # 1. Crear una matriz con los datos ordenados (Variables: data_rows, item, row)
     data_rows = []
     for item in sorted_data:
         row = [
@@ -254,17 +245,13 @@ def generate_table_and_csv(
 # =======================================
 
 # Cabeceras para la tabla
-HEADERS: List[str] = ["Código", "Nombre", "Demanda", "Tiempo entrega", "Fecha límite", "Cantidad"]
+HEADERS = ["Código", "Nombre", "Demanda", "Tiempo entrega", "Fecha límite", "Cantidad"]
 
 # Fecha y hora de la consulta
-FECHA_CONSULTA: str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-# Definición del tipo de datos para claridad
-InventoryList = List[Dict[str, Any]]
-OrdenamientoDict = Dict[str, Union[str, InventoryList]]
+FECHA_CONSULTA = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 # Diccionarios con cada ordenamiento
-ORDENAMIENTOS: List[OrdenamientoDict] = [
+ORDENAMIENTOS = [
     {
         "title": "Ordenamiento por Cantidad (Insertion Sort)",
         "data": INVENTARIO_POR_CANTIDAD,
@@ -288,18 +275,12 @@ ORDENAMIENTOS: List[OrdenamientoDict] = [
 ]
 
 # Iterar sobre cada criterio de ordenamiento, generar y mostrar la tabla
+# Finalmente, guardar el CSV correspondiente.
 for orden in ORDENAMIENTOS:
-    # Usar isinstance para refinar el tipo de 'data' y eliminar el error de Union
-    data = orden["data"]
-    # ¡CORRECCIÓN 2: Usar guardia de tipo para el argumento 'sorted_data'!
-    if isinstance(data, list):
-        # Si MyPy sabe que 'data' es una lista aquí, el error desaparece.
-        TITLE_STR = str(orden["title"])
-        ALGORITHM_KEY_STR = str(orden["algorithm_key"])
-        generate_table_and_csv(
-            sorted_data=data,
-            title=TITLE_STR,
-            table_headers=HEADERS,
-            query_date=FECHA_CONSULTA,
-            algorithm_key=ALGORITHM_KEY_STR,
-        )
+    generate_table_and_csv(
+        sorted_data=orden["data"],
+        title=orden["title"],
+        table_headers=HEADERS,
+        query_date=FECHA_CONSULTA,
+        algorithm_key=orden["algorithm_key"],
+    )

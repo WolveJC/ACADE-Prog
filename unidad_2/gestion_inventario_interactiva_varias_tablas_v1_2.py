@@ -13,8 +13,7 @@ import datetime
 import random
 import string
 import sys
-# ¡CORRECCIÓN 1: Importar Callable y Dict para MyPy!
-from typing import Union, List, Any, Callable, Dict
+from typing import Any, List, Union
 
 # Third-party libraries
 import matplotlib.pyplot as plt
@@ -56,8 +55,7 @@ def _obtener_fecha_valida(prompt: str, formato: str = "%Y-%m-%d") -> Union[str, 
 # ------------------------------------------
 # Ingreso interactivo de productos
 # ------------------------------------------
-# La lista de inventario espera diccionarios de productos
-def ingresar_productos(lista_inventario: List[Dict[str, Any]]):
+def ingresar_productos(lista_inventario: list):
     """Permite al usuario ingresar productos de manera interactiva."""
     while True:
         print("\n--- Ingrese los datos del nuevo producto ---")
@@ -123,8 +121,8 @@ def ingresar_productos(lista_inventario: List[Dict[str, Any]]):
 # 2. Funciones de ordenamiento
 # ------------------------------------------
 
-# ¡CORRECCIÓN 2: Reemplazar 'callable' por 'Callable' importado de typing!
-def insertion_sort(lista: list, key: Callable, descending: bool = False) -> list:
+
+def insertion_sort(lista: list, key: callable, descending: bool = False) -> list:
     """
     Implementa el Insertion Sort, adaptable para orden ascendente o descendente.
     ...
@@ -147,10 +145,8 @@ def insertion_sort(lista: list, key: Callable, descending: bool = False) -> list
         lista[j + 1] = actual
     return lista
 
-# ¡CORRECCIÓN 2: Reemplazar 'callable' por 'Callable'!
 
-
-def bubble_sort(lista: list, key: Callable, descending: bool = False) -> list:
+def bubble_sort(lista: list, key: callable, descending: bool = False) -> list:
     """
     Implementa el algoritmo Bubble Sort.
     ...
@@ -172,10 +168,8 @@ def bubble_sort(lista: list, key: Callable, descending: bool = False) -> list:
         n -= 1
     return lista
 
-# ¡CORRECCIÓN 2: Reemplazar 'callable' por 'Callable'!
 
-
-def quick_sort(lista: list, key: Callable) -> list:
+def quick_sort(lista: list, key: callable) -> list:
     """
     Implementa el Quick Sort recursivo (orden ascendente).
     ...
@@ -190,10 +184,8 @@ def quick_sort(lista: list, key: Callable) -> list:
 
     return quick_sort(menos, key) + iguales + quick_sort(mayor, key)
 
-# ¡CORRECCIÓN 2: Reemplazar 'callable' por 'Callable'!
 
-
-def selection_sort(lista: list, key: Callable, reverse: bool = False) -> list:
+def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
     """
     Implementa el Selection Sort (utilizado aquí de forma estable con lista temporal).
     ...
@@ -245,7 +237,11 @@ def generar_inventarios_ordenados(datos_originales: list) -> dict:
 
 
 def _generate_visual_table(
-    data_matrix: List[List[Any]], title: str, headers: list, query_date: str, algorithm_key: str
+    data_matrix: List[List[Any]],
+    title: str,
+    headers: list,
+    query_date: str,
+    algorithm_key: str,
 ):
     """Genera la tabla visual con Matplotlib y la guarda."""
     fig, ax = plt.subplots(figsize=(10, len(data_matrix) * 0.6 + 2))
@@ -263,7 +259,7 @@ def _generate_visual_table(
 
     try:
         plt.savefig(image_filename, bbox_inches="tight")
-        # plt.show() # Muestra la tabla
+        plt.show()  # Muestra la tabla
     except IOError as e:
         print(f" Error al guardar la imagen {image_filename}: {e}")
 
@@ -272,7 +268,11 @@ def _generate_visual_table(
 
 
 def _generate_csv_log(
-    data_matrix: List[List[Any]], _: str, headers: list, query_date: str, algorithm_key: str
+    data_matrix: List[List[Any]],
+    _: str,
+    headers: list,
+    query_date: str,
+    algorithm_key: str,
 ):
     """Guarda el registro de datos en un archivo CSV."""
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -308,7 +308,6 @@ def generate_table_and_csv(
         query_date: Fecha y hora de la consulta (timestamp).
         algorithm_key: Clave del algoritmo (usada para nombrar archivos).
     """
-
     # Preparar la matriz de datos para la tabla
     data_matrix = []
     for item in sorted_data:
@@ -340,8 +339,7 @@ def generate_table_and_csv(
 # ------------------------------------------
 
 if __name__ == "__main__":
-    # ¡CORRECCIÓN 3: Añadir anotación de tipo a 'inventario'!
-    inventario: List[Dict[str, Any]] = []
+    inventario = []
     ingresar_productos(inventario)
 
     if not inventario:
@@ -351,7 +349,14 @@ if __name__ == "__main__":
     inventarios_ordenados = generar_inventarios_ordenados(inventario)
 
     # Definición de variables locales para los encabezados
-    headers_all = ["Código", "Nombre", "Demanda", "Tiempo entrega", "Fecha límite", "Cantidad"]
+    headers_all = [
+        "Código",
+        "Nombre",
+        "Demanda",
+        "Tiempo entrega",
+        "Fecha límite",
+        "Cantidad",
+    ]
 
     fecha_consulta = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 

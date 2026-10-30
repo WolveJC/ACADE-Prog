@@ -10,8 +10,8 @@ import sys
 # Añadido para salida limpia
 from typing import Union
 
-from src.services.inventario_manager import Inventario
 from src.models.productos import Producto
+from src.services.inventario_manager import Inventario
 
 
 def obtener_datos_producto() -> Union[Producto, None]:

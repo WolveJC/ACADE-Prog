@@ -14,7 +14,7 @@ OUTPUT_FILE = os.path.join(REPO_PATH, "GLOBAL.md")
 md_files_found = []
 
 # Recolectar todos los archivos .md
-for root, dirs, files in os.walk(REPO_PATH):
+for root, _dirs, files in os.walk(REPO_PATH):
     # Ignorar carpetas ocultas y .git
     if any(part.startswith(".") for part in root.split(os.sep)):
         continue

@@ -5,8 +5,8 @@ Define la clase Inventario, que maneja la colección de objetos Producto
 y las operaciones de persistencia de datos (JSON) para mantener el stock
 """
 
-import os
 import json
+import os
 from typing import Union
 
 from ..models.productos import Producto

@@ -1,137 +1,121 @@
-#include<iostream>
-
-#include<fstream>
+#include <iostream>
+#include <string>
 
 using namespace std;
 
-
-struct productos {
-
-    
-string nomp;
-    
-int cod;
-int pre;
-int exis;
-
+struct Productos {
+    string nomp;
+    int cod;
+    float pre;
+    int exis;
 };
 
-
-struct persona {
-
-   
-char nom[45];
-    
-char ape[45];
-    
-int cedula;
-    
-int tel;
-    
-double credito;
-
+struct Persona {
+    char nom[45];
+    char ape[45];
+    int cedula;
+    int tel;
+    double credito;
 };
 
+int main() {
+    int cant;
+    int op = 0;
 
-void recibo ();
+    // Arreglo de tamaño 4 para usar los índices 1, 2 y 3 de forma segura
+    Productos merca[4]; 
 
-
-
-int main()
-{
-int cant;
-int op;
-    
-int ven;
-    
-int com;
-    
-
-productos merca[1];
-    
-for (int i=1; i<=3; i++) {
-
+    // 1. Registro inicial de los 3 productos
+    for (int i = 1; i <= 3; i++) {
+        cout << "--- Producto " << i << " ---" << endl;
+        cout << "Nombre del producto: ";
+        cin >> merca[i].nomp;
         
-cout << "Nombre del producto"<< i << ":"  << endl;
+        cout << "Codigo del producto: ";
+        cin >> merca[i].cod;
         
-cin >> merca[i].nomp;
+        cout << "Precio del producto: ";
+        cin >> merca[i].pre;
         
-cout << "Código del producto" << i << ":" << endl;
-        
-cin >> merca[i].cod;
-        
-cout << "Precio del producto" << i << ":" << endl;
-        
-cin >> merca[i].pre;
-        
-cout << "Existencia" << i << ":" << endl;
-        
-cin >> merca[i].exis;
-    
-}
+        cout << "Existencia inicial: ";
+        cin >> merca[i].exis;
+        cout << endl;
+    }
 
-    
+    // 2. Registro inicial del cliente
+    Persona cliente;
+    cout << "--- Datos del Cliente ---" << endl;
+    cout << "Nombre de la persona: ";
+    cin >> cliente.nom;
+    cout << "Apellido de la persona: ";
+    cin >> cliente.ape;
+    cout << "Cedula de la persona: ";
+    cin >> cliente.cedula;
+    cout << "Telefono de la persona: ";
+    cin >> cliente.tel;
+    cout << "Credito disponible de la persona: ";
+    cin >> cliente.credito;
+    cout << endl;
 
-persona cliente;
-    
-cout << "Nombre de la persona: " << endl;
-    
-cin >> cliente.nom;
-    
-cout << "Apellido de la persona: " << endl;
-    
-cin >> cliente.ape;
-    
-cout << "Cédula de la persona: " << endl;
-    
-cin >> cliente.cedula;
-    
-cout << "Teléfono de la persona: " << endl;
-    
-cin >> cliente.tel;
-    
-cout << "Credito de la persona: " << endl;
-    
-cin >> cliente.credito;
+    // 3. Ciclo principal del sistema (Menú interactivo)
+    while (op != 4) {
+        cout << "\n===========================" << endl;
+        cout << "BIENVENIDO - MENU PRINCIPAL" << endl;
+        cout << "Credito disponible: " << cliente.credito << endl;
+        cout << "Elige una opcion de producto:" << endl;
+        cout << "1. " << merca[1].nomp << " | Precio: " << merca[1].pre << " | Stock: " << merca[1].exis << endl;
+        cout << "2. " << merca[2].nomp << " | Precio: " << merca[2].pre << " | Stock: " << merca[2].exis << endl;
+        cout << "3. " << merca[3].nomp << " | Precio: " << merca[3].pre << " | Stock: " << merca[3].exis << endl;
+        cout << "4. Salir del sistema" << endl;
+        cout << "Opcion: ";
+        cin >> op;
 
-    
-cout << "Bienvenido, elige una opción:" << endl;
-    
-cout << "1. " << merca[1].nomp << endl;
-    
-cout << "2. " << merca[2].nomp << endl;
-    
-cout << "3. " << merca[3].nomp << endl;
-    
-cout << "4. " << "salir"  << endl;
-    
-cin >> op;
-    
-    
-switch(op){
-    
-    
-
-case 1: 
-    
-  
-  
-cout << "Producto seleccionado: " << merca[1].nomp << endl; 
-cout << "Existen actualmente: " << merca[1].exis << endl; 
-cout << "Tiene un precio de: " << merca[1].pre << endl;
-cout << "El cliente posee un crédito de: " << cliente.credito << endl;
-cout << "¿Desea comprar este producto?" << endl;
-cout << "1. Si" << endl;
-    
-cout << "2. No" << endl;
-    
-cin >> ven;
-    
-
-while (ven=1){
-     
-      cout << "¿Cuanto desea adquirir de este producto?" << endl;
-      cin >> cant;
-      
-      };}}
+        if (op >= 1 && op <= 3) {
+            int idx = op; // Índice del producto seleccionado
             
+            cout << "\n--- Producto Seleccionado: " << merca[idx].nomp << " ---" << endl;
+            cout << "Disponibles en stock: " << merca[idx].exis << endl; 
+            cout << "Precio unitario: " << merca[idx].pre << endl;
+            cout << "¿Cuanto desea adquirir? (Ingrese 0 para cancelar y volver al menu): ";
+            cin >> cant;
+
+            // Si el usuario introduce 0, cancela y regresa al menú
+            if (cant == 0) {
+                cout << "Operacion cancelada. Regresando al menu..." << endl;
+            } 
+            else if (cant < 0) {
+                cout << "Error: No puede ingresar cantidades negativas." << endl;
+            } 
+            else {
+                double total = cant * merca[idx].pre;
+
+                // Validar existencias
+                if (cant > merca[idx].exis) {
+                    cout << "¡Error! No hay suficiente existencia. Stock actual: " << merca[idx].exis << endl;
+                }
+                // Validar crédito
+                else if (total > cliente.credito) {
+                    cout << "¡Error! El cliente no posee suficiente crédito." << endl;
+                    cout << "Total de la compra: " << total << " | Crédito disponible: " << cliente.credito << endl;
+                } 
+                // Transacción exitosa
+                else {
+                    merca[idx].exis -= cant;
+                    cliente.credito -= total;
+
+                    cout << "\n¡Compra realizada con exito!" << endl;
+                    cout << "Se descontaron " << total << " de credito." << endl;
+                    cout << "Nuevo credito restante: " << cliente.credito << endl;
+                }
+            }
+        } 
+        else if (op == 4) {
+            cout << "\nSaliendo del sistema. ¡Gracias por usar el programa!" << endl;
+        } 
+        else {
+            cout << "\nOpcion invalida. Intente de nuevo." << endl;
+        }
+    }
+
+    return 0;
+}

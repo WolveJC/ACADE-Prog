@@ -11,22 +11,38 @@ permissions:
   contents: write
 
 jobs:
-  # --- 1. JOB DE FILTRADO ---
+  # --- 1. JOB DE FILTRADO NATIVO ---
   check-changes:
     runs-on: ubuntu-latest
-    # Si se lanzó a mano, forzamos que diga que sí hay cambios
     outputs:
-      should_run: ${{ steps.filter.outputs.changes || github.event_name == 'workflow_dispatch' }}
+      should_run: ${{ steps.check_markdown.outputs.run_build }}
     steps:
-      - uses: actions/checkout@v4
-      
-      # Usamos dorny/paths-filter para detectar archivos .md
-      - uses: dorny/paths-filter@v2
-        id: filter
+      - name: Checkout repo
+        uses: actions/checkout@v4
         with:
-          filters: |
-            changes:
-              - '**/*.md'
+          fetch-depth: 2 # Vital para poder comparar
+
+      - name: Verificar si hay cambios en archivos Markdown (.md)
+        id: check_markdown
+        run: |
+          # Si se disparó manualmente, forzamos la ejecución
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "run_build=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Comprobamos exactamente qué archivos cambiaron en este push
+          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD || echo "")
+          echo "Archivos modificados:"
+          echo "$CHANGED_FILES"
+
+          if echo "$CHANGED_FILES" | grep -q "\.md$"; then
+            echo "Se detectaron archivos .md"
+            echo "run_build=true" >> $GITHUB_OUTPUT
+          else
+            echo "No hay cambios en archivos .md"
+            echo "run_build=false" >> $GITHUB_OUTPUT
+          fi
 
   # --- 2. JOB DE CONSTRUCCIÓN (Solo corre si el anterior detectó .md) ---
   docs:

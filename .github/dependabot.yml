@@ -12,7 +12,6 @@ updates:
       day: "monday"
     cooldown:
       default-days: 28     # espera 28 días tras publicarse una versión
-    open-pull-requests-limit: 5
     labels: ["dependencies"]
     commit-message:
       prefix: "ci"

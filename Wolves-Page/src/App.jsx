@@ -8,81 +8,88 @@ import {
 
 // Componentes de Layout
 import Header from "./components/Layout/Header.jsx";
-import Sidebar from "./components/Layout/Sidebar.jsx"; // Sidebar del Bosque (Skills)
+import Sidebar from "./components/Layout/Sidebar.jsx";
 import MainContent from "./components/Layout/MainContent.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
-import CafePage from "./pages/CafePage.jsx"; // Nuevo: Página del Café
-import TransitionOverlay from "./components/Layout/TransitionOverlay"; // Nuevo: Overlay de Transición
+// CafeLayout envuelve CafePage con su propio NutritionProvider,
+// escopado solo a /cafe (antes el Provider vivía en la raíz de
+// toda la app, sin que nadie fuera de /cafe lo necesitara).
+import CafeLayout from "./components/Layout/CafeLayout.jsx";
+import ProjectDocumentationViewer from "./pages/ProjectDocumentationViewer.jsx";
+import TransitionOverlay from "./components/Layout/TransitionOverlay";
 
-// Componentes y Contextos de Interacción
+// Componentes y Contextos
 import CustomCursor from "./components/Cursor/CustomCursor.js";
 import { CarouselProvider } from "./context/GlobalCarousel.jsx";
-import { TransitionProvider } from "./context/TransitionContext"; // Nuevo: Provider de Transición
-import { NutritionProvider } from "./context/NutritionContext"; // Nuevo: Provider de Nutrición
+import { TransitionProvider } from "./context/TransitionContext";
 
-// --------------------------------------------------------
-// COMPONENTE WRAPPER: Gestiona la lógica de layout condicional
+// Fuente única de verdad del número real de secciones del carrusel
+// (Welcome + páginas de proyectos + AboutMe). Ver utils/chunkProjects.js.
+import { projectsData } from "./data/projects";
+import { getUniqueSectionsCount } from "./utils/chunkProjects";
+
 // --------------------------------------------------------
 const LayoutWrapper = () => {
   const location = useLocation();
   const isCafePage = location.pathname === "/cafe";
+  const isDocPage = location.pathname === "/documentacion";
 
-  // 1. Lógica de Fondo Temático
-  // El fondo debe ser dinámico: degradado en Bosque, color fijo en Café
   const bgClasses = isCafePage
-    ? "bg-leche-crema text-cafe-oscuro" // Color fijo y texto oscuro para Café
-    : "bg-gradient-to-b from-forest-start via-forest-mid to-forest-end text-white"; // Degradado y texto blanco para Bosque
+    ? "bg-leche-crema text-cafe-oscuro"
+    : "bg-linear-to-b from-forest-start via-forest-mid to-forest-end text-white";
 
   return (
     <div
       className={`
-                relative min-h-screen pt-16
-                transition-colors duration-1000 ease-in-out // Permite la transición del fondo
-                ${bgClasses}
-            `}
+        relative min-h-screen pt-16
+        transition-colors duration-1000 ease-in-out
+        ${bgClasses}
+      `}
     >
-      {/* El pt-16 empuja el contenido debajo del Header fijo */}
       <Header />
 
-      {/* Sidebar Condicional: Solo se muestra si NO estamos en la página del Café */}
-      {!isCafePage && <Sidebar />}
+      {!isCafePage && !isDocPage && <Sidebar />}
 
-      {/* Contenido Dinámico: Aquí se gestionan las rutas */}
       <main>
         <Routes>
           <Route path="/" element={<MainContent />} />
           <Route path="/contact" element={<ContactPage />} />
-          {/* Ruta del Café: Usará su propia sidebar internamente */}
-          <Route path="/cafe" element={<CafePage />} />
+          <Route path="/cafe" element={<CafeLayout />} />
+          <Route
+            path="/documentacion"
+            element={<ProjectDocumentationViewer />}
+          />
         </Routes>
       </main>
 
-      {/*  El Overlay siempre se renderiza para manejar las animaciones */}
       <TransitionOverlay />
     </div>
   );
 };
 
 // --------------------------------------------------------
-// COMPONENTE PRINCIPAL APP
-// --------------------------------------------------------
 function App() {
+  // Se calcula UNA vez, a partir de la misma data que usa MainContent.jsx
+  // para construir `sections`. Si projectsData crece y suma una página más,
+  // este número crece automáticamente con ella.
+  const totalUniqueSlides = getUniqueSectionsCount(projectsData);
+  const totalSlides = totalUniqueSlides * 2; // *2 por la copia del loop infinito
+
   return (
     <Router>
-      {/* 1. Componentes Fijos */}
-      <CustomCursor />
+      {/* Cursor personalizado SIEMPRE visible */}
+      <div className="cursor-none">
+        <CustomCursor />
 
-      {/* 2. Providers Globales (en el orden adecuado) */}
-      <TransitionProvider>
-        <NutritionProvider>
-          {" "}
-          {/* Nutrición debe estar dentro de Transition si es usada por un componente que activa la transición */}
-          <CarouselProvider>
-            {/* 3. Renderizar el Layout (Routes, Sidebar, etc.) */}
+        <TransitionProvider>
+          <CarouselProvider
+            totalUniqueSlides={totalUniqueSlides}
+            totalSlides={totalSlides}
+          >
             <LayoutWrapper />
           </CarouselProvider>
-        </NutritionProvider>
-      </TransitionProvider>
+        </TransitionProvider>
+      </div>
     </Router>
   );
 }

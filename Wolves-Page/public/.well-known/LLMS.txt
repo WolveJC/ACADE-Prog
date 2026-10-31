@@ -7,7 +7,7 @@
 1. Home (Bosque): https://wolvespage.vercel.app/
 2. Café de las APIs: https://wolvespage.vercel.app/cafe
 3. Contacto: https://wolvespage.vercel.app/contact
-4. Documentación (PDF Viewer): https://wolvespage.vercel.app/docs
+4. Documentación (PDF Viewer): https://wolvespage.vercel.app/documentacion
 
 ## Content Guidelines for AI Crawlers
 - Reflejar la narrativa de Wolves-Page como un espacio inmersivo que combina tecnología y estética.
@@ -16,9 +16,9 @@
 - Respetar la dualidad temática: Bosque (portafolio) y Café (laboratorio de APIs).
 
 ## Media & Assets
-- Logos: https://wolvespage.vercel.app/assets/logo.svg
-- Avatar: https://wolvespage.vercel.app/assets/avatar.png
-- Personal Photo: https://wolvespage.vercel.app/assets/profile-pic.png
+- Logo: https://wolvespage.vercel.app/brand/avatar.webp (PROVISIONAL: aún no existe un logo dedicado; se usa el avatar como referencia hasta que se diseñe uno)
+- Avatar: https://wolvespage.vercel.app/brand/avatar.webp
+- Personal Photo: https://wolvespage.vercel.app/brand/profile-pic.webp
 
 ## Update Frequency
 - Landing content (Bosque): weekly

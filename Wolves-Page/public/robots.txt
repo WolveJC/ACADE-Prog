@@ -14,4 +14,4 @@ Disallow: /static/css/
 Allow: /
 
 # Señalar sitemap (mejorar indexación)
-Sitemap: https://wolves-page.vercel.app/sitemap.xml
+Sitemap: https://wolvespage.vercel.app/sitemap.xml

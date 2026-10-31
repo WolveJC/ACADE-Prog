@@ -21,7 +21,7 @@ function showError(inputElement, message) {
     let errorElement = inputElement.parentNode.querySelector(`.error-message[data-for="${identifier}"]`);
     if (!errorElement) {
         errorElement = document.createElement('span');
-        errorElement.className = 'error-message';
+        errorElement.className = 'error-message invalid-feedback';
         errorElement.dataset.for = identifier;
         inputElement.parentNode.insertBefore(errorElement, inputElement.nextSibling);
     }
@@ -55,7 +55,20 @@ function clearFormErrors(containerElement) {
 }
 
 /**
- * Muestra una notificación "toast" temporal en la esquina.
+ * Cierra un aviso con transición y lo quita del DOM.
+ * El temporizador de respaldo cubre el caso en que no hay transición
+ * (p. ej. usuarios con "reducir movimiento" activado).
+ * @param {HTMLElement} toast - El aviso a cerrar.
+ */
+function cerrarToast(toast) {
+    toast.classList.remove('show');
+    const quitar = () => toast.remove();
+    toast.addEventListener('transitionend', quitar, { once: true });
+    setTimeout(quitar, 400);
+}
+
+/**
+ * Muestra una notificación temporal en la esquina (alerta de Bootstrap).
  * @param {string} message - El mensaje a mostrar.
  * @param {'success' | 'error' | 'warning' | 'info'} type - Tipo de notificación.
  * @param {number} duration - Duración en milisegundos antes de desaparecer.
@@ -68,36 +81,32 @@ function showToast(message, type = 'info', duration = 4000) {
         return;
     }
 
+    const clases = { success: 'alert-success', error: 'alert-danger', warning: 'alert-warning', info: 'alert-info' };
     const toast = document.createElement('div');
-    toast.className = `toast-message toast-${type}`;
+    toast.className = `alert ${clases[type] || 'alert-info'} alert-dismissible fade shadow-sm mb-2`;
+    toast.style.pointerEvents = 'auto'; // el contenedor ignora el ratón; el aviso no
+    toast.setAttribute('role', 'alert');
     toast.textContent = message;
 
     const closeButton = document.createElement('button');
-    closeButton.className = 'toast-close-button';
-    closeButton.innerHTML = '&times;';
+    closeButton.type = 'button';
+    closeButton.className = 'btn-close';
     closeButton.setAttribute('aria-label', 'Cerrar notificación');
-    closeButton.onclick = () => {
-        toast.classList.remove('show');
-        toast.classList.add('hide');
-        toast.addEventListener('transitionend', () => toast.remove(), { once: true });
-    };
+    closeButton.addEventListener('click', () => {
+        clearTimeout(timeoutId);
+        cerrarToast(toast);
+    });
     toast.appendChild(closeButton);
 
     container.appendChild(toast);
 
-    toast.offsetHeight;
+    toast.offsetHeight; // fuerza el reflow para que la transición de entrada se aplique
 
     requestAnimationFrame(() => {
         toast.classList.add('show');
     });
 
-    const timeoutId = setTimeout(() => {
-        toast.classList.remove('show');
-        toast.classList.add('hide');
-        toast.addEventListener('transitionend', () => toast.remove(), { once: true });
-    }, duration);
-
-    closeButton.addEventListener('click', () => clearTimeout(timeoutId));
+    const timeoutId = setTimeout(() => cerrarToast(toast), duration);
 }
 
 
@@ -109,7 +118,17 @@ function showToast(message, type = 'info', duration = 4000) {
  */
 async function apiFetch(url, options = {}) {
     try {
-        const response = await fetch(url, options);
+        // Cabeceras para que el servidor responda JSON (y no con redirecciones HTML).
+        // No se fija Content-Type: el navegador lo calcula (necesario con FormData).
+        const opciones = {
+            ...options,
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                ...(options.headers || {})
+            }
+        };
+        const response = await fetch(url, opciones);
         const contentType = response.headers.get("content-type");
         let data;
         if (contentType && contentType.includes("application/json")) {
@@ -139,27 +158,20 @@ async function apiFetch(url, options = {}) {
 }
 
 /**
- * Genera un código alfanumérico aleatorio único dentro de un conjunto opcional.
- * @param {number} longitud - Longitud del código.
- * @param {string[]} [existingCodes=[]] - Array opcional de códigos existentes para verificar unicidad.
- * @returns {string} - Código aleatorio único.
+ * Muestra como toasts los mensajes flash enviados por el servidor
+ * (JSON embebido en #flash-data por base.html).
  */
-function generarCodigoAleatorio(longitud = 6, existingCodes = []) {
-    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let attempts = 0;
-    const maxAttempts = 100;
-    while(attempts < maxAttempts) {
-        let resultado = '';
-        for (let i = 0; i < longitud; i++) {
-            resultado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-        }
-        if (!existingCodes.includes(resultado)) {
-            return resultado;
-        }
-        attempts++;
+function showFlashMessages() {
+    const el = document.getElementById('flash-data');
+    if (!el) return;
+    let mensajes = [];
+    try {
+        mensajes = JSON.parse(el.textContent);
+    } catch (e) {
+        return;
     }
-    console.warn("No se pudo generar un código aleatorio único después de", maxAttempts, "intentos.");
-    return `TEMP_${Date.now()}`;
+    const tipos = { message: 'info', info: 'info', success: 'success', warning: 'warning', error: 'error' };
+    mensajes.forEach(([categoria, texto]) => showToast(texto, tipos[categoria] || 'info', 6000));
 }
 
 /**
@@ -209,7 +221,7 @@ function setupFileUpload() {
     dropZone.addEventListener('drop', handleDrop, false);
     function handleDrop(e) { const dt = e.dataTransfer; handleFiles(dt.files); }
     dropZone.addEventListener('click', (e) => {
-        if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A' && e.target.tagName !== 'INPUT') {
+        if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'LABEL') {
              fileInput.click();
         }
     });
@@ -279,115 +291,6 @@ function setupFileUpload() {
         // finally {
             // La rehabilitación está ahora en el catch, porque en caso de éxito se recarga
         // }
-    });
-}
-
-
-// ------------------------------------------------------------
-//       PÁGINA DE CREACIÓN DE INVENTARIO (crear_inventario.html)
-// ------------------------------------------------------------
-let inventarioCreadoUI = [];
-
-function setupCrearInventario() {
-    const formContainer = document.querySelector('#form-crear-inventario');
-    const btnAgregar = document.querySelector('#agregar-producto-btn');
-    const btnGuardar = document.querySelector('#guardar-inventario-btn');
-    const tablaBody = document.querySelector('#inventario-creado-tbody');
-
-    if (!formContainer || !btnAgregar || !btnGuardar || !tablaBody) return;
-
-    const guardado = sessionStorage.getItem('inventarioCreadoUI');
-    if (guardado) {
-        try {
-            inventarioCreadoUI = JSON.parse(guardado);
-            if (!Array.isArray(inventarioCreadoUI)) inventarioCreadoUI = [];
-        } catch(e) {
-            inventarioCreadoUI = [];
-            sessionStorage.removeItem('inventarioCreadoUI');
-        }
-        renderTablaInventarioCreado(tablaBody);
-    }
-
-    btnAgregar.addEventListener('click', () => {
-        clearFormErrors(formContainer);
-        const producto = {};
-        let isValid = true;
-
-        const codigoInput = formContainer.querySelector('#codigo');
-        const nombreInput = formContainer.querySelector('#nombre');
-        const demandaInput = formContainer.querySelector('#demanda');
-        const tiempoInput = formContainer.querySelector('#tiempo_entrega');
-        const fechaInput = formContainer.querySelector('#fecha_limite');
-        const cantidadInput = formContainer.querySelector('#cantidad');
-
-        // Validaciones.
-        producto.nombre = nombreInput.value.trim();
-        if (!producto.nombre) { showError(nombreInput, 'Obligatorio.'); isValid = false; }
-        producto.demanda = parseInt(demandaInput.value);
-        if (isNaN(producto.demanda) || producto.demanda < 1 || producto.demanda > 10) { showError(demandaInput, 'Número 1-10.'); isValid = false; }
-        producto.tiempo_entrega = parseInt(tiempoInput.value);
-        if (isNaN(producto.tiempo_entrega) || producto.tiempo_entrega < 0) { showError(tiempoInput, 'Número >= 0.'); isValid = false; }
-        producto.fecha_limite = fechaInput.value.trim();
-        const datePattern = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
-        if (!producto.fecha_limite) { showError(fechaInput, 'Obligatorio.'); isValid = false; }
-        else if (!datePattern.test(producto.fecha_limite)) { showError(fechaInput, 'Formato YYYY-MM-DD.'); isValid = false; }
-        producto.cantidad = parseInt(cantidadInput.value);
-        if (isNaN(producto.cantidad) || producto.cantidad < 0) { showError(cantidadInput, 'Número >= 0.'); isValid = false; }
-        const currentCodes = inventarioCreadoUI.map(p => p.codigo);
-        producto.codigo = codigoInput.value.trim() || generarCodigoAleatorio(6, currentCodes);
-        if (codigoInput.value.trim() && currentCodes.includes(codigoInput.value.trim())) { showError(codigoInput, 'Código ya existe.'); isValid = false; }
-
-        if (isValid) {
-            inventarioCreadoUI.push(producto);
-            sessionStorage.setItem('inventarioCreadoUI', JSON.stringify(inventarioCreadoUI));
-            renderTablaInventarioCreado(tablaBody);
-            formContainer.querySelectorAll('input:not([type=button]):not([type=submit])').forEach(input => input.value = '');
-            clearFormErrors(formContainer);
-            showToast('Producto agregado a la lista.', 'info');
-        } else {
-            showToast('Corrige los errores en el formulario.', 'error');
-        }
-    });
-
-    btnGuardar.addEventListener('click', async () => {
-        if (inventarioCreadoUI.length === 0) {
-            showToast('Agrega al menos un producto antes de guardar.', 'warning');
-            return;
-        }
-        showToast('Guardando inventario...', 'info');
-        btnGuardar.disabled = true;
-        btnAgregar.disabled = true;
-        try {
-            const response = await apiFetch('/crear_inventario', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ inventario: inventarioCreadoUI, guardar_csv: true })
-            });
-            showToast(response.message || 'Inventario guardado y cargado.', 'success', 5000);
-            inventarioCreadoUI = [];
-            sessionStorage.removeItem('inventarioCreadoUI');
-            renderTablaInventarioCreado(tablaBody);
-            setTimeout(() => window.location.href = '/', 2000);
-        } catch (error) {
-            showToast(`Error al guardar: ${error.message}`, 'error');
-            btnGuardar.disabled = false;
-            btnAgregar.disabled = false;
-        }
-    });
-}
-
-function renderTablaInventarioCreado(tbody) {
-    if (!tbody) return;
-    tbody.innerHTML = ''; // Limpiar
-    inventarioCreadoUI.forEach((producto, index) => {
-        const row = tbody.insertRow();
-        row.dataset.index = index;
-        row.insertCell().textContent = producto.codigo;
-        row.insertCell().textContent = producto.nombre;
-        row.insertCell().textContent = producto.demanda;
-        row.insertCell().textContent = producto.tiempo_entrega;
-        row.insertCell().textContent = producto.fecha_limite;
-        row.insertCell().textContent = producto.cantidad;
     });
 }
 
@@ -524,8 +427,8 @@ function setupPedirProveedor() {
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', function() {
     setupFileUpload();
-    setupCrearInventario();
     setupPedirStock();
     setupPedirProveedor();
     setCopyrightYear();
+    showFlashMessages();
 });

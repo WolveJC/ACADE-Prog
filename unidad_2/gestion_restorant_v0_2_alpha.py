@@ -6,12 +6,15 @@ Quick, Selection) aplicados a diferentes criterios de gestión de inventario:
 cantidad, tiempo de entrega, fecha límite y demanda.
 """
 
+# ¡CORRECCIÓN 1: Importar Callable para tipado de funciones!
 from datetime import datetime
+from typing import List, Dict, Any, Callable
 
 # ==========================================================================
 # Inventario de Ejemplo
 # ==========================================================================
-inventario = [
+# ¡CORRECCIÓN 2: Añadir anotación de tipo a la variable inventario!
+inventario: List[Dict[str, Any]] = [
     {
         "codigo": 1,
         "nombre": "Manzana",
@@ -52,7 +55,8 @@ inventario = [
 # ==========================================================================
 
 
-def insertion_sort(lista: list, key: callable) -> list:
+# ¡CORRECCIÓN 3: Reemplazar 'callable' por 'Callable'!
+def insertion_sort(lista: list, key: Callable) -> list:
     """
     Implementa el algoritmo Insertion Sort.
 
@@ -76,7 +80,8 @@ def insertion_sort(lista: list, key: callable) -> list:
     return lista
 
 
-def bubble_sort(lista: list, key: callable, descending: bool = False) -> list:
+# ¡CORRECCIÓN 3: Reemplazar 'callable' por 'Callable'!
+def bubble_sort(lista: list, key: Callable, descending: bool = False) -> list:
     """
     Implementa el algoritmo Bubble Sort.
 
@@ -110,7 +115,8 @@ def bubble_sort(lista: list, key: callable, descending: bool = False) -> list:
     return lista
 
 
-def quick_sort(lista: list, key: callable) -> list:
+# ¡CORRECCIÓN 3: Reemplazar 'callable' por 'Callable'!
+def quick_sort(lista: list, key: Callable) -> list:
     """
     Implementa el algoritmo Quick Sort (recursivo).
 
@@ -136,7 +142,8 @@ def quick_sort(lista: list, key: callable) -> list:
     return quick_sort(menos, key) + iguales + quick_sort(mayor, key)
 
 
-def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
+# ¡CORRECCIÓN 3: Reemplazar 'callable' por 'Callable'!
+def selection_sort(lista: list, key: Callable, reverse: bool = False) -> list:
     """
     Implementa el algoritmo Selection Sort.
 

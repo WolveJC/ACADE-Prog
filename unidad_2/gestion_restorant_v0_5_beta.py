@@ -10,6 +10,9 @@ ordenado, además de generar un registro en formato CSV.
 import csv
 import datetime
 
+# ¡CORRECCIÓN 1: Importar los tipos necesarios, incluyendo Callable!
+from typing import List, Dict, Any, Callable
+
 # Third-party libraries
 import matplotlib.pyplot as plt
 
@@ -18,7 +21,8 @@ import matplotlib.pyplot as plt
 # ==========================================================================
 # Inventario de Ejemplo
 # ==========================================================================
-inventario = [
+# ¡CORRECCIÓN 2: Añadir anotación de tipo a la variable inventario!
+inventario: List[Dict[str, Any]] = [
     {
         "codigo": 1,
         "nombre": "Manzana",
@@ -59,7 +63,8 @@ inventario = [
 # ==========================================================================
 
 
-def selection_sort(lista: list, key: callable, reverse: bool = False) -> list:
+# ¡CORRECCIÓN 3: Reemplazar 'callable' por 'Callable' (importado de typing)!
+def selection_sort(lista: list, key: Callable, reverse: bool = False) -> list:
     """
     Implementa el algoritmo Selection Sort.
 
@@ -132,7 +137,9 @@ ax.yaxis.set_visible(False)
 ax.set_frame_on(False)
 
 # Crear la tabla en el eje (ax)
-tabla = ax.table(cellText=data_matrix, collabels=HEADERS, loc="center", cellLoc="center")
+# Cambié 'collabels' a 'colLabels' (aunque no es un error de tipo, es más claro)
+
+tabla = ax.table(cellText=data_matrix, colLabels=HEADERS, loc="center", cellLoc="center")
 
 
 tabla.auto_set_font_size(False)

@@ -1,0 +1,82 @@
+{# Macros reutilizables para mostrar las alertas de inventario (ver services/alertas.py) #}
+
+{# Insignias de estado de un producto. `a` es su diccionario de alertas. #}
+{% macro estado(a) -%}
+<div class="d-flex flex-wrap gap-1">
+    {%- if a.unidades_vencidas %}
+    <span class="badge text-bg-danger" title="El lote que caducaba antes tenía fecha límite hace {{ -a.dias_restantes }} día(s) y aún hay unidades. Si ya no se pueden vender, deben descartarse como merma.">Vencido · {{ a.unidades_vencidas }} u.</span>
+    {%- endif %}
+    {%- if a.dias_por_vencer is not none %}
+    <span class="badge text-bg-warning" title="El lote vigente que caduca antes se acerca a su fecha límite.">{{ 'Vence hoy' if a.dias_por_vencer == 0 else 'Vence en ' ~ a.dias_por_vencer ~ ' d' }} · {{ a.unidades_por_vencer }} u.</span>
+    {%- endif %}
+    {%- if a.sin_fecha %}
+    <span class="badge text-bg-secondary" title="Hay {{ a.unidades_sin_fecha }} unidad(es) sin fecha de caducidad registrada. Indícala (Productos o Recepción) para que el sistema pueda vigilarla.">Sin fecha · {{ a.unidades_sin_fecha }} u.</span>
+    {%- endif %}
+    {%- if a.agotado %}
+    <span class="badge text-bg-dark" title="No queda stock.">Sin stock</span>
+    {%- endif %}
+    {%- if a.reponer %}
+    <span class="badge text-bg-info" title="Consumo de {{ '%.1f'|format(a.consumo_diario) }} u/día: el stock vigente dura {{ a.cobertura }} día(s) y no cubre el tiempo de entrega más el colchón de seguridad.">Reponer · sugerido {{ a.sugerido }}</span>
+    {%- endif %}
+    {%- if a.tendencia == 'alza' %}
+    <span class="badge text-bg-success" title="{{ 'Su consumo reciente es ' ~ (a.variacion * 100)|round|int ~ ' % mayor que el del periodo anterior.' if a.variacion is not none else 'No se vendía en el periodo anterior y ahora sí.' }}">En alza{{ ' +' ~ (a.variacion * 100)|round|int ~ ' %' if a.variacion is not none }}</span>
+    {%- endif %}
+    {%- if not a.con_alerta %}
+        {%- if a.sin_historial %}
+    <span class="text-body-secondary" title="Aún no hay suficiente historial de retiradas para evaluar la reposición.">OK · sin historial</span>
+        {%- else %}
+    <span class="text-body-secondary">OK</span>
+        {%- endif %}
+    {%- endif %}
+</div>
+{%- endmacro %}
+
+{# Fecha de caducidad más próxima del producto (la del lote que caduca antes) y sus unidades. #}
+{% macro proxima(p, a) -%}
+{%- if a.proxima_fecha -%}
+<span class="text-nowrap">{{ a.proxima_fecha }}</span> <span class="text-body-secondary small text-nowrap">· {{ a.unidades_proximo }} u.</span>
+    {%- if p.Lotes|length > 1 %}
+<div class="small text-body-secondary">{{ p.Lotes|length }} lotes</div>
+    {%- endif %}
+{%- else -%}—{%- endif -%}
+{%- endmacro %}
+
+{# Consumo diario formateado (o guion si todavía no hay historial). #}
+{% macro consumo(a) -%}
+{{ '%.1f'|format(a.consumo_diario) if a.consumo_diario is not none else '—' }}
+{%- endmacro %}
+
+{# Banner con el resumen del inventario. `r` viene de services.alertas.resumir. #}
+{% macro resumen_alertas(r) -%}
+{% if r and r.total %}
+    {% if r.con_alerta %}
+        {% set partes = [] %}
+        {% if r.vencidos %}{% set _ = partes.append(r.vencidos ~ (' vencido' if r.vencidos == 1 else ' vencidos')) %}{% endif %}
+        {% if r.por_vencer %}{% set _ = partes.append(r.por_vencer ~ ' por vencer') %}{% endif %}
+        {% if r.sin_fecha %}{% set _ = partes.append(r.sin_fecha ~ ' sin fecha de caducidad') %}{% endif %}
+        {% if r.agotados %}{% set _ = partes.append(r.agotados ~ ' sin stock') %}{% endif %}
+        {% if r.reponer %}{% set _ = partes.append(r.reponer ~ ' por reponer') %}{% endif %}
+        {% if r.en_alza %}{% set _ = partes.append(r.en_alza ~ ' en alza') %}{% endif %}
+        <div class="alert alert-warning" role="status"><strong>Atención:</strong> {{ partes|join(', ') }}.</div>
+    {% else %}
+        <div class="alert alert-success" role="status">Sin alertas: ningún producto vencido, por vencer ni con stock insuficiente.</div>
+    {% endif %}
+    {% if r.sin_historial %}
+        <div class="alert alert-info" role="status">
+            Aún no hay suficiente historial de retiradas para calcular el consumo, así que la reposición solo avisa de los productos sin stock.
+            Registra retiradas en «Pedido de stock» o importa un historial en <a href="{{ url_for('movimientos.demanda') }}" class="alert-link">Demanda</a>.
+        </div>
+    {% endif %}
+{% endif %}
+{%- endmacro %}
+
+{# Explicación de las insignias, para mostrar bajo las tablas. #}
+{% macro leyenda(dias_aviso, ventana, colchon) -%}
+<p class="small text-body-secondary">
+    <strong>Fecha límite:</strong> se muestra la del lote que caduca antes (un lote son las unidades que comparten fecha).
+    <strong>Vencido / Vence en…:</strong> se avisa con {{ dias_aviso }} días o menos de antelación; el último día todavía se puede vender.
+    <strong>Sin fecha:</strong> mercancía sin fecha de caducidad registrada; indícala para que el sistema la vigile.
+    <strong>Reponer:</strong> el stock vigente no cubre el consumo diario real (retiradas de los últimos {{ ventana }} días, sin contar eventos) durante el tiempo de entrega más {{ colchon }} día(s) de colchón; el sugerido es lo que falta.
+    <strong>En alza:</strong> su consumo reciente supera claramente al del periodo anterior.
+</p>
+{%- endmacro %}

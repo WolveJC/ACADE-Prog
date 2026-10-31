@@ -3,10 +3,17 @@
 /node_modules
 /.pnp
 .pnp.js
+/.npmrc
 
 # build output
 /build 
+/dist
 # o /dist si usas Vite o una configuración diferente
+
+# entornos virtuales de Python
+.venv/
+venv/
+env/
 
 # logs
 npm-debug.log*
@@ -16,6 +23,7 @@ lerna-debug.log*
 
 # OS and environment
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local

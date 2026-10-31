@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% from "_alertas.html" import estado, proxima %}
+
+{% block content %}
+<h1 class="h3 mb-1">Recepción de mercancía</h1>
+<p class="text-body-secondary">
+    Registra la mercancía que llega (por ejemplo, de un pedido al proveedor). Se suma al stock y la entrada
+    queda guardada en el historial.
+</p>
+
+{% if productos %}
+    <form method="POST" action="{{ url_for('recepcion.recepcion') }}">
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-sm-5 col-md-3">
+                        <label for="fecha_movimiento" class="form-label">Fecha de recepción</label>
+                        <input type="date" class="form-control" id="fecha_movimiento" name="fecha_movimiento"
+                               value="{{ hoy }}" max="{{ hoy }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive mb-3">
+            <table id="tabla-recepcion" class="table table-striped table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Código</th>
+                        <th>Producto</th>
+                        <th class="text-center">Stock actual</th>
+                        <th>Próxima fecha límite</th>
+                        <th>Estado</th>
+                        <th>Cantidad recibida</th>
+                        <th>Fecha límite del lote <span class="fw-normal text-body-secondary">(recomendada)</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                    {% set a = alertas[producto['Código']] %}
+                    <tr>
+                        <td>{{ producto['Código'] }}</td>
+                        <td>{{ producto['Nombre'] }}</td>
+                        <td class="text-center">{{ producto['Cantidad'] }}</td>
+                        <td>{{ proxima(producto, a) }}</td>
+                        <td>{{ estado(a) }}</td>
+                        <td>
+                            <input type="number" class="form-control form-control-sm input-cantidad"
+                                   name="recepcion_cantidad[{{ producto['Código'] }}]"
+                                   id="recepcion_cantidad_{{ producto['Código'] }}"
+                                   min="0" step="1" placeholder="0"
+                                   aria-label="Cantidad recibida de {{ producto['Nombre'] }}">
+                        </td>
+                        <td>
+                            <input type="date" class="form-control form-control-sm"
+                                   name="recepcion_fecha[{{ producto['Código'] }}]"
+                                   id="recepcion_fecha_{{ producto['Código'] }}"
+                                   aria-label="Fecha límite del lote de {{ producto['Nombre'] }}">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <p class="small text-body-secondary">
+            <strong>Fecha límite del lote:</strong> lo que recibes forma un lote con su propia fecha (si ya hay un lote con la
+            misma fecha, se suma a él). El producto muestra siempre la fecha más próxima de todos sus lotes, y las ventas
+            salen primero del lote que caduca antes. Puedes dejarla vacía (por ejemplo, azúcar o sal), pero el sistema
+            te seguirá avisando de que falta la fecha de caducidad.
+        </p>
+        <button type="submit" class="btn btn-primary">Registrar recepción</button>
+    </form>
+{% else %}
+    <div class="alert alert-info">No hay productos en el inventario cargado.</div>
+{% endif %}
+{% endblock %}

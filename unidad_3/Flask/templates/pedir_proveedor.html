@@ -1,63 +1,68 @@
 {% extends "base.html" %}
+{% from "_alertas.html" import estado, consumo, resumen_alertas, leyenda %}
 
 {% block content %}
-<h2>Pedido al Proveedor</h2>
+<h1 class="h3 mb-3">Pedido al proveedor</h1>
 
 {% if productos_proveedor %}
+{{ resumen_alertas(resumen) }}
 <form id="form-pedir-proveedor" method="POST" novalidate>
-    <div class="table-responsive">
-        <table id="tabla-pedir-proveedor"> {# ID opcional para la tabla #}
-            <thead>
+    <div class="table-responsive mb-3">
+        <table id="tabla-pedir-proveedor" class="table table-striped table-hover align-middle">
+            <thead class="table-light">
                 <tr>
                     <th>Código</th>
                     <th>Producto</th>
-                    <th>Stock Actual</th>
-                    <th>Tiempo Entrega (Días)</th>
-                    <th>Cantidad a Pedir</th>
-                    <th>Precio Unitario ($)</th>
+                    <th class="text-center">Stock actual</th>
+                    <th class="text-center" title="Unidades por día, según el historial de retiradas">Consumo/día</th>
+                    <th class="text-center">Tiempo entrega (días)</th>
+                    <th>Estado</th>
+                    <th>Cantidad a pedir</th>
+                    <th>Precio unitario ($)</th>
                 </tr>
             </thead>
             <tbody>
                 {% for producto in productos_proveedor %}
-                <tr>
+                {% set a = alertas[producto['Código']] %}
+                <tr class="{{ 'table-danger' if a.vencimiento == 'vencido' else ('table-warning' if a.vencimiento == 'por_vencer') }}">
                     <td>{{ producto['Código'] }}</td>
                     <td>{{ producto['Nombre'] }}</td>
-                    <td>{{ producto['Cantidad'] }}</td>
-                    <td>{{ producto.get('Tiempo entrega(Días)', 'N/A') }}</td>
+                    <td class="text-center">{{ producto['Cantidad'] }}</td>
+                    <td class="text-center">{{ consumo(a) }}</td>
+                    <td class="text-center">{{ producto.get('Tiempo entrega(Días)', 'N/A') }}</td>
+                    <td>{{ estado(a) }}</td>
                     <td>
-                        {# Input con ID único opcional #}
                         <input type="number"
+                               class="form-control form-control-sm input-cantidad"
                                name="pedido_proveedor[{{ producto['Código'] }}]"
-                               id="pedido_proveedor_{{ producto['Código'] }}" {# ID opcional #}
+                               id="pedido_proveedor_{{ producto['Código'] }}"
                                min="0" value="0"
                                aria-label="Cantidad a pedir para {{ producto['Nombre'] }}">
-                        <span class="error-message" data-for="pedido_proveedor_{{ producto['Código'] }}"></span>
+                        <span class="error-message invalid-feedback" data-for="pedido_proveedor_{{ producto['Código'] }}"></span>
                     </td>
                     <td>
-                        {# Input con ID único opcional #}
                         <input type="number"
+                               class="form-control form-control-sm input-cantidad"
                                name="precio_proveedor[{{ producto['Código'] }}]"
-                               id="precio_proveedor_{{ producto['Código'] }}" {# ID opcional #}
+                               id="precio_proveedor_{{ producto['Código'] }}"
                                step="0.01" min="0.01" placeholder="0.00"
                                aria-label="Precio unitario para {{ producto['Nombre'] }}">
-                        <span class="error-message" data-for="precio_proveedor_{{ producto['Código'] }}"></span>
+                        <span class="error-message invalid-feedback" data-for="precio_proveedor_{{ producto['Código'] }}"></span>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-    <button type="submit">Enviar Pedido y Generar PDF</button>
+    {{ leyenda(config.DIAS_AVISO_VENCIMIENTO, config.VENTANA_DEMANDA_DIAS, config.DIAS_SEGURIDAD) }}
+    <button type="submit" class="btn btn-primary">Enviar pedido y generar PDF</button>
+    <p class="small text-body-secondary mt-3 mb-0">
+        Cuando llegue la mercancía, regístrala en <a href="{{ url_for('recepcion.recepcion') }}">Recepción</a>
+        para que el stock y el historial se actualicen.
+    </p>
 </form>
 {% else %}
-    <p>No hay productos en el inventario cargado.</p>
-{% endif %}
-
-<hr>
-<p><a href="{{ url_for('upload_csv') }}">Volver a la página principal</a></p>
-<p><a href="{{ url_for('pedir_stock') }}">Ir a Pedido de Stock Interno</a></p>
-{% if session.get('productos') %}
-<p><a href="{{ url_for('export_json') }}" target="_blank">Exportar Inventario a JSON</a> | <a href="{{ url_for('export_csv') }}">Exportar Inventario a CSV</a></p>
+    <div class="alert alert-info">No hay productos en el inventario cargado.</div>
 {% endif %}
 
 {% endblock %}

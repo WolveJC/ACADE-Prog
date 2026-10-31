@@ -5,6 +5,14 @@
  */
 
 /**
+ * Modelo de Gemini usado por el script.
+ * Si Google lo retira, solo hay que cambiar esta línea.
+ * Estado de modelos: https://ai.google.dev/gemini-api/docs/deprecations
+ * @type {string}
+ */
+const MODEL_NAME = 'gemini-3.1-flash-lite';
+
+/**
  * Automatiza la generación del título Conventional Commit y descripción de un PR usando Gemini.
  * 
  * @param {Object} params
@@ -59,8 +67,7 @@ async function run({ context, github, geminiApiKey }) {
   `;
 
   // 3. Llamada a la API de Gemini
-  const modelName = 'gemini-2.5-flash';
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${geminiApiKey}`;
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${geminiApiKey}`;
 
   const apiResponse = await fetch(endpoint, {
     method: 'POST',
@@ -72,14 +79,30 @@ async function run({ context, github, geminiApiKey }) {
   });
 
   if (!apiResponse.ok) {
-    throw new Error(`Gemini API falló con estado ${apiResponse.status}: ${apiResponse.statusText}`);
+    /** @type {string} */
+    const errorBody = await apiResponse.text();
+    throw new Error(
+      `Gemini API falló (${apiResponse.status}) con modelo "${MODEL_NAME}": ${errorBody}`
+    );
   }
 
   const data = await apiResponse.json();
-  const rawText = data.candidates[0].content.parts[0].text;
-  
+  /** @type {string | undefined} */
+  const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!rawText) {
+    throw new Error(
+      `Gemini no devolvió texto (modelo "${MODEL_NAME}"). Respuesta: ${JSON.stringify(data)}`
+    );
+  }
+
   /** @type {GeminiPRResponse} */
-  const result = JSON.parse(rawText);
+  let result;
+  try {
+    result = JSON.parse(rawText);
+  } catch (error) {
+    throw new Error(`Gemini devolvió un JSON inválido (modelo "${MODEL_NAME}"): ${rawText}`);
+  }
 
   console.log(`[AI Augmenter] Título generado: "${result.title}"`);
 

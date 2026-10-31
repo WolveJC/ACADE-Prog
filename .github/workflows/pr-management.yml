@@ -34,7 +34,7 @@ jobs:
       - name: Run AI PR Augmenter Script
         uses: actions/github-script@v7
         env:
-          GEMINI_API_KEY: ${{ secrets.GOOGLEAPIKEY }}
+          GEMINI_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         with:
           script: |
             const script = require('./scripts/pr_augmenter.js');

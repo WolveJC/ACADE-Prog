@@ -64,7 +64,7 @@ jobs:
 
       - name: Setup .NET Environment
         if: matrix.language == 'csharp' && steps.check-source.outputs.has_source == 'true'
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '8.0.x'
 

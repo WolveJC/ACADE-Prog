@@ -58,8 +58,8 @@ async function run({ context, github, geminiApiKey }) {
   }
   `;
 
-  // 3. Llamada a la API de Gemini (Gemini 2.5 Flash Lite)
-  const modelName = 'gemini-2.5-flash-lite';
+  // 3. Llamada a la API de Gemini
+  const modelName = 'gemini-2.5-flash';
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${geminiApiKey}`;
 
   const apiResponse = await fetch(endpoint, {

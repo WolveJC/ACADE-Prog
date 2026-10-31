@@ -57,7 +57,7 @@ jobs:
       # Setup entornos condicionales (Solo si hay código)
       - name: Setup Java Environment
         if: matrix.language == 'java-kotlin' && steps.check-source.outputs.has_source == 'true'
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'

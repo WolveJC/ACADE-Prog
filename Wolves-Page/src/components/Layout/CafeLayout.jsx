@@ -1,6 +1,6 @@
 import React from 'react';
-import CafePage from '../pages/CafePage';
-import { NutritionProvider } from '../context/NutritionContext';
+import CafePage from '../../pages/CafePage';
+import { NutritionProvider } from '../../context/NutritionContext';
 
 /**
  * CafeLayout envuelve CafePage con el NutritionProvider,

@@ -8,7 +8,7 @@ import {
   FaDownload,
 } from "react-icons/fa";
 
-import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs";
+import workerSrc from "pdfjs-dist/build/pdf.worker.min.js";
 pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
 const DOCUMENT_PATH = "/docs/doc_proj.pdf";

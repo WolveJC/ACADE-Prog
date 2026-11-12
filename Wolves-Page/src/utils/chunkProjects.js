@@ -1,16 +1,16 @@
 /* -------------------------------------------------------------
    UTILIDAD COMPARTIDA: chunkProjects
    -------------------------------------------------------------
-   Divide un array de proyectos en paginas de size fijo.
-   Usada tanto por MainContent.jsx (para saber CUANTAS secciones
-   crear en el carrusel) como por Projects.jsx (para saber QUE
-   proyectos mostrar en la pagina que le corresponde).
+   Divide un array de proyectos en páginas de tamaño fijo.
+   Usada tanto por MainContent.jsx (para saber CUÁNTAS secciones
+   crear en el carrusel) como por Projects.jsx (para saber QUÉ
+   proyectos mostrar en la página que le corresponde).
 
    Mantenerla en un solo lugar evita que ambos archivos se
-   desincronicen si el size de pagina cambia en el futuro.
+   desincronicen si el tamaño de página cambia en el futuro.
 ------------------------------------------------------------- */
 
-// Size de pagina por defecto (grid fijo 5x2)
+// Tamaño de página por defecto (grid fijo 5×2)
 export const PROJECTS_PAGE_SIZE = 10;
 
 export const chunkProjects = (arr, size = PROJECTS_PAGE_SIZE) => {
@@ -24,17 +24,17 @@ export const chunkProjects = (arr, size = PROJECTS_PAGE_SIZE) => {
 /* -------------------------------------------------------------
    getUniqueSectionsCount
    -------------------------------------------------------------
-   Devuelve el numero TOTAL de secciones unicas del carrusel de
-   MainContent.jsx: Welcome (1) + paginas de proyectos (N) +
+   Devuelve el número TOTAL de secciones únicas del carrusel de
+   MainContent.jsx: Welcome (1) + páginas de proyectos (N) +
    AboutMe (1).
 
-   Esta es la UNICA fuente de verdad sobre "cuantas secciones
+   Esta es la ÚNICA fuente de verdad sobre "cuántas secciones
    hay". La usan:
    - App.jsx: para inicializar <CarouselProvider totalUniqueSlides=.../>
    - MainContent.jsx: para construir el array `sections`
 
-   Si el dia de manana se agrega o quita una seccion fija
-   (ej. una nueva pagina "Certificaciones"), este es el unico
+   Si el día de mañana se agrega o quita una sección fija
+   (ej. una nueva página "Certificaciones"), este es el único
    lugar que hay que tocar.
 ------------------------------------------------------------- */
 const FIXED_SECTIONS_COUNT = 2; // Welcome + AboutMe

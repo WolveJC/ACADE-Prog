@@ -9,7 +9,7 @@ import { NutritionProvider } from '../../context/NutritionContext';
  */
 const CafeLayout = () => {
     return (
-        // Aqui encapsulamos la pagina con el Provider de Nutricion
+        // Aquí encapsulamos la página con el Provider de Nutrición
         <NutritionProvider>
             <CafePage />
         </NutritionProvider>

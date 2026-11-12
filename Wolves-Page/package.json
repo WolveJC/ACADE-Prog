@@ -5,6 +5,7 @@
   "homepage": ".",
   "dependencies": {
     "copy-webpack-plugin": "^14.0.0",
+    "dotenv": "^18.0.10",
     "framer-motion": "^12.23.24",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

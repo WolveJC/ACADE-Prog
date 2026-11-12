@@ -53,7 +53,7 @@ const ProjectCard = ({ title, imageUrl, repoLink, description, isPaused }) => {
               group-hover:text-green-300 
               transition-colors 
               leading-tight 
-              break-words
+              wrap-break-word
             "
           >
             {title}

@@ -2,6 +2,7 @@
 #include <string>
 #include <stack>
 #include <fstream>
+#include <limits>
 using namespace std;
 
 class Persona {

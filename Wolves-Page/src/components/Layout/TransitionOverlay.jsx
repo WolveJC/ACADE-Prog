@@ -114,7 +114,7 @@ const TransitionOverlay = () => {
                 <motion.div 
                     key="transition-overlay"
                     className={`
-                        fixed top-0 left-0 w-full h-full z-[9999] 
+                        fixed top-0 left-0 w-full h-full z-9999 
                         flex items-center justify-center transform origin-center
                         ${overlayBgColor}
                     `}

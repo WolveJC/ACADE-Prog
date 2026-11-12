@@ -1,8 +1,8 @@
 name: PR Management
 
 on:
-  pull_request_target:
-    types: [opened, synchronize, reopened, edited]
+  pull_request:
+    types: [opened]
 
 jobs:
   label:
@@ -12,24 +12,34 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/labeler@v6 
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Automatic Labeler
+        uses: actions/labeler@v7 
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           configuration-path: .github/labeler.yml 
 
   conventional-title:
-    name: Conventional Pull Request Title
+    name: AI Conventional Pull Request & Description
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
-      - uses: overtrue/conventional-pr-title@v1.0.0
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run AI PR Augmenter Script
+        uses: actions/github-script@v9
         env:
-    GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLEAPIKEY }}
+          GEMINI_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          model: 'google/gemini-2.0-flash-lite'   # modelo específico
-          mode: 'auto'                            # renombra automáticamente
-          custom-prompt: 'Generate a conventional commit title that emphasizes the business impact of this change.'
-          allowed-types: 'feat,fix,docs,refactor'
-          include-scope: 'true'
-          max-length: '100'
-          debug: 'true'
+          script: |
+            const script = require('./scripts/pr_augmenter.js');
+            await script.run({
+              context,
+              github,
+              geminiApiKey: process.env.GEMINI_API_KEY
+            });

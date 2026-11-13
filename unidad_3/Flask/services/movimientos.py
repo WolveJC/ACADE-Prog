@@ -52,7 +52,7 @@ def a_booleano(valor: Any) -> bool:
 
 
 def parsear_tipo(valor: Any) -> str:
-    """"salida", "entrada" o "merma" (vacío = salida). Lanza ValueError si no se reconoce."""
+    """ "salida", "entrada" o "merma" (vacío = salida). Lanza ValueError si no se reconoce."""
     texto = str(valor if valor is not None else "").strip().lower()
     if texto == "":
         return SALIDA
@@ -163,8 +163,14 @@ def validar_movimientos(
             errores.append(f"{etiqueta} {numero}: {'; '.join(problemas)}.")
         else:
             resultado.append(
-                {"fecha": fecha, "codigo": codigo, "cantidad": cantidad, "tipo": tipo,
-                 "evento": evento, "motivo": motivo}
+                {
+                    "fecha": fecha,
+                    "codigo": codigo,
+                    "cantidad": cantidad,
+                    "tipo": tipo,
+                    "evento": evento,
+                    "motivo": motivo,
+                }
             )
 
     if errores:
@@ -175,7 +181,7 @@ def validar_movimientos(
 def desde_csv_bytes(
     contenido: bytes, codigos_validos: Iterable[str], hoy: datetime.date
 ) -> List[Movimiento]:
-    """Lee un CSV de historial (columnas fecha, codigo, cantidad y opcionales tipo, evento y motivo)."""
+    """ Lee un CSV de historial (columnas fecha, codigo, cantidad) """
     df = leer_tabla_csv(contenido)
     faltantes = [c for c in COLUMNAS_MOV_OBLIGATORIAS if c not in df.columns]
     if faltantes:
@@ -198,7 +204,13 @@ def a_csv_texto(movimientos: Iterable[Movimiento]) -> str:
     escritor.writerow(COLUMNAS_MOV)
     for m in movimientos:
         escritor.writerow(
-            [m["fecha"].isoformat(), m["codigo"], m["cantidad"], m["tipo"],
-             1 if m["evento"] else 0, m.get("motivo", "")]
+            [
+                m["fecha"].isoformat(),
+                m["codigo"],
+                m["cantidad"],
+                m["tipo"],
+                1 if m["evento"] else 0,
+                m.get("motivo", ""),
+            ]
         )
     return salida.getvalue()

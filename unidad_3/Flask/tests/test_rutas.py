@@ -36,7 +36,8 @@ def test_dos_sesiones_con_mismo_nombre_no_se_pisan(app):
 
 
 def test_nueva_subida_reemplaza_y_borra_el_archivo_anterior(client, app):
-    subir(client, CSV_OK); subir(client, CSV_OK)
+    subir(client, CSV_OK)
+    subir(client, CSV_OK)
     assert len(list(app.config["DATA_DIR"].glob("*.csv"))) == 1
 
 
@@ -51,14 +52,20 @@ def test_cookie_de_sesion_no_crece_con_el_inventario(client):
 
 def crear_producto(client, **campos):
     """Agrega un producto desde la página «Productos» (formulario normal, sin JS)."""
-    datos = {"codigo": "A1", "nombre": "Café molido", "cantidad": "10", "tiempo_entrega": "2",
-             "fecha_limite": "2025-06-01", **campos}
+    datos = {
+        "codigo": "A1",
+        "nombre": "Café molido",
+        "cantidad": "10",
+        "tiempo_entrega": "2",
+        "fecha_limite": "2025-06-01",
+        **campos,
+    }
     return client.post("/productos", data=datos)
 
 
 def test_un_producto_creado_a_mano_funciona_en_todo_el_flujo(client):
     r = crear_producto(client)
-    assert r.status_code == 302                                    # PRG: redirige a la lista
+    assert r.status_code == 302  # PRG: redirige a la lista
     assert "Café molido" in client.get("/pedir_stock").get_data(as_text=True)
     assert "Café molido" in client.get("/pedir_proveedor").get_data(as_text=True)
     r = client.post("/pedir_stock", data={"pedido_stock[A1]": "4"}, headers=JSON_HEADERS)
@@ -68,8 +75,11 @@ def test_un_producto_creado_a_mano_funciona_en_todo_el_flujo(client):
 
 def test_flujo_completo_hasta_pdf_con_caracteres_unicode(client):
     crear_producto(client, nombre="Crème brûlée — Ñandú €")
-    r = client.post("/pedir_proveedor", headers=JSON_HEADERS,
-                    data={"pedido_proveedor[A1]": "3", "precio_proveedor[A1]": "2.50"})
+    r = client.post(
+        "/pedir_proveedor",
+        headers=JSON_HEADERS,
+        data={"pedido_proveedor[A1]": "3", "precio_proveedor[A1]": "2.50"},
+    )
     assert r.status_code == 200
     pdf = client.get(r.get_json()["redirect_url"])
     assert pdf.status_code == 200 and pdf.data.startswith(b"%PDF")
@@ -80,8 +90,11 @@ def test_flujo_completo_hasta_pdf_con_caracteres_unicode(client):
 
 def test_proveedor_errores_de_validacion(client):
     crear_producto(client)
-    r = client.post("/pedir_proveedor", headers=JSON_HEADERS,
-                    data={"pedido_proveedor[A1]": "3", "precio_proveedor[A1]": ""})
+    r = client.post(
+        "/pedir_proveedor",
+        headers=JSON_HEADERS,
+        data={"pedido_proveedor[A1]": "3", "precio_proveedor[A1]": ""},
+    )
     assert r.status_code == 400 and r.get_json()["errors"]
     r = client.post("/pedir_proveedor", headers=JSON_HEADERS, data={"pedido_proveedor[A1]": "0"})
     assert r.status_code == 400
@@ -124,4 +137,5 @@ def test_sin_js_la_subida_redirige_con_flash(client):
 
 def test_secret_key_por_defecto_no_es_la_antigua(tmp_path):
     from config import Config
+
     assert Config.SECRET_KEY and Config.SECRET_KEY != "secret-key-default-insecure"

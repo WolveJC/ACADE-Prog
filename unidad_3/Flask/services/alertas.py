@@ -30,8 +30,8 @@ import math
 from typing import Any, Dict, List, Mapping, Optional
 
 from .demanda import ALZA
-from .lotes import esta_vencido, lotes_de
 from .inventario import Producto
+from .lotes import esta_vencido, lotes_de
 
 VENCIDO = "vencido"
 POR_VENCER = "por_vencer"
@@ -79,7 +79,9 @@ def evaluar_producto(
     unidades_vencidas = sum(lote["Cantidad"] for lote in lotes if esta_vencido(lote, hoy))
     con_fecha = [lote for lote in lotes if lote["Fecha límite"]]  # ya en orden de caducidad
     proximo = con_fecha[0] if con_fecha else None
-    dias_restantes = (datetime.date.fromisoformat(proximo["Fecha límite"]) - hoy).days if proximo else None
+    dias_restantes = (
+        (datetime.date.fromisoformat(proximo["Fecha límite"]) - hoy).days if proximo else None
+    )
 
     dias_por_vencer: Optional[int] = None
     unidades_por_vencer = 0
@@ -135,7 +137,11 @@ def evaluar_producto(
         "variacion": variacion,
         "sin_historial": sin_historial,
         "con_alerta": (
-            vencimiento is not None or sin_fecha_unidades > 0 or reponer or agotado or tendencia == ALZA
+            vencimiento is not None
+            or sin_fecha_unidades > 0
+            or reponer
+            or agotado
+            or tendencia == ALZA
         ),
     }
 

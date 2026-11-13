@@ -7,7 +7,7 @@ intermediario entre el navegador del usuario y las 3 APIs externas
 
 1. Esconder las API keys (antes vivian hardcodeadas en el codigo del
    cliente -- CafePage.jsx y TriviaWidget.jsx -- visibles para cualquiera).
-2. Evitar el CORS que bloqueaba las llamadas directas desde el navegador
+2. Evitar el CORS que bloqueaba las llamadas directas desde el navegadora
    (servidor-a-servidor no tiene esa restriccion).
 3. Limitar cuantas veces un mismo visitante puede disparar estas
    llamadas, para proteger la cuota gratuita de las 3 APIs.
@@ -16,12 +16,12 @@ intermediario entre el navegador del usuario y las 3 APIs externas
 import os
 import re
 
+import requests
 from dotenv import load_dotenv
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-import requests
 
 load_dotenv()  # Lee el archivo .env en desarrollo local
 
@@ -31,11 +31,11 @@ app = Flask(__name__)
 # CORS: solo el dominio real del frontend puede llamar a esta API.
 # En local, FRONTEND_ORIGIN apunta a localhost:3000 (tu npm start).
 # -----------------------------------------------------------------
-FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "http://localhost:3000,https://dev-wolvespage.vercel.app")
+FRONTEND_ORIGIN = os.environ.get(
+    "FRONTEND_ORIGIN", "http://localhost:3000,https://dev-wolvespage.vercel.app"
+)
 ALLOWED_ORIGINS = [
-   origin.strip().rstrip("/")
-   for origin in FRONTEND_ORIGIN.split(",") 
-   if origin.strip()
+    origin.strip().rstrip("/") for origin in FRONTEND_ORIGIN.split(",") if origin.strip()
 ]
 CORS(app, resources={r"/api/*": {"origins": ALLOWED_ORIGINS}})
 
@@ -72,9 +72,7 @@ QUOTA_LIMIT = "1 per day"
 @limiter.limit(QUOTA_LIMIT)
 def get_receta():
     try:
-        resp = requests.get(
-            "https://www.themealdb.com/api/json/v1/1/random.php", timeout=10
-        )
+        resp = requests.get("https://www.themealdb.com/api/json/v1/1/random.php", timeout=10)
         resp.raise_for_status()
         return jsonify(resp.json())
     except requests.RequestException:
@@ -182,9 +180,8 @@ def post_nutricion():
         resp.raise_for_status()
         return jsonify(resp.json())
     except requests.RequestException:
-        return jsonify(
-            {"error": "El servicio de nutrición falló. Intenta más tarde."}
-        ), 502
+        return jsonify({"error": "El servicio de nutrición falló. Intenta más tarde."}), 502
+
 
 # ===================================================================
 # Endpoint 4: Proxy de imagenes (evita bloqueos CORP / CORS)
@@ -201,20 +198,22 @@ def proxy_imagen():
     try:
         resp = requests.get(image_url, timeout=10)
         resp.raise_for_status()
-        
+
         content_type = resp.headers.get("Content-Type", "image/jpeg")
-        
+
         # Inyectamos cabeceras explicitas para evitar el bloqueo CORP/CORS del navegador
         headers = {
             "Content-Type": content_type,
             "Access-Control-Allow-Origin": "*",
             "Cross-Origin-Resource-Policy": "cross-origin",
-            "Cache-Control": "public, max-age=86400"  # Opcional: Cache por 1 dia para acelerar la app
+            # Opcional: Cache por 1 dia para acelerar la app
+            "Cache-Control": "public, max-age=86400",  
         }
-        
+
         return resp.content, 200, headers
     except requests.RequestException:
         return jsonify({"error": "No se pudo obtener la imagen."}), 502
+
 
 # ===================================================================
 # Ruta de salud, util para que Render/Railway confirmen que el

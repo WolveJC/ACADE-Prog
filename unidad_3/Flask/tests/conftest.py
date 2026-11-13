@@ -12,15 +12,24 @@ from app import create_app  # noqa: E402
 def app(tmp_path):
     # Descarte automático APAGADO por defecto: muchas pruebas usan fechas pasadas a propósito para
     # comprobar las alertas de "vencido". El descarte automático tiene sus propias pruebas
-    # (fixture `app_con_descarte`) y se verifica además con el navegador, que usa la configuración real.
-    return create_app({"TESTING": True, "DATA_DIR": tmp_path / "datos", "SECRET_KEY": "test",
-                       "DESCARTE_AUTOMATICO_VENCIDOS": False})
+    # (fixture `app_con_descarte`) y se verifica además con el navegador, 
+    # que usa la configuración real.
+    return create_app(
+        {
+            "TESTING": True,
+            "DATA_DIR": tmp_path / "datos",
+            "SECRET_KEY": "test",
+            "DESCARTE_AUTOMATICO_VENCIDOS": False,
+        }
+    )
 
 
 @pytest.fixture
 def app_con_descarte(tmp_path):
     """La aplicación con la configuración de producción: los lotes vencidos se descartan solos."""
-    return create_app({"TESTING": True, "DATA_DIR": tmp_path / "datos_descarte", "SECRET_KEY": "test"})
+    return create_app(
+        {"TESTING": True, "DATA_DIR": tmp_path / "datos_descarte", "SECRET_KEY": "test"}
+    )
 
 
 @pytest.fixture
@@ -56,7 +65,9 @@ def subir(client, contenido, nombre="inv.csv", tipo="text/csv", headers=None):
 
 
 def historial_csv(filas, hoy=None):
-    """CSV de historial a partir de (días_atrás, código, cantidad[, evento[, tipo[, motivo]]]) relativos a hoy."""
+    """CSV de historial a partir de 
+    (días_atrás, código, cantidad[, evento[, tipo[, motivo]]]) 
+    relativos a hoy."""
     import datetime
 
     hoy = hoy or datetime.date.today()

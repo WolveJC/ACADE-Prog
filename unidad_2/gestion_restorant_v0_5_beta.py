@@ -11,7 +11,7 @@ import csv
 import datetime
 
 # ¡CORRECCIÓN 1: Importar los tipos necesarios, incluyendo Callable!
-from typing import List, Dict, Any, Callable
+from typing import Any, Callable, Dict, List
 
 # Third-party libraries
 import matplotlib.pyplot as plt

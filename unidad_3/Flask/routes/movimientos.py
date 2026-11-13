@@ -3,8 +3,16 @@
 import datetime
 import io
 
-from flask import Blueprint, current_app, flash, redirect, render_template, request, send_file, url_for
-
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    send_file,
+    url_for,
+)
 from services import movimientos as logica
 from services.inventario import ETIQUETA_MOTIVO, InventarioError
 
@@ -94,7 +102,9 @@ def importar():
         return responder(str(exc), 400, destino=destino, errors=exc.errores)
     except OSError:
         current_app.logger.exception("No se pudo guardar el historial importado")
-        return responder("No se pudo guardar el historial. Inténtalo de nuevo.", 500, destino=destino)
+        return responder(
+            "No se pudo guardar el historial. Inténtalo de nuevo.", 500, destino=destino
+        )
 
     return responder(
         f"Historial importado: {len(movimientos)} movimientos (reemplaza el anterior).",
@@ -109,7 +119,9 @@ def borrar():
     if cargar_inventario() is None:
         return sin_inventario()
     almacen().borrar_movimientos(inventario_id())
-    return responder("Historial de movimientos borrado.", 200, destino=url_for("movimientos.demanda"))
+    return responder(
+        "Historial de movimientos borrado.", 200, destino=url_for("movimientos.demanda")
+    )
 
 
 @bp.route("/export_movimientos")

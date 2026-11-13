@@ -73,7 +73,12 @@ def lotes_de(producto: Mapping[str, Any]) -> List[Lote]:
     if "Lotes" in producto:
         return sorted(({**lote} for lote in producto["Lotes"]), key=_orden_fefo)
     return normalizar_lotes(
-        [{"Fecha límite": producto.get("Fecha límite", ""), "Cantidad": producto.get("Cantidad", 0)}]
+        [
+            {
+                "Fecha límite": producto.get("Fecha límite", ""),
+                "Cantidad": producto.get("Cantidad", 0),
+            }
+        ]
     )
 
 
@@ -118,7 +123,9 @@ def consumir_fefo(producto: Mapping[str, Any], cantidad: int) -> Producto:
 
 def agregar_lote(producto: Mapping[str, Any], fecha: str, cantidad: int) -> Producto:
     """Suma unidades como lote nuevo, o al lote que ya tenga esa misma fecha."""
-    return reconstruir(producto, lotes_de(producto) + [{"Fecha límite": fecha, "Cantidad": cantidad}])
+    return reconstruir(
+        producto, lotes_de(producto) + [{"Fecha límite": fecha, "Cantidad": cantidad}]
+    )
 
 
 def quitar_de_lote(producto: Mapping[str, Any], fecha: str, cantidad: int) -> Producto:
@@ -162,7 +169,9 @@ def descartar_vencidos(
                     "fecha_limite": lote["Fecha límite"],
                 }
             )
-        nuevos.append(reconstruir(producto, [lote for lote in lotes if not esta_vencido(lote, hoy)]))
+        nuevos.append(
+            reconstruir(producto, [lote for lote in lotes if not esta_vencido(lote, hoy)])
+        )
     return nuevos, descartes
 
 
@@ -180,5 +189,7 @@ def a_filas(productos: Iterable[Mapping[str, Any]]) -> List[Dict[str, Any]]:
         }
         lotes = lotes_de(producto) or [{"Fecha límite": "", "Cantidad": 0}]
         for lote in lotes:
-            filas.append({**base, "Cantidad": lote["Cantidad"], "Fecha límite": lote["Fecha límite"]})
+            filas.append(
+                {**base, "Cantidad": lote["Cantidad"], "Fecha límite": lote["Fecha límite"]}
+            )
     return filas

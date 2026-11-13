@@ -8,7 +8,7 @@ cantidad, tiempo de entrega, fecha límite y demanda.
 
 # ¡CORRECCIÓN 1: Importar Callable para tipado de funciones!
 from datetime import datetime
-from typing import List, Dict, Any, Callable
+from typing import Any, Callable, Dict, List
 
 # ==========================================================================
 # Inventario de Ejemplo

@@ -9,9 +9,8 @@ Punto de entrada: crea la app, registra los blueprints y arranca el servidor.
 
 import os
 
-from flask import Flask, session, url_for
-
 from config import Config
+from flask import Flask, session, url_for
 from routes import exportar, inventario, mermas, movimientos, pedidos, productos, recepcion
 from routes.comun import CLAVE_SESION, responder
 from services.almacenamiento import AlmacenInventario

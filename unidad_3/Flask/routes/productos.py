@@ -3,7 +3,6 @@
 from typing import Any, Dict, List, Optional
 
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
-
 from services import lotes as servicio_lotes
 from services import productos as logica
 from services.inventario import InventarioError, Producto
@@ -23,7 +22,13 @@ bp = Blueprint("productos", __name__)
 
 FILAS_LOTES_VACIAS = 2  # filas en blanco del editor de lotes, para añadir uno nuevo
 
-VALORES_INICIALES = {"codigo": "", "nombre": "", "cantidad": "0", "tiempo_entrega": "0", "fecha_limite": ""}
+VALORES_INICIALES = {
+    "codigo": "",
+    "nombre": "",
+    "cantidad": "0",
+    "tiempo_entrega": "0",
+    "fecha_limite": "",
+}
 
 
 def _aviso_sin_fecha(producto: Producto) -> str:
@@ -79,7 +84,9 @@ def productos():
 
     existentes = lista or []
     try:
-        nuevos, producto = logica.agregar_producto(existentes, logica.fila_desde_formulario(request.form))
+        nuevos, producto = logica.agregar_producto(
+            existentes, logica.fila_desde_formulario(request.form)
+        )
     except InventarioError as exc:
         return _pagina(lista, valores=request.form, errores=exc.errores, estado=400)
 
@@ -90,13 +97,20 @@ def productos():
             actualizar_inventario(nuevos)
     except OSError:
         current_app.logger.exception("No se pudo guardar el producto")
-        return _pagina(lista, valores=request.form,
-                       errores=["No se pudo guardar el producto. Inténtalo de nuevo."], estado=500)
+        return _pagina(
+            lista,
+            valores=request.form,
+            errores=["No se pudo guardar el producto. Inténtalo de nuevo."],
+            estado=500,
+        )
 
     mensaje = f"Producto «{producto['Nombre']}» agregado con el código {producto['Código']}."
-    previos = sum(1 for m in almacen().leer_movimientos(inventario_id()) if m["codigo"] == producto["Código"])
+    previos = sum(
+        1 for m in almacen().leer_movimientos(inventario_id()) if m["codigo"] == producto["Código"]
+    )
     if previos:
-        mensaje += f" Atención: ese código ya tenía {previos} movimiento(s) en el historial y quedaron enlazados."
+        mensaje += f" Atención: ese código ya tenía {previos} movimiento(s)" 
+        "en el historial y quedaron enlazados."
     mensaje += _aviso_sin_fecha(producto)
     flash(mensaje, "success")
     return redirect(url_for("productos.productos"))
@@ -114,12 +128,21 @@ def editar(codigo: str):
         return sin_inventario()
     actual = _producto_o_none(lista, codigo)
     if actual is None:
-        return responder(f"El producto {codigo} no existe.", 404, categoria="warning",
-                         destino=url_for("productos.productos"))
+        return responder(
+            f"El producto {codigo} no existe.",
+            404,
+            categoria="warning",
+            destino=url_for("productos.productos"),
+        )
 
     def pagina(valores, filas_lotes, errores=None, estado=200):
-        return render_template("producto_editar.html", codigo=codigo, valores=valores,
-                               lotes_filas=filas_lotes, errores=errores or []), estado
+        return render_template(
+            "producto_editar.html",
+            codigo=codigo,
+            valores=valores,
+            lotes_filas=filas_lotes,
+            errores=errores or [],
+        ), estado
 
     if request.method == "GET":
         filas = [(l["Fecha límite"], l["Cantidad"]) for l in servicio_lotes.lotes_de(actual)]
@@ -129,7 +152,9 @@ def editar(codigo: str):
     cantidades = request.form.getlist("lote_cantidad")
     lotes, errores = logica.lotes_desde_formulario(fechas, cantidades)
     try:
-        nuevos, producto = logica.editar_producto(lista, codigo, logica.fila_desde_formulario(request.form), lotes)
+        nuevos, producto = logica.editar_producto(
+            lista, codigo, logica.fila_desde_formulario(request.form), lotes
+        )
     except InventarioError as exc:
         errores = exc.errores + errores
     if errores:
@@ -138,8 +163,12 @@ def editar(codigo: str):
         actualizar_inventario(nuevos)
     except OSError:
         current_app.logger.exception("No se pudo guardar el producto editado")
-        return pagina(request.form, list(zip(fechas, cantidades)),
-                      ["No se pudo guardar el producto. Inténtalo de nuevo."], 500)
+        return pagina(
+            request.form,
+            list(zip(fechas, cantidades)),
+            ["No se pudo guardar el producto. Inténtalo de nuevo."],
+            500,
+        )
 
     flash(f"Producto «{producto['Nombre']}» actualizado." + _aviso_sin_fecha(producto), "success")
     return redirect(url_for("productos.productos"))
@@ -162,6 +191,8 @@ def eliminar(codigo: str):
         current_app.logger.exception("No se pudo quitar el producto")
         return responder("No se pudo quitar el producto. Inténtalo de nuevo.", 500, destino=destino)
     return responder(
-        f"Producto «{quitado['Nombre']}» quitado del inventario. Su historial de movimientos se conserva.",
-        200, destino=destino,
+        f"Producto «{quitado['Nombre']}» quitado del inventario." 
+        "Su historial de movimientos se conserva.",
+        200,
+        destino=destino,
     )

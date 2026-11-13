@@ -89,7 +89,8 @@ def agregar_producto(
         fila["Código"] = codigo
     elif not _CODIGO_NUEVO.match(codigo):
         errores.append(
-            f"El código solo puede tener letras, números, punto y guion (máximo {MAX_CODIGO} caracteres)."
+            f"El código solo puede tener letras, números, punto y guion"
+            f"(máximo {MAX_CODIGO} caracteres)."
         )
     elif any(str(p["Código"]) == codigo for p in productos):
         errores.append(f"El código '{codigo}' ya existe.")
@@ -151,9 +152,12 @@ def editar_producto(
     El código no cambia (es lo que enlaza el producto con su historial).
     """
     indice = _buscar(productos, codigo)
-    # Se valida el nombre y el tiempo de entrega con las reglas de siempre; el stock va en los lotes.
+    # Se valida el nombre y el tiempo de entrega con las reglas de siempre; 
+    # el stock va en los lotes.
     base = _validar_uno({**fila, "Código": codigo, "Cantidad": "0", "Fecha límite": ""})
-    producto = _lotes.construir_producto(codigo, base["Nombre"], base["Tiempo entrega(Días)"], lotes)
+    producto = _lotes.construir_producto(
+        codigo, base["Nombre"], base["Tiempo entrega(Días)"], lotes
+    )
     nuevos = list(productos)
     nuevos[indice] = producto
     return nuevos, producto

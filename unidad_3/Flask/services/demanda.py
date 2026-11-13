@@ -55,7 +55,8 @@ def analizar(
     conocidos = set(codigos)
     # Solo las salidas miden la demanda; las entradas (recepciones) no cuentan.
     propios = [
-        m for m in movimientos
+        m
+        for m in movimientos
         if m["codigo"] in conocidos and m["fecha"] <= hoy and m.get("tipo", "salida") == "salida"
     ]
 
@@ -68,8 +69,7 @@ def analizar(
     inicio = hoy - datetime.timedelta(days=ventana_efectiva - 1) if ventana_efectiva else None
 
     acumulado: Dict[str, Dict[str, Any]] = {
-        c: {"total": 0, "evento": 0, "reciente": 0, "previo": 0, "ultima": None}
-        for c in codigos
+        c: {"total": 0, "evento": 0, "reciente": 0, "previo": 0, "ultima": None} for c in codigos
     }
     for m in propios:
         a = acumulado[m["codigo"]]
@@ -90,7 +90,11 @@ def analizar(
     inicio_mermas = hoy - datetime.timedelta(days=ventana - 1)
     mermas = {c: 0 for c in codigos}
     for m in movimientos:
-        if m.get("tipo") == "merma" and m["codigo"] in conocidos and inicio_mermas <= m["fecha"] <= hoy:
+        if (
+            m.get("tipo") == "merma"
+            and m["codigo"] in conocidos
+            and inicio_mermas <= m["fecha"] <= hoy
+        ):
             mermas[m["codigo"]] += m["cantidad"]
 
     productos: Dict[str, Dict[str, Any]] = {}

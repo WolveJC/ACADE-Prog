@@ -3,7 +3,6 @@
 import datetime
 
 from flask import Blueprint, current_app, render_template, request, url_for
-
 from services import inventario as logica
 from services import lotes as servicio_lotes
 from services.inventario import InventarioError
@@ -73,11 +72,15 @@ def mermas():
     except ValueError as exc:
         return responder(f"Fecha de la baja inválida: {exc}.", 400, destino=destino)
 
-    descartes, motivos, errores = logica.parsear_merma(request.form, [p["Código"] for p in productos])
+    descartes, motivos, errores = logica.parsear_merma(
+        request.form, [p["Código"] for p in productos]
+    )
     if errores:
         return responder(" ".join(errores), 400, destino=destino, errors=errores)
     if not descartes:
-        return responder("Indica la cantidad a descartar de al menos un lote.", 400, destino=destino)
+        return responder(
+            "Indica la cantidad a descartar de al menos un lote.", 400, destino=destino
+        )
 
     try:
         nuevos, detalles = logica.aplicar_merma(productos, descartes)
@@ -95,8 +98,14 @@ def mermas():
         f"de {len({c for c, _ in descartes})} producto(s). No cuentan como demanda."
     )
     movimientos = [
-        {"fecha": fecha, "codigo": codigo, "cantidad": cantidad, "tipo": "merma",
-         "evento": False, "motivo": motivos[(codigo, fecha_lote)]}
+        {
+            "fecha": fecha,
+            "codigo": codigo,
+            "cantidad": cantidad,
+            "tipo": "merma",
+            "evento": False,
+            "motivo": motivos[(codigo, fecha_lote)],
+        }
         for (codigo, fecha_lote), cantidad in descartes.items()
     ]
     try:

@@ -5,7 +5,6 @@ import threading
 from typing import Any, Dict, List, Optional, Tuple
 
 from flask import current_app, flash, jsonify, redirect, request, session, url_for
-
 from services import alertas as servicio_alertas
 from services import demanda as servicio_demanda
 from services import lotes as servicio_lotes
@@ -51,7 +50,9 @@ def _descartar_vencidos(inv_id: str, productos: List[Producto]) -> List[Producto
     retira). Avisa al usuario, porque el stock cambia sin que él haga nada.
     """
     hoy = datetime.date.today()
-    if not any(servicio_lotes.esta_vencido(l, hoy) for p in productos for l in servicio_lotes.lotes_de(p)):
+    if not any(
+        servicio_lotes.esta_vencido(l, hoy) for p in productos for l in servicio_lotes.lotes_de(p)
+    ):
         return productos  # lo habitual: nada que hacer, sin bloqueo ni escrituras
 
     with _BLOQUEO_DESCARTE:
@@ -65,8 +66,14 @@ def _descartar_vencidos(inv_id: str, productos: List[Producto]) -> List[Producto
             almacen().agregar_movimientos(
                 inv_id,
                 [
-                    {"fecha": hoy, "codigo": d["codigo"], "cantidad": d["cantidad"],
-                     "tipo": "merma", "evento": False, "motivo": "vencido"}
+                    {
+                        "fecha": hoy,
+                        "codigo": d["codigo"],
+                        "cantidad": d["cantidad"],
+                        "tipo": "merma",
+                        "evento": False,
+                        "motivo": "vencido",
+                    }
                     for d in descartes
                 ],
             )

@@ -65,9 +65,7 @@ class AlmacenInventario:
         """Guarda el inventario completo (reemplaza el contenido anterior)."""
         destino = self._ruta(inv_id, ".csv")
         df = pd.DataFrame(a_filas(productos), columns=COLUMNAS)  # una fila por lote
-        self._escribir_atomico(
-            destino, lambda tmp: df.to_csv(tmp, index=False, encoding="utf-8")
-        )
+        self._escribir_atomico(destino, lambda tmp: df.to_csv(tmp, index=False, encoding="utf-8"))
         return destino
 
     def existe(self, inv_id: Any) -> bool:
@@ -118,8 +116,14 @@ class AlmacenInventario:
                 escritor.writerow(COLUMNAS_MOV)
             for m in movimientos:
                 escritor.writerow(
-                    [m["fecha"].isoformat(), m["codigo"], m["cantidad"], m["tipo"],
-                     1 if m["evento"] else 0, m.get("motivo", "")]
+                    [
+                        m["fecha"].isoformat(),
+                        m["codigo"],
+                        m["cantidad"],
+                        m["tipo"],
+                        1 if m["evento"] else 0,
+                        m.get("motivo", ""),
+                    ]
                 )
 
     def _migrar_formato_antiguo(self, inv_id: str, ruta: Path) -> None:
@@ -177,9 +181,7 @@ class AlmacenInventario:
         destino = self._ruta(inv_id, ".pedido.json")
         self._escribir_atomico(
             destino,
-            lambda tmp: tmp.write_text(
-                json.dumps(pedido, ensure_ascii=False), encoding="utf-8"
-            ),
+            lambda tmp: tmp.write_text(json.dumps(pedido, ensure_ascii=False), encoding="utf-8"),
         )
 
     def leer_pedido(self, inv_id: Any) -> Optional[List[Dict[str, Any]]]:

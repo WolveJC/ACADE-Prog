@@ -15,7 +15,6 @@ from flask import (
     url_for,
 )
 from fpdf.errors import FPDFException
-
 from services import inventario as logica
 from services.movimientos import a_booleano, parsear_fecha
 from services.pdf import generar_pdf_pedido
@@ -77,8 +76,13 @@ def pedir_stock():
             return jsonify({"message": "No se pudo guardar el pedido. Inténtalo de nuevo."}), 500
 
         movimientos = [
-            {"fecha": fecha, "codigo": str(p["Código"]), "cantidad": aplicados[str(p["Código"])],
-             "tipo": "salida", "evento": evento}
+            {
+                "fecha": fecha,
+                "codigo": str(p["Código"]),
+                "cantidad": aplicados[str(p["Código"])],
+                "tipo": "salida",
+                "evento": evento,
+            }
             for p in productos
             if str(p["Código"]) in aplicados
         ]
@@ -106,7 +110,9 @@ def pedir_proveedor():
 
     pedido, errores = logica.validar_pedido_proveedor(productos, request.form)
     if errores:
-        return jsonify({"message": "Errores en el formulario. " + " ".join(errores), "errors": errores}), 400
+        return jsonify(
+            {"message": "Errores en el formulario. " + " ".join(errores), "errors": errores}
+        ), 400
     if not pedido:
         return jsonify({"message": "No se seleccionaron productos válidos."}), 400
 
@@ -133,7 +139,9 @@ def generar_pdf_proveedor():
         return redirect(url_for("pedidos.pedir_proveedor"))
 
     try:
-        contenido, nombre = generar_pdf_pedido(pedido, dir_fuentes=current_app.config["DIR_FUENTES"])
+        contenido, nombre = generar_pdf_pedido(
+            pedido, dir_fuentes=current_app.config["DIR_FUENTES"]
+        )
     except (FPDFException, RuntimeError, OSError, ValueError):
         current_app.logger.exception("Error al generar el PDF")
         flash("Error al generar el archivo PDF.", "error")

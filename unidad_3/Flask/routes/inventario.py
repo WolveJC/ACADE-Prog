@@ -1,7 +1,6 @@
 """Rutas de carga y creación del inventario."""
 
 from flask import Blueprint, current_app, redirect, render_template, request, url_for
-
 from services import inventario as logica
 from services import lotes as servicio_lotes
 from services.inventario import InventarioError
@@ -38,14 +37,19 @@ def upload_csv():
         reemplazar_inventario(productos)
     except OSError:
         current_app.logger.exception("No se pudo guardar el inventario subido")
-        return responder("No se pudo guardar el inventario. Inténtalo de nuevo.", 500, destino=destino)
+        return responder(
+            "No se pudo guardar el inventario. Inténtalo de nuevo.", 500, destino=destino
+        )
 
     mensaje = f"Archivo CSV cargado con éxito ({len(productos)} productos)."
     sin_fecha = [p["Nombre"] for p in productos if servicio_lotes.unidades_sin_fecha(p)]
     if sin_fecha:
-        mostrados = ", ".join(sin_fecha[:3]) + (f" y {len(sin_fecha) - 3} más" if len(sin_fecha) > 3 else "")
+        mostrados = ", ".join(sin_fecha[:3]) + (
+            f" y {len(sin_fecha) - 3} más" if len(sin_fecha) > 3 else ""
+        )
         mensaje += (
-            f" Atención: falta la fecha de caducidad de {len(sin_fecha)} producto(s) ({mostrados}). "
+            f" Atención: falta la fecha de caducidad de" 
+            f"{len(sin_fecha)} producto(s) ({mostrados}). "
             "Se cargaron igualmente, pero el sistema te lo seguirá avisando."
         )
     return responder(mensaje, 200, destino=destino, sin_fecha=sin_fecha)

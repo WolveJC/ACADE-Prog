@@ -54,11 +54,17 @@ def generar_pdf_pedido(
         return texto if unicode_ok else texto.encode("latin-1", "replace").decode("latin-1")
 
     pdf.set_font(familia, "B", 14)
-    pdf.cell(0, 10, txt("Pedido al Proveedor - Touken Café"), align="C", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(
+        0, 10, txt("Pedido al Proveedor - Touken Café"), align="C", new_x="LMARGIN", new_y="NEXT"
+    )
     pdf.set_font(familia, "", 9)
     pdf.cell(
-        0, 6, txt(f"Fecha de generación: {ahora:%Y-%m-%d %H:%M:%S}"),
-        align="C", new_x="LMARGIN", new_y="NEXT",
+        0,
+        6,
+        txt(f"Fecha de generación: {ahora:%Y-%m-%d %H:%M:%S}"),
+        align="C",
+        new_x="LMARGIN",
+        new_y="NEXT",
     )
     pdf.ln(8)
 

@@ -4,7 +4,6 @@ import io
 
 import pandas as pd
 from flask import Blueprint, flash, jsonify, redirect, send_file, url_for
-
 from services.inventario import COLUMNAS
 from services.lotes import a_filas
 
@@ -29,7 +28,9 @@ def export_csv():
         return redirect(url_for("inventario.upload_csv"))
 
     # utf-8-sig (con BOM) para que Excel en Windows muestre bien las tildes.
-    texto = pd.DataFrame(a_filas(productos), columns=COLUMNAS).to_csv(index=False)  # una fila por lote
+    texto = pd.DataFrame(a_filas(productos), columns=COLUMNAS).to_csv(
+        index=False
+    )  # una fila por lote
     return send_file(
         io.BytesIO(texto.encode("utf-8-sig")),
         mimetype="text/csv",

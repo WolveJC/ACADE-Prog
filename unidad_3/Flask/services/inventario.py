@@ -148,7 +148,9 @@ def validar_filas(
 
         conflictos = []
         if nombre != grupo["nombre"]:
-            conflictos.append(f"el nombre '{nombre}' no coincide con '{grupo['nombre']}' (fila {grupo['fila']})")
+            conflictos.append(
+                f"el nombre '{nombre}' no coincide con '{grupo['nombre']}' (fila {grupo['fila']})"
+            )
         if tiempo != grupo["tiempo"]:
             conflictos.append(f"el tiempo de entrega no coincide con el de la fila {grupo['fila']}")
         if conflictos:
@@ -330,11 +332,14 @@ def parsear_recepcion(
             try:
                 fecha = validar_fecha(texto_fecha)
             except ValueError:
-                errores.append(f"Producto {codigo}: la fecha límite debe tener formato YYYY-MM-DD válido.")
+                errores.append(
+                    f"Producto {codigo}: la fecha límite debe tener formato YYYY-MM-DD válido."
+                )
                 continue
             if fecha < fecha_recepcion.isoformat():
                 errores.append(
-                    f"Producto {codigo}: la fecha límite del lote no puede ser anterior a la recepción."
+                    f"Producto {codigo}: la fecha límite del lote" 
+                    " no puede ser anterior a la recepción."
                 )
                 continue
             fechas[codigo] = fecha
@@ -356,9 +361,16 @@ def aplicar_recepcion(
         codigo = str(producto["Código"])
         if codigo in recibidos:
             fecha = fechas.get(codigo, "")
-            producto = _lotes.agregar_lote(producto, fecha, recibidos[codigo])
-            mensaje = f"Recibidos {recibidos[codigo]} {producto['Nombre']}. Nuevo stock: {producto['Cantidad']}."
-            mensaje += f" Lote con fecha límite {fecha}." if fecha else " Lote sin fecha de caducidad."
+            producto = _lotes.agregar_lote(
+                producto, 
+                fecha, 
+                recibidos[codigo]
+                )
+            mensaje = f"Recibidos {recibidos[codigo]} {producto['Nombre']}." 
+            f"Nuevo stock: {producto['Cantidad']}."
+            mensaje += (
+                f" Lote con fecha límite {fecha}." if fecha else " Lote sin fecha de caducidad."
+            )
             mensajes.append(mensaje)
         actualizados.append(producto)
     return actualizados, mensajes
@@ -400,7 +412,9 @@ def parsear_merma(
         try:
             fecha = validar_fecha(texto_fecha)
         except ValueError:
-            errores.append(f"Producto {codigo}: la fecha del lote debe tener formato YYYY-MM-DD válido.")
+            errores.append(
+                f"Producto {codigo}: la fecha del lote debe tener formato YYYY-MM-DD válido."
+            )
             continue
         try:
             cantidad = a_entero(valor)
@@ -434,13 +448,16 @@ def aplicar_merma(
     por_codigo = {str(p["Código"]): p for p in productos}
     errores: List[str] = []
     for (codigo, fecha), cantidad in mermas.items():
-        existencias = {l["Fecha límite"]: l["Cantidad"] for l in _lotes.lotes_de(por_codigo[codigo])}
+        existencias = {
+            l["Fecha límite"]: l["Cantidad"] for l in _lotes.lotes_de(por_codigo[codigo])
+        }
         etiqueta = f" (lote {fecha})" if fecha else " (lote sin fecha)"
         if fecha not in existencias:
             errores.append(f"Producto {codigo}{etiqueta}: ese lote no existe.")
         elif cantidad > existencias[fecha]:
             errores.append(
-                f"Producto {codigo}{etiqueta}: no se pueden descartar {cantidad} (hay {existencias[fecha]})."
+                f"Producto {codigo}{etiqueta}: no se pueden" 
+                f" descartar {cantidad} (hay {existencias[fecha]})."
             )
     if errores:
         raise InventarioError(errores)
@@ -454,7 +471,8 @@ def aplicar_merma(
                 producto = _lotes.quitar_de_lote(producto, fecha, cantidad)
                 origen = f" del lote {fecha}" if fecha else " del lote sin fecha"
                 mensajes.append(
-                    f"Descartados {cantidad} {producto['Nombre']}{origen}. Nuevo stock: {producto['Cantidad']}."
+                    f"Descartados {cantidad} {producto['Nombre']}{origen}." 
+                    f"Nuevo stock: {producto['Cantidad']}."
                 )
         actualizados.append(producto)
     return actualizados, mensajes
@@ -473,10 +491,14 @@ def validar_pedido_proveedor(
     """
     prefijo = "pedido_proveedor["
     por_codigo = {str(p["Código"]): p for p in productos}
-    enviados = {k[len(prefijo) : -1] for k in form.keys() if k.startswith(prefijo) and k.endswith("]")}
+    enviados = {
+        k[len(prefijo) : -1] for k in form.keys() if k.startswith(prefijo) and k.endswith("]")
+    }
 
     pedido: List[Dict[str, Any]] = []
-    errores: List[str] = [f"Producto {c} no encontrado." for c in sorted(enviados - set(por_codigo))]
+    errores: List[str] = [
+        f"Producto {c} no encontrado." for c in sorted(enviados - set(por_codigo))
+    ]
 
     for producto in productos:
         codigo = str(producto["Código"])

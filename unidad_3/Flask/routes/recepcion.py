@@ -3,7 +3,6 @@
 import datetime
 
 from flask import Blueprint, current_app, render_template, request, url_for
-
 from services import inventario as logica
 from services.movimientos import parsear_fecha
 
@@ -55,20 +54,27 @@ def recepcion():
     if errores:
         return responder(" ".join(errores), 400, destino=destino, errors=errores)
     if not recibidos:
-        return responder("Indica la cantidad recibida de al menos un producto.", 400, destino=destino)
+        return responder(
+            "Indica la cantidad recibida de al menos un producto.", 400, destino=destino
+        )
 
     nuevos, detalles = logica.aplicar_recepcion(productos, recibidos, fechas)
     try:
         actualizar_inventario(nuevos)
     except OSError:
         current_app.logger.exception("No se pudo guardar la recepción")
-        return responder("No se pudo guardar la recepción. Inténtalo de nuevo.", 500, destino=destino)
+        return responder(
+            "No se pudo guardar la recepción. Inténtalo de nuevo.", 500, destino=destino
+        )
 
     mensaje = (
-        f"Recepción registrada: {sum(recibidos.values())} unidades "
-        f"de {len(recibidos)} producto(s)."
+        f"Recepción registrada: {sum(recibidos.values())} unidades de {len(recibidos)} producto(s)."
     )
-    sin_fecha = [p["Nombre"] for p in productos if str(p["Código"]) in recibidos and str(p["Código"]) not in fechas]
+    sin_fecha = [
+        p["Nombre"]
+        for p in productos
+        if str(p["Código"]) in recibidos and str(p["Código"]) not in fechas
+    ]
     if sin_fecha:
         mensaje += (
             f" Atención: falta la fecha de caducidad de {', '.join(sin_fecha)}. "
@@ -76,8 +82,13 @@ def recepcion():
         )
 
     movimientos = [
-        {"fecha": fecha, "codigo": str(p["Código"]), "cantidad": recibidos[str(p["Código"])],
-         "tipo": "entrada", "evento": False}
+        {
+            "fecha": fecha,
+            "codigo": str(p["Código"]),
+            "cantidad": recibidos[str(p["Código"])],
+            "tipo": "entrada",
+            "evento": False,
+        }
         for p in productos
         if str(p["Código"]) in recibidos
     ]

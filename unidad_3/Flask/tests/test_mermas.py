@@ -1,4 +1,7 @@
-"""Pruebas de las mermas: mercancía descartada (vencida, dañada...) que no cuenta como demanda."""
+"""
+Pruebas de las mermas: 
+mercancía descartada (vencida, dañada...) que no cuenta como demanda.
+"""
 
 import datetime
 
@@ -95,7 +98,7 @@ def con_lotes(codigo="1", *lotes):
 
 
 def lotes_de(p):
-    return [(l["Fecha límite"], l["Cantidad"]) for l in p["Lotes"]]
+    return [(lote["Fecha límite"], lote["Cantidad"]) for lote in p["Lotes"]]
 
 
 def test_aplicar_merma_descuenta_del_lote_indicado_sin_tocar_los_demas_ni_mutar():
@@ -296,7 +299,7 @@ def test_descartar_el_lote_vencido_no_toca_el_fresco(con_inventario):
     r = descartar(con_inventario)
     assert r.status_code == 302
     leche = producto_exportado(con_inventario, "1")
-    assert [(l["Fecha límite"], l["Cantidad"]) for l in leche["Lotes"]] == [(FRESCA, 30)]
+    assert [(lote["Fecha límite"], lote["Cantidad"]) for lote in leche["Lotes"]] == [(FRESCA, 30)]
     assert (
         leche["Cantidad"] == 30 and leche["Fecha límite"] == FRESCA
     )  # la fecha mostrada pasó al lote fresco
@@ -385,7 +388,7 @@ def test_flujo_recibir_un_lote_fresco_con_unidades_vencidas_y_descartar_solo_lo_
         "/recepcion", data={"recepcion_cantidad[1]": "12", "recepcion_fecha[1]": nueva}
     )
     leche = producto_exportado(con_inventario, "1")
-    assert [l["Cantidad"] for l in leche["Lotes"]] == [5, 12, 30] and leche[
+    assert [lote["Cantidad"] for lote in leche["Lotes"]] == [5, 12, 30] and leche[
         "Fecha límite"
     ] == VENCIDA
     assert "Vencido · 5 u.</span>" in con_inventario.get("/pedir_stock").get_data(as_text=True)
@@ -393,7 +396,7 @@ def test_flujo_recibir_un_lote_fresco_con_unidades_vencidas_y_descartar_solo_lo_
     # no se tocan y el aviso desaparece.
     descartar(con_inventario)
     leche = producto_exportado(con_inventario, "1")
-    assert [(l["Fecha límite"], l["Cantidad"]) for l in leche["Lotes"]] == [
+    assert [(lote["Fecha límite"], lote["Cantidad"]) for lote in leche["Lotes"]] == [
         (nueva, 12),
         (FRESCA, 30),
     ]

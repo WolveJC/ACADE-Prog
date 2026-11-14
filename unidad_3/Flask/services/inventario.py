@@ -143,7 +143,9 @@ def validar_filas(
         lote = {"Fecha límite": fecha, "Cantidad": enteros["Cantidad"]}
         grupo = grupos.get(codigo)
         if grupo is None:
-            grupos[codigo] = {"nombre": nombre, "tiempo": tiempo, "lotes": [lote], "fila": numero}
+            grupos[codigo] = {
+                "nombre": nombre, "tiempo": tiempo, "lotes": [lote], "fila": numero
+                }
             continue
 
         conflictos = []
@@ -152,7 +154,8 @@ def validar_filas(
                 f"el nombre '{nombre}' no coincide con '{grupo['nombre']}' (fila {grupo['fila']})"
             )
         if tiempo != grupo["tiempo"]:
-            conflictos.append(f"el tiempo de entrega no coincide con el de la fila {grupo['fila']}")
+            conflictos.append(f"el tiempo de entrega no coincide "
+            f"con el de la fila {grupo['fila']}")
         if conflictos:
             errores.append(
                 f"{prefijo} el código '{codigo}' está repetido (varias filas con el mismo código "
@@ -196,7 +199,9 @@ def leer_tabla_csv(contenido: bytes) -> pd.DataFrame:
     except EmptyDataError:
         raise InventarioError(["El archivo CSV está vacío."]) from None
     except ParserError as exc:
-        raise InventarioError(["Error al procesar el archivo CSV. Verifique el formato."]) from exc
+        raise InventarioError(
+            ["Error al procesar el archivo CSV. Verifique el formato."]
+            ) from exc
 
     df.columns = [str(c).strip() for c in df.columns]
     return df
@@ -449,7 +454,7 @@ def aplicar_merma(
     errores: List[str] = []
     for (codigo, fecha), cantidad in mermas.items():
         existencias = {
-            l["Fecha límite"]: l["Cantidad"] for l in _lotes.lotes_de(por_codigo[codigo])
+            lote["Fecha límite"]: lote["Cantidad"] for lote in _lotes.lotes_de(por_codigo[codigo])
         }
         etiqueta = f" (lote {fecha})" if fecha else " (lote sin fecha)"
         if fecha not in existencias:

@@ -61,7 +61,10 @@ def mermas():
         return render_template(
             "mermas.html",
             lineas=lineas,
-            unidades_vencidas=sum(l["lote"]["Cantidad"] for l in lineas if l["vencido"]),
+            unidades_vencidas=sum(
+                linea["lote"]["Cantidad"] 
+                for linea in lineas if linea["vencido"]
+                ),
             hoy=hoy.isoformat(),
             preparar=request.args.get("preparar") == "vencidos",
             etiquetas=logica.ETIQUETA_MOTIVO,

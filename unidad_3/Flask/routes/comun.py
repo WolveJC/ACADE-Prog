@@ -51,12 +51,15 @@ def _descartar_vencidos(inv_id: str, productos: List[Producto]) -> List[Producto
     """
     hoy = datetime.date.today()
     if not any(
-        servicio_lotes.esta_vencido(l, hoy) for p in productos for l in servicio_lotes.lotes_de(p)
+        servicio_lotes.esta_vencido(lote, hoy)
+        for producto in productos
+        for lote in servicio_lotes.lotes_de(producto)
     ):
         return productos  # lo habitual: nada que hacer, sin bloqueo ni escrituras
 
     with _BLOQUEO_DESCARTE:
-        # Se vuelve a leer: otra petición pudo haberlo descartado mientras se esperaba el bloqueo.
+        # Se vuelve a leer: 
+        # otra petición pudo haberlo descartado mientras se esperaba el bloqueo.
         productos = almacen().cargar(inv_id) or productos
         nuevos, descartes = servicio_lotes.descartar_vencidos(productos, hoy)
         if not descartes:

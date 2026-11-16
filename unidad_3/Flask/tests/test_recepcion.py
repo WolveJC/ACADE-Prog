@@ -1,4 +1,6 @@
-"""Pruebas de la recepción de mercancía (entradas de stock) y del tipo de movimiento."""
+"""
+Pruebas de la recepción de mercancía (entradas de stock) y del tipo de movimiento.
+"""
 
 import datetime
 
@@ -72,7 +74,7 @@ def test_la_fecha_limite_puede_ser_el_mismo_dia_de_la_recepcion():
 
 # -------------------------------------------------------- aplicar_recepcion
 def lotes_de(p):
-    return [(l["Fecha límite"], l["Cantidad"]) for l in p["Lotes"]]
+    return [(lote["Fecha límite"], lote["Cantidad"]) for lote in p["Lotes"]]
 
 
 def test_la_recepcion_suma_al_stock_sin_mutar_el_original():
@@ -295,7 +297,7 @@ def test_los_lotes_a_traves_de_las_rutas(con_inventario):
     # Manzana (1): 20 u. con fecha 2099-01-01. Banana (2): sin stock.
     recibir(con_inventario, **{"recepcion_fecha[1]": "2099-06-01"})
     manzana = producto_exportado(con_inventario, "1")
-    assert [(l["Fecha límite"], l["Cantidad"]) for l in manzana["Lotes"]] == [
+    assert [(lote["Fecha límite"], lote["Cantidad"]) for lote in manzana["Lotes"]] == [
         ("2099-01-01", 20),
         ("2099-06-01", 5),
     ]
@@ -310,7 +312,8 @@ def test_los_lotes_a_traves_de_las_rutas(con_inventario):
 
     recibir(con_inventario, **{"recepcion_fecha[1]": "2099-06-01"})  # misma fecha: se suma al lote
     lotes = {
-        l["Fecha límite"]: l["Cantidad"] for l in producto_exportado(con_inventario, "1")["Lotes"]
+        lote["Fecha límite"]: lote["Cantidad"]
+        for lote in producto_exportado(con_inventario, "1")["Lotes"]
     }
     assert lotes == {"2098-06-01": 5, "2099-01-01": 20, "2099-06-01": 10}
 
@@ -323,7 +326,9 @@ def test_los_lotes_a_traves_de_las_rutas(con_inventario):
         },
     )  # estaba en 0: el lote nuevo es el único
     banana = producto_exportado(con_inventario, "2")
-    assert [(l["Fecha límite"], l["Cantidad"]) for l in banana["Lotes"]] == [("2099-03-03", 4)]
+    assert [(lote["Fecha límite"], lote["Cantidad"]) for lote in banana["Lotes"]] == [
+        ("2099-03-03", 4)
+    ]
 
 
 def test_recibir_sin_fecha_se_registra_pero_avisa_siempre(con_inventario):

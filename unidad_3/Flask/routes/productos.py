@@ -57,7 +57,10 @@ def _pagina(
     errores: Optional[List[str]] = None,
     estado: int = 200,
 ):
-    """Página de productos. Con errores se vuelve a mostrar el formulario con lo que se escribió."""
+    """
+    Página de productos. 
+    Con errores se vuelve a mostrar el formulario con lo que se escribió.
+    """
     lista = lista or []
     alertas, _ = alertas_inventario(lista) if lista else ({}, None)
     return (
@@ -106,11 +109,14 @@ def productos():
 
     mensaje = f"Producto «{producto['Nombre']}» agregado con el código {producto['Código']}."
     previos = sum(
-        1 for m in almacen().leer_movimientos(inventario_id()) if m["codigo"] == producto["Código"]
+        1 for m in almacen().leer_movimientos(inventario_id()) 
+        if m["codigo"] == producto["Código"]
     )
     if previos:
-        mensaje += f" Atención: ese código ya tenía {previos} movimiento(s)" 
-        "en el historial y quedaron enlazados."
+        mensaje += (
+            f" Atención: ese código ya tenía {previos} movimiento(s) "
+            "en el historial y quedaron enlazados."
+        )
     mensaje += _aviso_sin_fecha(producto)
     flash(mensaje, "success")
     return redirect(url_for("productos.productos"))
@@ -145,7 +151,11 @@ def editar(codigo: str):
         ), estado
 
     if request.method == "GET":
-        filas = [(l["Fecha límite"], l["Cantidad"]) for l in servicio_lotes.lotes_de(actual)]
+        filas = [
+            (lote["Fecha límite"], 
+            lote["Cantidad"]) 
+            for lote in servicio_lotes.lotes_de(actual)
+            ]
         return pagina(_valores_de(actual), filas + [("", "")] * FILAS_LOTES_VACIAS)
 
     fechas = request.form.getlist("lote_fecha")
@@ -189,9 +199,13 @@ def eliminar(codigo: str):
         actualizar_inventario(nuevos)
     except OSError:
         current_app.logger.exception("No se pudo quitar el producto")
-        return responder("No se pudo quitar el producto. Inténtalo de nuevo.", 500, destino=destino)
+        return responder(
+            "No se pudo quitar el producto. Inténtalo de nuevo.", 
+            500, 
+            destino=destino
+            )
     return responder(
-        f"Producto «{quitado['Nombre']}» quitado del inventario." 
+        f"Producto «{quitado['Nombre']}» quitado del inventario. "
         "Su historial de movimientos se conserva.",
         200,
         destino=destino,

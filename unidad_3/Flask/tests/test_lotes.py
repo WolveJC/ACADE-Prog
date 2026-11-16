@@ -31,7 +31,7 @@ def prod(codigo="1", *lotes, tiempo=2):
 
 
 def ver(p):
-    return [(l["Fecha límite"], l["Cantidad"]) for l in p["Lotes"]]
+    return [(lote["Fecha límite"], lote["Cantidad"]) for lote in p["Lotes"]]
 
 
 # ------------------------------------------------------------- construcción
@@ -45,7 +45,7 @@ def test_normalizar_une_fechas_iguales_descarta_vacios_y_ordena_dejando_los_sin_
             {"Fecha límite": dia(9), "Cantidad": 0},
         ]
     )
-    assert [(l["Fecha límite"], l["Cantidad"]) for l in lotes] == [
+    assert [(lote["Fecha límite"], lote["Cantidad"]) for lote in lotes] == [
         (dia(5), 3),
         (dia(20), 12),
         ("", 4),
@@ -120,19 +120,20 @@ def test_fefo_con_muchos_casos_aleatorios_conserva_las_unidades_y_el_orden():
         pedido = azar.randint(0, p["Cantidad"])
         q = L.consumir_fefo(p, pedido)
         assert q["Cantidad"] == p["Cantidad"] - pedido  # se descuenta exactamente lo pedido
-        fechas = [l["Fecha límite"] for l in q["Lotes"]]
+        fechas = [lote["Fecha límite"] for lote in q["Lotes"]]
         assert fechas == sorted(
             fechas, key=lambda f: (f == "", f)
             ) and len(set(fechas)) == len(
                 fechas
             )
-        # lo que se consumió salió de los lotes que caducaban antes: si queda algo de un lote, no queda
-        # ningún lote anterior (con fecha) intacto o parcial más viejo que uno ya agotado
-        antes = {l["Fecha límite"]: l["Cantidad"] for l in p["Lotes"]}
-        despues = {l["Fecha límite"]: l["Cantidad"] for l in q["Lotes"]}
+        # lo que se consumió salió de los lotes que caducaban antes:
+        # si queda algo de un lote, no queda ningún lote anterior (con fecha) 
+        # intacto o parcial más viejo que uno ya agotado
+        antes = {lote["Fecha límite"]: lote["Cantidad"] for lote in p["Lotes"]}
+        despues = {lote["Fecha límite"]: lote["Cantidad"] for lote in q["Lotes"]}
         tocados = [f for f in antes if despues.get(f, 0) != antes[f]]
         if tocados:
-            orden = [l["Fecha límite"] for l in p["Lotes"]]
+            orden = [lote["Fecha límite"] for lote in p["Lotes"]]
             ultimo = max(orden.index(f) for f in tocados)
             assert all(despues.get(f, 0) == 0 for f in orden[:ultimo])  # todo lo anterior se agotó
 
@@ -302,7 +303,7 @@ def test_un_csv_con_el_mismo_codigo_en_varias_filas_carga_los_lotes_de_un_produc
     datos = r.get_json()
     assert r.status_code == 200 and "2 productos" in datos["message"]
     leche = exportado(client, "1")
-    assert [(l["Fecha límite"], l["Cantidad"]) for l in leche["Lotes"]] == [
+    assert [(lote["Fecha límite"], lote["Cantidad"]) for lote in leche["Lotes"]] == [
         (hoy_mas(5), 10),
         (hoy_mas(20), 30),
     ]
@@ -443,7 +444,7 @@ def test_editar_lotes_une_fechas_iguales_quita_los_de_cero_y_anade_los_nuevos(cl
         [(hoy_mas(20), "4"), (hoy_mas(20), "6"), (hoy_mas(9), "0"), ("", ""), (hoy_mas(60), "7")],
     )
     leche = exportado(client, "1")
-    assert [(l["Fecha límite"], l["Cantidad"]) for l in leche["Lotes"]] == [
+    assert [(lote["Fecha límite"], lote["Cantidad"]) for lote in leche["Lotes"]] == [
         (hoy_mas(20), 10),
         (hoy_mas(60), 7),
     ]
@@ -486,7 +487,11 @@ def test_la_retirada_sale_del_lote_que_caduca_antes_y_pasa_al_siguiente(client):
     r = client.post("/pedir_stock", data={"pedido_stock[1]": "12"}, headers=JSON_HEADERS)
     assert r.status_code == 200 and r.get_json()["hubo_cambios"] is True
     leche = exportado(client, "1")
-    assert [(l["Fecha límite"], l["Cantidad"]) for l in leche["Lotes"]] == [(hoy_mas(20), 28)]
+    assert [
+        (lote["Fecha límite"], 
+        lote["Cantidad"]) 
+        for lote in leche["Lotes"]] == [(hoy_mas(20), 28)
+        ]
     assert (
         leche["Fecha límite"] == hoy_mas(20) and leche["Cantidad"] == 28
     )  # la fecha mostrada avanzó
@@ -512,7 +517,7 @@ INV_VENCIDO = csv_lotes(
 
 
 def merma_lineas(client):
-    return [l for l in historial(client).splitlines() if ",merma," in l]
+    return [linea for linea in historial(client).splitlines() if ",merma," in linea]
 
 
 def test_los_lotes_vencidos_se_descartan_solos_y_se_registran_como_mermas_por_vencimiento(
@@ -529,7 +534,7 @@ def test_los_lotes_vencidos_se_descartan_solos_y_se_registran_como_mermas_por_ve
     assert "Quedaron registradas como mermas por vencimiento" in pagina
 
     leche = exportado(c, "1")
-    assert [(l["Fecha límite"], l["Cantidad"]) for l in leche["Lotes"]] == [
+    assert [(lote["Fecha límite"], lote["Cantidad"]) for lote in leche["Lotes"]] == [
         (hoy_mas(10), 30)
     ]  # el lote fresco, intacto
     assert (
